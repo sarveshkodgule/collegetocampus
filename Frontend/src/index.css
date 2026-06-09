@@ -1,0 +1,324 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@500;700&family=Outfit:wght@300;400;600;800&display=swap');
+
+/* Reset & Base Setup */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+:root {
+  /* Default Theme: Silicon Metropolis Hub (Cyberpunk Dark) */
+  --bg-primary: #090B10;
+  --bg-secondary: #131722;
+  --bg-tertiary: #1B2132;
+  --text-primary: #F0F5FA;
+  --text-secondary: #7F8C9F;
+  --accent-color: #A855F7; /* Purple */
+  --accent-secondary: #06B6D4; /* Cyan */
+  --success-color: #10B981; /* Emerald */
+  --warning-color: #F59E0B; /* Amber */
+  --danger-color: #EF4444; /* Red */
+  
+  --border-color: rgba(255, 255, 255, 0.05);
+  --shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  --grid-line: rgba(255, 255, 255, 0.02);
+  
+  --font-title: 'Orbitron', sans-serif;
+  --font-body: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --glow-accent: 0 0 15px rgba(168, 85, 247, 0.4);
+  --glow-secondary: 0 0 15px rgba(6, 182, 212, 0.4);
+  --glow-success: 0 0 15px rgba(16, 185, 129, 0.4);
+  
+  --border-radius-sm: 8px;
+  --border-radius-md: 16px;
+  --border-radius-lg: 24px;
+}
+
+/* Theme Overrides */
+
+/* 1. Landing Page - Elegant Light Mode / Edtech Portal */
+.theme-landing {
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #F1F5F9;
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --accent-color: #6366F1; /* Premium Indigo */
+  --accent-secondary: #0EA5E9; /* Sky Blue */
+  --success-color: #10B981;
+  --warning-color: #F59E0B;
+  --border-color: rgba(15, 23, 42, 0.08);
+  --shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+  --grid-line: rgba(15, 23, 42, 0.04);
+  --glow-accent: 0 4px 20px rgba(99, 102, 241, 0.15);
+  --glow-secondary: 0 4px 20px rgba(14, 165, 233, 0.15);
+  --font-title: 'Outfit', sans-serif;
+}
+
+/* 2. Career Tower (Skill Tree) - Sleek Tech Grid */
+.theme-career-tower {
+  --bg-primary: #05070F;
+  --bg-secondary: #0A0F24;
+  --bg-tertiary: #10193E;
+  --text-primary: #F8FAFC;
+  --text-secondary: #475569;
+  --accent-color: #3B82F6; /* Blue Tech */
+  --accent-secondary: #F59E0B; /* Gold Node */
+  --glow-accent: 0 0 15px rgba(59, 130, 246, 0.4);
+  --glow-secondary: 0 0 15px rgba(245, 158, 171, 0.4);
+  --font-title: 'Orbitron', sans-serif;
+}
+
+/* 3. SQL Heist - Cyberpunk Hacking Terminal */
+.theme-sql-heist {
+  --bg-primary: #06090A;
+  --bg-secondary: #0A1112;
+  --bg-tertiary: #111D1E;
+  --text-primary: #39FF14; /* Matrix Neon Green */
+  --text-secondary: #1B7A0C; /* Darker Green */
+  --accent-color: #39FF14;
+  --accent-secondary: #00E5FF; /* Cyan Alert */
+  --glow-accent: 0 0 20px rgba(57, 255, 20, 0.5);
+  --glow-secondary: 0 0 15px rgba(0, 229, 255, 0.4);
+  --font-title: 'JetBrains Mono', monospace;
+  --font-body: 'JetBrains Mono', monospace;
+}
+
+/* 4. Algorithm Arena - High Fantasy RPG Dungeon */
+.theme-algo-arena {
+  --bg-primary: #100C12;
+  --bg-secondary: #1F1724;
+  --bg-tertiary: #2D2134;
+  --text-primary: #E2E8F0;
+  --text-secondary: #8A7B97;
+  --accent-color: #EF4444; /* Fiery Crimson */
+  --accent-secondary: #EAB308; /* Gold Item */
+  --glow-accent: 0 0 25px rgba(239, 68, 68, 0.5);
+  --glow-secondary: 0 0 15px rgba(234, 179, 8, 0.4);
+  --font-title: 'Cinzel', serif;
+}
+
+/* 5. Startup Garage - Warm Hostel Room Indie Simulator */
+.theme-startup-garage {
+  --bg-primary: #15110E;
+  --bg-secondary: #261F1A;
+  --bg-tertiary: #382D26;
+  --text-primary: #FAF6F0;
+  --text-secondary: #8A7869;
+  --accent-color: #F97316; /* Warm Orange */
+  --accent-secondary: #22C55E; /* Cash Green */
+  --glow-accent: 0 0 15px rgba(249, 115, 22, 0.4);
+  --glow-secondary: 0 0 15px rgba(34, 197, 94, 0.4);
+  --font-title: 'Orbitron', sans-serif;
+}
+
+/* 6. Internship Detective - Cinematic Noir Visual Novel */
+.theme-internship-detective {
+  --bg-primary: #0B0E14;
+  --bg-secondary: #171B26;
+  --bg-tertiary: #22293A;
+  --text-primary: #E2E8F0;
+  --text-secondary: #64748B;
+  --accent-color: #6366F1; /* Indigo */
+  --accent-secondary: #EC4899; /* Plot Pink */
+  --glow-accent: 0 0 15px rgba(99, 102, 241, 0.4);
+  --glow-secondary: 0 0 15px rgba(236, 72, 153, 0.4);
+  --font-title: 'Outfit', sans-serif;
+}
+
+/* 7. Apti Rush - High-Adrenaline Neon Arcade */
+.theme-apti-rush {
+  --bg-primary: #0C0215;
+  --bg-secondary: #1F0535;
+  --bg-tertiary: #320854;
+  --text-primary: #FFFFFF;
+  --text-secondary: #FF85FF; /* Hot Violet */
+  --accent-color: #FF007F; /* Hot Pink */
+  --accent-secondary: #00F3FF; /* Laser Cyan */
+  --glow-accent: 0 0 25px rgba(255, 0, 127, 0.6);
+  --glow-secondary: 0 0 20px rgba(0, 243, 255, 0.5);
+  --font-title: 'Orbitron', sans-serif;
+}
+
+/* Global Styles */
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  transition: background-color 0.8s ease, color 0.5s ease;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color);
+}
+
+/* Unity-like UI Elements */
+
+/* Gigs/Cards */
+.game-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+.game-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+.game-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-color);
+  box-shadow: var(--glow-accent);
+}
+.game-card:hover::before {
+  transform: translateX(100%);
+}
+
+/* Gaming Buttons */
+.game-btn {
+  font-family: var(--font-title);
+  background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+  color: var(--text-primary);
+  border: 1px solid var(--text-secondary);
+  border-radius: var(--border-radius-sm);
+  padding: 0.75rem 1.5rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.game-btn::after {
+  content: '';
+  position: absolute;
+  background: rgba(255, 255, 255, 0.1);
+  top: 0; left: 0; right: 0; bottom: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.game-btn:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  box-shadow: var(--glow-accent);
+  transform: scale(1.03);
+}
+.game-btn:hover::after {
+  opacity: 1;
+}
+.game-btn:active {
+  transform: scale(0.97);
+}
+
+.game-btn-primary {
+  background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-secondary) 100%);
+  border: none;
+  font-weight: 700;
+  color: #fff;
+  box-shadow: var(--glow-accent);
+}
+.game-btn-primary:hover {
+  color: #fff;
+  transform: scale(1.04);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+}
+
+/* Status Bars */
+.progress-bar-container {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 9999px;
+  height: 10px;
+  overflow: hidden;
+  position: relative;
+}
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--accent-color), var(--accent-secondary));
+  box-shadow: var(--glow-accent);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 5px var(--accent-color)); }
+  50% { filter: drop-shadow(0 0 15px var(--accent-color)); }
+}
+
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+.float-animation {
+  animation: float 4s ease-in-out infinite;
+}
+
+.pulse-glow-animation {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.shake-animation {
+  animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* Tech grid overlay background for Hub & Skilltree */
+.grid-overlay {
+  background-image: 
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+.blink-animation {
+  animation: blink 1s infinite;
+}
