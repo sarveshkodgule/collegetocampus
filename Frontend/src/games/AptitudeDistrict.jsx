@@ -891,7 +891,6 @@ export default function AptitudeDistrict() {
         }
         
         // Neon burst particles
-        const pScaleX = vanishingPoint.x + (player.lane * 0.7 / 1.35) * fov;
         for (let i = 0; i < 15; i++) {
           particles.push({
             x: pScaleX + (Math.random() * 40 - 20),
