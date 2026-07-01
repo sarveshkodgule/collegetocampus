@@ -4,7 +4,7 @@ import Header from './components/Header';
 import Hub from './components/Hub';
 import LandingPage from './components/LandingPage';
 import ProfilePage from './components/ProfilePage';
-import CareerTower from './games/CareerTower';
+import LifeArchitect from './games/LifeArchitect';
 import SqlHeist from './games/SqlHeist';
 import AlgorithmArena from './games/AlgorithmArena';
 import AptitudeDistrict from './games/AptitudeDistrict';
@@ -44,7 +44,7 @@ export default function App() {
       case 'profile':
         return <ProfilePage />;
       case 'career-tower':
-        return <CareerTower />;
+        return <LifeArchitect />;
       case 'sql-heist':
         return <SqlHeist />;
       case 'algo-arena':

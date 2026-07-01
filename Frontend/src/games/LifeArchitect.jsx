@@ -315,10 +315,11 @@ const COMPANY_QUESTS = [
   { id: 'q_clean', title: 'Wrangle Analytics Dataset', comp: 'Cyberdyne', sector: 'labs', desc: 'Clean noise patterns from model data tables using Pandas.', reqs: ['pandas_numpy'], stats: { dsa: 15, depth: 12 }, rewards: { coins: 70, xp: 90, rep: 18 } }
 ];
 
-export default function CareerTower() {
+export default function LifeArchitect() {
   const { 
     classType, setClass, coins, addCoins, xp, addXP, 
-    unlockedSkills, unlockSkill, reputation, setGame 
+    unlockedSkills, unlockSkill, reputation, setGame,
+    hearts, loseHeart, restoreHearts
   } = usePlayerStore();
 
   // Navigation and view states
@@ -555,7 +556,19 @@ export default function CareerTower() {
             // Failure
             gameAudio.playQuestFailure();
             setQuestOutcome('failure');
-            setQuestLogs(prevLogs => [...prevLogs, `[CRASH] Test assertion failed. Server terminated connection gateway.`]);
+            
+            // Deduct a heart
+            loseHeart();
+            
+            // Deduct XP penalty (capped so XP doesn't drop below 0)
+            const xpLoss = Math.min(20, xp);
+            addXP(-xpLoss);
+            
+            setQuestLogs(prevLogs => [
+              ...prevLogs, 
+              `[CRASH] Test assertion failed. Server terminated connection gateway.`,
+              `[PENALTY] Firewall detected breach. Lost 1 Heart | Lost -${xpLoss} XP`
+            ]);
           }
           return 100;
         }
@@ -570,6 +583,16 @@ export default function CareerTower() {
         return prev + 10;
       });
     }, 250);
+  };
+
+  const handleReboot = () => {
+    if (coins < 50) {
+      alert("⚠️ Insufficient Placement Coins to reboot the firewall! Unlocking skills or freelance tasks requires coins.");
+      return;
+    }
+    addCoins(-50);
+    restoreHearts();
+    gameAudio.playQuestSuccess();
   };
 
   // Change simulated job market state
@@ -1058,114 +1081,146 @@ export default function CareerTower() {
               {/* Tab 2: Quest logs simulation and contract board */}
               {activeTab === 'quests' && (
                 <div style={styles.questsContainer}>
-                  {/* Overlay Quest Simulator HUD */}
-                  {activeQuest && (
-                    <div style={styles.simulatorOverlay}>
-                      <div style={styles.simCard} className="game-card">
-                        <div style={styles.simHeader}>
-                          <h4 style={{ color: 'var(--accent-color)' }}>CONTRACT: {activeQuest.title}</h4>
-                          <span style={styles.simPercentage}>{questProgress}%</span>
-                        </div>
-                        
-                        {/* Simulation Logging Console */}
-                        <div style={styles.simLogs}>
-                          {questLogs.map((log, idx) => (
-                            <div key={idx} style={styles.simLogLine}>{log}</div>
-                          ))}
-                        </div>
-
-                        {/* Interactive loading bar */}
-                        <div style={styles.simProgressTrack}>
-                          <div style={{ ...styles.simProgressFill, width: `${questProgress}%` }}></div>
-                        </div>
-
-                        {/* Simulator outcome display */}
-                        {questOutcome && (
-                          <div style={styles.simOutcomeFooter}>
-                            <h3 style={{ color: questOutcome === 'success' ? 'var(--success-color)' : 'var(--danger-color)' }}>
-                              {questOutcome === 'success' ? '🎉 MISSION COMPLETED!' : '💥 CONNECTION TERMINATED!'}
-                            </h3>
-                            <button 
-                              className="game-btn game-btn-primary" 
-                              onClick={() => {
-                                setActiveQuest(null);
-                                gameAudio.playClick();
-                              }}
-                            >
-                              DISMISS CONSOLE
-                            </button>
-                          </div>
-                        )}
-                      </div>
+                  {hearts <= 0 ? (
+                    <div style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '3rem 2rem',
+                      gap: '1.2rem',
+                      backgroundColor: 'rgba(239, 68, 68, 0.03)',
+                      border: '2px solid rgba(239, 68, 68, 0.2)',
+                      borderRadius: '12px',
+                      marginTop: '2rem'
+                    }} className="game-card">
+                      <ShieldAlert size={48} color="var(--danger-color)" className="float-animation" />
+                      <h3 style={{ color: 'var(--danger-color)', fontFamily: 'var(--font-title)', letterSpacing: '1px' }}>
+                        ⚠️ FIREWALL LOCKOUT ACTIVE
+                      </h3>
+                      <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textAlign: 'center', maxWidth: '400px' }}>
+                        Your terminal has triggered multiple code crashes. The local sector firewall has locked you out. Restore systems to continue contracting.
+                      </p>
+                      <button 
+                        className="game-btn game-btn-primary"
+                        style={{ padding: '0.6rem 1.5rem', marginTop: '1rem', backgroundColor: 'var(--danger-color)', boxShadow: '0 0 10px rgba(239, 68, 68, 0.3)', borderColor: 'var(--danger-color)' }}
+                        onClick={handleReboot}
+                      >
+                        Reboot System (Cost: 50 Coins)
+                      </button>
                     </div>
-                  )}
-
-                  {/* Sector Quest board header */}
-                  <div style={styles.questsHeader}>
-                    <h3 style={styles.boardTitle}>CONTRACT BOARD - {selectedSector.toUpperCase()} DISTRICT</h3>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                      Complete active contracts to earn Rep, Coins, and XP. Stats boost success probability rate.
-                    </p>
-                  </div>
-
-                  {/* Lists of Quests */}
-                  <div style={styles.questsGrid}>
-                    {COMPANY_QUESTS.filter(q => q.sector === selectedSector).map((quest) => {
-                      const isLocked = quest.reqs.some(req => !unlockedSkills.includes(req));
-                      
-                      // Calculate Success chance
-                      const statKeys = Object.keys(quest.stats);
-                      let successChance = 100;
-                      if (statKeys.length > 0) {
-                        let sumRating = 0;
-                        statKeys.forEach(key => {
-                          const playerVal = stats[key] || 10;
-                          const reqVal = quest.stats[key];
-                          sumRating += (playerVal / reqVal);
-                        });
-                        successChance = Math.min(99, Math.max(10, Math.floor((sumRating / statKeys.length) * 75)));
-                      }
-
-                      return (
-                        <div key={quest.id} style={styles.questCard} className="game-card">
-                          <div style={styles.questTop}>
-                            <div>
-                              <h4 style={styles.questTitle}>{quest.title}</h4>
-                              <span style={styles.compBadge}>{quest.comp}</span>
-                            </div>
-                            <div style={styles.chanceBadge} className={successChance > 70 ? 'glow-green' : 'glow-yellow'}>
-                              {successChance}% Win Rate
-                            </div>
-                          </div>
-                          
-                          <p style={styles.questDesc}>{quest.desc}</p>
-                          
-                          {/* Prereq skills required */}
-                          <div style={styles.questSkillsReq}>
-                            <strong>Requires:</strong> {quest.reqs.map(req => SKILL_NODES.find(n => n.id === req)?.label || req).join(', ')}
-                          </div>
-
-                          <div style={styles.questFooter}>
-                            {/* Payout Rewards */}
-                            <div style={styles.rewardsRow}>
-                              <div style={styles.miniReward}><Coins size={12} color="var(--warning-color)" /> +{quest.rewards.coins}</div>
-                              <div style={styles.miniReward}><Sparkles size={12} color="#A855F7" /> +{quest.rewards.xp} XP</div>
-                              <div style={styles.miniReward}><Star size={12} color="var(--accent-secondary)" /> +{quest.rewards.rep} Rep</div>
+                  ) : (
+                    <>
+                      {/* Overlay Quest Simulator HUD */}
+                      {activeQuest && (
+                        <div style={styles.simulatorOverlay}>
+                          <div style={styles.simCard} className="game-card">
+                            <div style={styles.simHeader}>
+                              <h4 style={{ color: 'var(--accent-color)' }}>CONTRACT: {activeQuest.title}</h4>
+                              <span style={styles.simPercentage}>{questProgress}%</span>
                             </div>
                             
-                            <button 
-                              className="game-btn game-btn-primary" 
-                              style={{ padding: '0.4rem 1rem', fontSize: '0.75rem' }}
-                              disabled={isLocked}
-                              onClick={() => handleStartQuest(quest)}
-                            >
-                              {isLocked ? '🔒 Prerequisites Locked' : 'Launch Simulation'}
-                            </button>
+                            {/* Simulation Logging Console */}
+                            <div style={styles.simLogs}>
+                              {questLogs.map((log, idx) => (
+                                <div key={idx} style={styles.simLogLine}>{log}</div>
+                              ))}
+                            </div>
+
+                            {/* Interactive loading bar */}
+                            <div style={styles.simProgressTrack}>
+                              <div style={{ ...styles.simProgressFill, width: `${questProgress}%` }}></div>
+                            </div>
+
+                            {/* Simulator outcome display */}
+                            {questOutcome && (
+                              <div style={styles.simOutcomeFooter}>
+                                <h3 style={{ color: questOutcome === 'success' ? 'var(--success-color)' : 'var(--danger-color)' }}>
+                                  {questOutcome === 'success' ? '🎉 MISSION COMPLETED!' : '💥 CONNECTION TERMINATED!'}
+                                </h3>
+                                <button 
+                                  className="game-btn game-btn-primary" 
+                                  onClick={() => {
+                                    setActiveQuest(null);
+                                    gameAudio.playClick();
+                                  }}
+                                >
+                                  DISMISS CONSOLE
+                                </button>
+                              </div>
+                            )}
                           </div>
                         </div>
-                      );
-                    })}
-                  </div>
+                      )}
+
+                      {/* Sector Quest board header */}
+                      <div style={styles.questsHeader}>
+                        <h3 style={styles.boardTitle}>CONTRACT BOARD - {selectedSector.toUpperCase()} DISTRICT</h3>
+                        <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                          Complete active contracts to earn Rep, Coins, and XP. Stats boost success probability rate.
+                        </p>
+                      </div>
+
+                      {/* Lists of Quests */}
+                      <div style={styles.questsGrid}>
+                        {COMPANY_QUESTS.filter(q => q.sector === selectedSector).map((quest) => {
+                          const isLocked = quest.reqs.some(req => !unlockedSkills.includes(req));
+                          
+                          // Calculate Success chance
+                          const statKeys = Object.keys(quest.stats);
+                          let successChance = 100;
+                          if (statKeys.length > 0) {
+                            let sumRating = 0;
+                            statKeys.forEach(key => {
+                              const playerVal = stats[key] || 10;
+                              const reqVal = quest.stats[key];
+                              sumRating += (playerVal / reqVal);
+                            });
+                            successChance = Math.min(99, Math.max(10, Math.floor((sumRating / statKeys.length) * 75)));
+                          }
+
+                          return (
+                            <div key={quest.id} style={styles.questCard} className="game-card">
+                              <div style={styles.questTop}>
+                                <div>
+                                  <h4 style={styles.questTitle}>{quest.title}</h4>
+                                  <span style={styles.compBadge}>{quest.comp}</span>
+                                </div>
+                                <div style={styles.chanceBadge} className={successChance > 70 ? 'glow-green' : 'glow-yellow'}>
+                                  {successChance}% Win Rate
+                                </div>
+                              </div>
+                              
+                              <p style={styles.questDesc}>{quest.desc}</p>
+                              
+                              {/* Prereq skills required */}
+                              <div style={styles.questSkillsReq}>
+                                <strong>Requires:</strong> {quest.reqs.map(req => SKILL_NODES.find(n => n.id === req)?.label || req).join(', ')}
+                              </div>
+
+                              <div style={styles.questFooter}>
+                                {/* Payout Rewards */}
+                                <div style={styles.rewardsRow}>
+                                  <div style={styles.miniReward}><Coins size={12} color="var(--warning-color)" /> +{quest.rewards.coins}</div>
+                                  <div style={styles.miniReward}><Sparkles size={12} color="#A855F7" /> +{quest.rewards.xp} XP</div>
+                                  <div style={styles.miniReward}><Star size={12} color="var(--accent-secondary)" /> +{quest.rewards.rep} Rep</div>
+                                </div>
+                                
+                                <button 
+                                  className="game-btn game-btn-primary" 
+                                  style={{ padding: '0.4rem 1rem', fontSize: '0.75rem' }}
+                                  disabled={isLocked}
+                                  onClick={() => handleStartQuest(quest)}
+                                >
+                                  {isLocked ? '🔒 Prerequisites Locked' : 'Launch Simulation'}
+                                </button>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
 
