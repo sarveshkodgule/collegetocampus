@@ -219,6 +219,14 @@ const ROADMAP = [
   { id: 'kafka_queue', title: 'Kafka Decoupled Message broker', desc: 'Decouple checkout events from main database transactions.', difficulty: 130, mrr: 650, bugs: 24, icon: Cpu }
 ];
 
+// Newsfeed & Event Alerts
+const NEWS_EVENTS = [
+  { week: 3, title: 'Server Melt Down!', desc: 'Relational queries locked up under load. Lost 100 users, bugs +15.', type: 'danger' },
+  { week: 6, title: 'Reddit Upvote Surge!', desc: 'Growth hacker post went viral. Hype +45%, users +150!', type: 'success' },
+  { week: 9, title: 'Security Audit Alert', desc: 'Critical query security breach. Lost $300 to penalty patches.', type: 'danger' },
+  { week: 12, title: 'VC Venture Bubble', desc: 'Market interest spikes. Tech hype +30%.', type: 'warning' }
+];
+
 // CTO Technical Boardroom Interview questions
 const VC_ROUNDS = [
   { 
