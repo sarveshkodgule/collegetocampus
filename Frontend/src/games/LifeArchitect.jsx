@@ -7,6 +7,8 @@ import {
   Maximize2, Minimize2, ZoomIn, ZoomOut, Zap, Shield
 } from 'lucide-react';
 
+import { jsPDF } from 'jspdf';
+
 // Chiptune Retro Audio Engine for Life Architect RPG
 const gameAudio = {
   ctx: null,
@@ -319,12 +321,13 @@ export default function LifeArchitect() {
   const { 
     classType, setClass, coins, addCoins, xp, addXP, 
     unlockedSkills, unlockSkill, reputation, setGame,
-    hearts, loseHeart, restoreHearts
+    hearts, loseHeart, restoreHearts, rank
   } = usePlayerStore();
 
   // Navigation and view states
   const [activeTab, setActiveTab] = useState('skills'); // 'skills', 'quests', 'market'
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [showGuide, setShowGuide] = useState(true);
 
   // RPG stats upgraded with Focus Points
   const [stats, setStats] = useState(() => {
@@ -595,6 +598,62 @@ export default function LifeArchitect() {
     gameAudio.playQuestSuccess();
   };
 
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(20);
+    doc.setTextColor(30, 58, 138);
+    
+    doc.text("Career Tower: Life Architect Guide", 20, 20);
+    doc.setDrawColor(59, 130, 246);
+    doc.line(20, 25, 190, 25);
+    
+    const lines = [
+      "GAME CONCEPT & MECHANICS",
+      "Reimagines a developer's career roadmap as a giant Path of Exile-style constellation skill tree.",
+      "",
+      "SELECTING YOUR CLASS ARCHE-TYPE",
+      "* Frontend Mage: UI/UX & React. +2 starting Focus Points & +10 Velocity.",
+      "* Backend Guardian: DBs & APIs. +50 starting Coins & +10 Complexity Depth.",
+      "* AI Alchemist: Models & Numpy. +50 starting XP & +10 DSA Intelligence.",
+      "* UI/UX Rogue: Styling & Design. +50 starting Rep & +10 Synergy Charisma.",
+      "",
+      "GAMEPLAY LOOP",
+      "1. Complete contracts to earn Coins and XP.",
+      "2. Spend Focus Points and Coins to unlock constellation nodes.",
+      "3. Node upgrades directly boost your developer attributes.",
+      "4. Risk: Failing a contract simulation deducts 1 Heart and 20 XP.",
+      "5. Lockout: If hearts reach 0, spend 50 Coins to reboot your systems.",
+      "6. Job Market: Market shifts change node costs and quest rewards dynamically."
+    ];
+    
+    doc.setFont("Helvetica", "normal");
+    doc.setFontSize(11);
+    doc.setTextColor(51, 65, 85);
+    
+    let y = 35;
+    lines.forEach((line) => {
+      if (line === "") {
+        y += 6;
+        return;
+      }
+      if (line === line.toUpperCase() && !line.startsWith("*") && !line.startsWith("1")) {
+        doc.setFont("Helvetica", "bold");
+        doc.setTextColor(37, 99, 235);
+        y += 4;
+        doc.text(line, 20, y);
+        doc.setFont("Helvetica", "normal");
+        doc.setTextColor(51, 65, 85);
+        y += 6;
+      } else {
+        doc.text(line, 20, y);
+        y += 6;
+      }
+    });
+    
+    doc.save("life_architect_placement_guide.pdf");
+  };
+
   // Change simulated job market state
   const triggerMarketShift = () => {
     // Pick random event from MARKET_EVENTS
@@ -734,9 +793,18 @@ export default function LifeArchitect() {
             })}
           </div>
           
-          <button className="game-btn" style={{ marginTop: '1.5rem' }} onClick={() => setGame('hub')}>
-            Return to Metropolis
-          </button>
+          <div style={{ display: 'flex', gap: '10px', marginTop: '1.5rem', width: '100%', justifyContent: 'center' }}>
+            <button className="game-btn" onClick={() => setGame('hub')}>
+              Return to Metropolis
+            </button>
+            <button 
+              className="game-btn game-btn-primary" 
+              style={{ backgroundColor: '#A855F7', borderColor: '#A855F7', boxShadow: '0 0 10px rgba(168, 85, 247, 0.4)' }}
+              onClick={handleDownloadPDF}
+            >
+              📄 Download PDF Guide
+            </button>
+          </div>
         </div>
       ) : (
         /* 2. CORE GAME VIEW */
@@ -749,9 +817,20 @@ export default function LifeArchitect() {
                 <div style={styles.classBadge}>
                   <span>{RPG_CLASSES.find(c => c.id === classType)?.badge || '💼 Dev'}</span>
                 </div>
-                <button style={styles.audioToggle} onClick={toggleSound}>
-                  {soundEnabled ? <Volume2 size={16} color="var(--accent-secondary)" /> : <VolumeX size={16} color="var(--danger-color)" />}
-                </button>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <button 
+                    style={{ ...styles.audioToggle, color: 'var(--accent-color)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '4px' }}
+                    onClick={() => {
+                      gameAudio.playClick();
+                      setShowGuide(true);
+                    }}
+                  >
+                    <HelpCircle size={14} /> Guide
+                  </button>
+                  <button style={styles.audioToggle} onClick={toggleSound}>
+                    {soundEnabled ? <Volume2 size={16} color="var(--accent-secondary)" /> : <VolumeX size={16} color="var(--danger-color)" />}
+                  </button>
+                </div>
               </div>
 
               {/* Character Details */}
@@ -1279,6 +1358,111 @@ export default function LifeArchitect() {
                 </div>
               )}
 
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 3. STUDENT TUTORIAL GUIDE MODAL */}
+      {showGuide && (
+        <div style={{
+          position: 'absolute',
+          top: '0',
+          left: '0',
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(3, 5, 12, 0.96)',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '2rem'
+        }}>
+          <div style={{
+            maxWidth: '680px',
+            width: '100%',
+            backgroundColor: 'rgba(10, 14, 30, 0.98)',
+            border: '2px solid rgba(59, 130, 246, 0.35)',
+            boxShadow: 'var(--glow-accent)',
+            borderRadius: '16px',
+            padding: '2rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1.2rem',
+            maxHeight: '90%',
+            overflowY: 'auto'
+          }} className="game-card">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.8rem' }}>
+              <Compass size={28} color="var(--accent-color)" className="float-animation" />
+              <h3 style={{ fontFamily: 'var(--font-title)', fontSize: '1.25rem', letterSpacing: '1px', color: '#FFF' }}>
+                🚀 PLACEMENT QUEST: LIFE ARCHITECT GUIDE
+              </h3>
+            </div>
+
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: '1.5' }}>
+              Welcome Student! Your career path is represented as a giant interactive RPG skill tree. Unlocking nodes helps you build core stats, complete company quests, and secure high-paying placements!
+            </p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                <span style={{ fontSize: '1.2rem' }}>1️⃣</span>
+                <div>
+                  <h4 style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--accent-secondary)' }}>Choose your Path (Class)</h4>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Select Frontend Mage, Backend Guardian, AI Alchemist, or UI/UX Rogue to unlock your starting skillset.</p>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                <span style={{ fontSize: '1.2rem' }}>2️⃣</span>
+                <div>
+                  <h4 style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--accent-secondary)' }}>Learn Placement Skills (Skill Constellation)</h4>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Invest your Focus Points (FP) and Coins to unlock constellation nodes. Unlocking skills directly boosts your tech stats.</p>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                <span style={{ fontSize: '1.2rem' }}>3️⃣</span>
+                <div>
+                  <h4 style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--accent-secondary)' }}>Fulfill Corporate Contracts (Quest Board)</h4>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Travel to sectors like GigaCorp City, Startup Alley, or R&D labs to accept coding contracts. Completing quests yields Coins and XP.</p>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                <span style={{ fontSize: '1.2rem' }}>4️⃣</span>
+                <div>
+                  <h4 style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--accent-secondary)' }}>Manage System Firewall (Hearts & XP penalty)</h4>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Failing a quest simulation deducts 1 Heart and 20 XP! If your hearts drop to 0, you trigger a lockout and must spend 50 Coins to reboot.</p>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                <span style={{ fontSize: '1.2rem' }}>5️⃣</span>
+                <div>
+                  <h4 style={{ fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--accent-secondary)' }}>Track Job Market Shifts (Market Report)</h4>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Keep an eye on active market event shifts. Trends like "AI Boom" will temporarily reduce AI node costs and boost quest payouts!</p>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px', marginTop: '0.8rem', width: '100%' }}>
+              <button 
+                className="game-btn" 
+                style={{ flex: '1', padding: '0.75rem', fontSize: '0.85rem', fontWeight: '700', borderColor: 'var(--accent-color)', color: 'var(--accent-color)' }}
+                onClick={handleDownloadPDF}
+              >
+                📄 Download PDF Guide
+              </button>
+              <button 
+                className="game-btn game-btn-primary" 
+                style={{ flex: '2', padding: '0.75rem', fontSize: '0.85rem', fontWeight: '700' }}
+                onClick={() => {
+                  gameAudio.playClick();
+                  setShowGuide(false);
+                }}
+              >
+                INITIALIZE MATRIX (LET'S PLAY)
+              </button>
             </div>
           </div>
         </div>
