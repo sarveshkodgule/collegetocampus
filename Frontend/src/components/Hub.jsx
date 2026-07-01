@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 
 import { jsPDF } from 'jspdf';
+import { playHubBgm, stopHubBgm, playCardHover } from '../games/utils/audio';
 
 const BUILDINGS = [
   {
@@ -264,6 +265,12 @@ export default function Hub() {
     doc.save(filename);
   };
 
+  useEffect(() => {
+    // Play cyberpunk city ambient loop
+    playHubBgm();
+    return () => stopHubBgm();
+  }, []);
+
   return (
     <div style={styles.container} className="grid-overlay">
       {/* City Title Header */}
@@ -283,6 +290,7 @@ export default function Hub() {
               className="game-card" 
               style={{ ...styles.card, '--accent-color': b.color }}
               onClick={() => setGame(b.id)}
+              onMouseEnter={playCardHover}
             >
               {/* Card Header */}
               <div style={styles.cardHeader}>

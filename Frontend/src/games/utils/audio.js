@@ -342,3 +342,83 @@ export function stopCyberBgm() {
     cyberBgmInterval = null;
   }
 }
+
+// 11. Soft Cyberpunk City Ambient BGM for Metropolis Hub
+let hubBgmInterval = null;
+export function playHubBgm() {
+  initAudio();
+  if (!audioCtx || hubBgmInterval) return;
+
+  let step = 0;
+  // Dreamy, futuristic space ambient chords (Cmaj7 -> Em7 -> Fmaj7 -> G6)
+  const progression = [
+    [130.81, 196.00, 261.63, 329.63], // Cmaj7 (C3, G3, C4, E4)
+    [164.81, 246.94, 329.63, 392.00], // Em7 (E3, B3, E4, G4)
+    [174.61, 261.63, 349.23, 440.00], // Fmaj7 (F3, C4, F4, A4)
+    [196.00, 293.66, 392.00, 493.88]  // G6 (G3, D4, G4, B4)
+  ];
+
+  hubBgmInterval = setInterval(() => {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume();
+      return;
+    }
+    
+    const time = audioCtx.currentTime;
+    const currentChord = progression[step % progression.length];
+
+    // Slow, soft, ambient pad swells (lowpass filtered triangle/sine waves)
+    currentChord.forEach((freq, idx) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+
+      osc.type = idx === 0 ? 'triangle' : 'sine';
+      osc.frequency.setValueAtTime(freq, time);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(350, time); // warm, dark filter cutoff
+
+      // Very soft volume, slow attack & decay envelope
+      gain.gain.setValueAtTime(0, time);
+      gain.gain.linearRampToValueAtTime(0.04, time + 0.8); // soft swell
+      gain.gain.exponentialRampToValueAtTime(0.001, time + 2.8); // long tail decay
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(time);
+      osc.stop(time + 2.9);
+    });
+
+    step++;
+  }, 3000); // Trigger every 3 seconds for a slow ambient swell
+}
+
+export function stopHubBgm() {
+  if (hubBgmInterval) {
+    clearInterval(hubBgmInterval);
+    hubBgmInterval = null;
+  }
+}
+
+// 12. Hover card alert beep
+export function playCardHover() {
+  initAudio();
+  if (!audioCtx) return;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(800 + Math.random() * 200, audioCtx.currentTime);
+  
+  gain.gain.setValueAtTime(0.012, audioCtx.currentTime);
+  gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+  
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  
+  osc.start();
+  osc.stop(audioCtx.currentTime + 0.05);
+}
