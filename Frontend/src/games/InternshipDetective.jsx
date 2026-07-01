@@ -272,6 +272,7 @@ export default function InternshipDetective() {
   const [collectedClues, setCollectedClues] = useState([]);
   const [selectedPinboardClues, setSelectedPinboardClues] = useState([]);
   const [diagnosedCorrectly, setDiagnosedCorrectly] = useState(null);
+  const [inspectedClue, setInspectedClue] = useState(null);
 
   // Sound triggers
   useEffect(() => {
@@ -320,6 +321,14 @@ export default function InternshipDetective() {
     setNehaAlignment(50);
     setGameState('dialogue');
     startupAudioCheck();
+  };
+
+  const handleDevCheatSolve = () => {
+    detectiveAudio.playSuccess();
+    setDiagnosedCorrectly(true);
+    setRohanTrust(100);
+    setNehaAlignment(100);
+    setGameState('ending');
   };
 
   const startupAudioCheck = () => {
@@ -522,9 +531,17 @@ export default function InternshipDetective() {
           {/* Header */}
           <div style={styles.vnHeader}>
             <span style={styles.badgeLabel}>CASE INCIDENT: DIALOGUE DIARY</span>
-            <div style={styles.metricsBar}>
-              <span>💻 Rohan Trust: {rohanTrust}%</span>
-              <span>🤝 Neha Alignment: {nehaAlignment}%</span>
+            <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+              <button 
+                style={{ backgroundColor: '#EF4444', border: 'none', color: '#FFF', padding: '3px 8px', borderRadius: '4px', fontSize: '0.65rem', cursor: 'pointer', fontWeight: 'bold' }}
+                onClick={handleDevCheatSolve}
+              >
+                ⚡ Dev Cheat: Solve Case
+              </button>
+              <div style={styles.metricsBar}>
+                <span>💻 Rohan Trust: {rohanTrust}%</span>
+                <span>🤝 Neha Alignment: {nehaAlignment}%</span>
+              </div>
             </div>
           </div>
 
@@ -540,7 +557,9 @@ export default function InternshipDetective() {
             </div>
 
             <div style={styles.speechBox}>
-              <p>"{typewriterText}"</p>
+              <p style={{ margin: 0, fontSize: '0.9rem', color: '#FFF', lineHeight: '1.6', wordBreak: 'break-word' }}>
+                "{typewriterText}"
+              </p>
             </div>
 
             <button className="game-btn game-btn-primary" style={styles.nextBtn} onClick={handleAdvanceDialogue}>
@@ -555,15 +574,47 @@ export default function InternshipDetective() {
         <div style={styles.pinboardPanel} className="game-card">
           <div style={styles.vnHeader}>
             <span>📌 DEVOPS INVESTIGATION BOARD</span>
-            <div style={styles.metricsBar}>
-              <span>Trust: {rohanTrust}%</span>
-              <span>Alignment: {nehaAlignment}%</span>
+            <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+              <button 
+                style={{ backgroundColor: '#EF4444', border: 'none', color: '#FFF', padding: '3px 8px', borderRadius: '4px', fontSize: '0.65rem', cursor: 'pointer', fontWeight: 'bold' }}
+                onClick={handleDevCheatSolve}
+              >
+                ⚡ Dev Cheat: Solve Case
+              </button>
+              <div style={styles.metricsBar}>
+                <span>Trust: {rohanTrust}%</span>
+                <span>Alignment: {nehaAlignment}%</span>
+              </div>
             </div>
           </div>
 
           <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
             Inspect log cards pinned below. Link exactly <strong>two related SDE clues</strong> together to unlock the incident diagnosis.
           </p>
+
+          {/* Inspected Clue Detail Window Overlay */}
+          {inspectedClue && (
+            <div style={{
+              backgroundColor: 'rgba(0,0,0,0.45)',
+              border: '1px solid var(--accent-color)',
+              padding: '1rem',
+              borderRadius: '8px',
+              color: '#FFF'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '6px' }}>
+                <strong style={{ color: 'var(--accent-color)', fontSize: '0.85rem' }}>🔍 INSPECTING CLUE: {inspectedClue.name}</strong>
+                <button 
+                  style={{ background: 'none', border: 'none', color: '#FFF', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 'bold' }}
+                  onClick={() => setInspectedClue(null)}
+                >
+                  [CLOSE X]
+                </button>
+              </div>
+              <p style={{ fontSize: '0.85rem', color: '#FFF', marginTop: '8px', fontFamily: 'var(--font-mono)', lineHeight: '1.5' }}>
+                {inspectedClue.desc}
+              </p>
+            </div>
+          )}
 
           {/* Corkboard Grid layout */}
           <div style={styles.corkBoardGrid}>
@@ -580,10 +631,28 @@ export default function InternshipDetective() {
                   onClick={() => handleToggleClue(clue.id)}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <strong>{clue.name}</strong>
-                    <Search size={14} color="var(--text-secondary)" />
+                    <strong style={{ color: '#FFF' }}>{clue.name}</strong>
+                    <button 
+                      style={{ 
+                        backgroundColor: 'rgba(255,255,255,0.06)', 
+                        border: '1px solid rgba(255,255,255,0.1)', 
+                        color: 'var(--accent-color)', 
+                        fontSize: '0.65rem', 
+                        padding: '2px 6px', 
+                        borderRadius: '4px', 
+                        cursor: 'pointer' 
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setInspectedClue(clue);
+                      }}
+                    >
+                      🔍 Inspect Log
+                    </button>
                   </div>
-                  <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '8px' }}>{clue.desc}</p>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '8px' }}>
+                    {clue.desc.length > 50 ? `${clue.desc.substring(0, 48)}...` : clue.desc}
+                  </p>
                 </div>
               );
             })}
