@@ -291,6 +291,23 @@ export default function InternshipDetective() {
     const currentScript = activeCase.transcripts[transcriptIndex];
     if (!currentScript) return;
 
+    // Trigger dialogue voice synthesis read
+    if (soundEnabled) {
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(currentScript.text);
+        if (currentScript.speaker.includes('Rohan')) {
+          utterance.pitch = 0.85; // Low-pitch senior developer voice
+        } else if (currentScript.speaker.includes('Neha')) {
+          utterance.pitch = 1.15; // High-pitch Tech Lead voice
+        } else {
+          utterance.pitch = 1.0;
+        }
+        utterance.rate = 1.05;
+        window.speechSynthesis.speak(utterance);
+      } catch(e) {}
+    }
+
     let charIdx = 0;
     setTypewriterText('');
     
@@ -312,6 +329,7 @@ export default function InternshipDetective() {
 
   // Select a Case Level to begin
   const handleSelectCase = (caseFile) => {
+    try { window.speechSynthesis.cancel(); } catch(e) {}
     setActiveCase(caseFile);
     setTranscriptIndex(0);
     setCollectedClues([]);
@@ -324,6 +342,7 @@ export default function InternshipDetective() {
   };
 
   const handleDevCheatSolve = () => {
+    try { window.speechSynthesis.cancel(); } catch(e) {}
     detectiveAudio.playSuccess();
     setDiagnosedCorrectly(true);
     setRohanTrust(100);
@@ -340,6 +359,7 @@ export default function InternshipDetective() {
 
   // Skip or advance dialogue transcripts
   const handleAdvanceDialogue = () => {
+    try { window.speechSynthesis.cancel(); } catch(e) {}
     detectiveAudio.playClick();
     if (transcriptIndex + 1 < activeCase.transcripts.length) {
       setTranscriptIndex(prev => prev + 1);

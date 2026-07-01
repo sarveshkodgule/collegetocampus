@@ -312,6 +312,39 @@ export default function StartupGarage() {
     return () => startupAudio.stopBgm();
   }, [soundEnabled, gameState]);
 
+  // Alert voice synthesis readouts
+  useEffect(() => {
+    if (activeAlert && soundEnabled) {
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(`${activeAlert.title}. ${activeAlert.desc}`);
+        utterance.rate = 1.05;
+        window.speechSynthesis.speak(utterance);
+      } catch (e) {}
+    }
+  }, [activeAlert, soundEnabled]);
+
+  // Game state voice announcements
+  useEffect(() => {
+    if (soundEnabled) {
+      try {
+        if (gameState === 'victory') {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance("System Scaled Success! You scaled the architecture successfully and secured placement offers!");
+          window.speechSynthesis.speak(utterance);
+        } else if (gameState === 'bankruptcy') {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance("Critical System Overload. Server resources crashed.");
+          window.speechSynthesis.speak(utterance);
+        } else if (gameState === 'pitch') {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance("CTO Architecture Review in session.");
+          window.speechSynthesis.speak(utterance);
+        }
+      } catch(e) {}
+    }
+  }, [gameState, soundEnabled]);
+
   // Real-time ticking (employee tasks, coding progress, particle drifts)
   useEffect(() => {
     if (gameState !== 'office' && gameState !== 'pitch') return;

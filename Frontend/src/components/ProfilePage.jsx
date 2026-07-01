@@ -44,6 +44,35 @@ export default function ProfilePage() {
   const level = Math.floor(xp / 100) + 1;
   const xpNeededForNext = 100 - (xp % 100);
 
+  const playHoverSound = () => {
+    try {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      const ctx = new AudioContextClass();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(600 + Math.random() * 200, ctx.currentTime);
+      gain.gain.setValueAtTime(0.02, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.06);
+    } catch(e) {}
+  };
+
+  const handleSpeakProfile = () => {
+    try {
+      window.speechSynthesis.cancel();
+      const text = `Welcome back developer ${name}. You are a level ${level} ${classType || 'unspecialized programmer'}. You currently hold ${coins} placement coins and have unlocked ${unlockedSkills.length} career constellation skills.`;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.05;
+      window.speechSynthesis.speak(utterance);
+    } catch(e) {}
+  };
+
   return (
     <div style={styles.container} className="grid-overlay">
       <div style={styles.grid}>
@@ -52,6 +81,15 @@ export default function ProfilePage() {
           <div style={styles.avatarWrapper} className="float-animation">
             <span style={styles.avatar}>{avatar}</span>
           </div>
+
+          <button 
+            className="game-btn" 
+            style={{ padding: '4px 10px', fontSize: '0.7rem', marginBottom: '1rem', borderColor: 'var(--accent-color)', color: 'var(--accent-color)', backgroundColor: 'transparent' }}
+            onClick={handleSpeakProfile}
+            onMouseEnter={playHoverSound}
+          >
+            🔊 Speak Summary
+          </button>
           
           <h2 style={styles.hackerName}>{name}</h2>
           <div style={styles.rankBadge}>
@@ -60,15 +98,15 @@ export default function ProfilePage() {
           </div>
 
           <div style={styles.statsSummary}>
-            <div style={styles.sumBox}>
+            <div style={styles.sumBox} onMouseEnter={playHoverSound}>
               <span style={styles.sumVal}>{level}</span>
               <span style={styles.sumLabel}>LEVEL</span>
             </div>
-            <div style={styles.sumBox}>
+            <div style={styles.sumBox} onMouseEnter={playHoverSound}>
               <span style={styles.sumVal}>{coins}</span>
               <span style={styles.sumLabel}>COINS</span>
             </div>
-            <div style={styles.sumBox}>
+            <div style={styles.sumBox} onMouseEnter={playHoverSound}>
               <span style={{ ...styles.sumVal, color: '#FF5722' }}>{streak}d</span>
               <span style={styles.sumLabel}>STREAK</span>
             </div>
@@ -142,6 +180,7 @@ export default function ProfilePage() {
                       boxShadow: isUnlocked ? `0 0 10px rgba(${hexToRgb(ach.color)}, 0.2)` : 'none'
                     }}
                     className="game-card"
+                    onMouseEnter={playHoverSound}
                   >
                     <div style={{ ...styles.badgeIconBg, backgroundColor: isUnlocked ? `rgba(${hexToRgb(ach.color)}, 0.1)` : 'rgba(0,0,0,0.2)' }}>
                       <AchIcon size={24} color={isUnlocked ? ach.color : '#4B5563'} />
