@@ -100,120 +100,147 @@ export default function Hub() {
     
     switch(gameId) {
       case 'career-tower':
-        title = "Career Tower: Life Architect";
+        title = "Career Tower: Life Architect Player Manual";
         lines = [
-          "GAME CONCEPT & MECHANICS",
+          "GAME CONCEPT & LEVELING SYSTEM",
           "Reimagines a developer's career roadmap as a giant constellation skill tree.",
+          "Players select a Starting Class, complete contracts, earn gold/XP, and",
+          "spend Focus Points to light up skill stars. Upgrading nodes directly improves",
+          "your placement capability stats.",
           "",
           "SELECTING YOUR CLASS ARCHE-TYPE",
-          "* Frontend Mage: UI/UX & React. +2 starting Focus Points & +10 Velocity.",
-          "* Backend Guardian: DBs & APIs. +50 starting Coins & +10 Complexity Depth.",
-          "* AI Alchemist: Models & Numpy. +50 starting XP & +10 DSA Intelligence.",
-          "* UI/UX Rogue: Styling & Design. +50 starting Rep & +10 Synergy Charisma.",
+          "* Frontend Mage: UI/UX & React wizardry. Starts with +2 Focus Points,",
+          "  +10 Velocity (reduces cooldown times by 15%).",
+          "* Backend Guardian: Database & API wall. Starts with +50 Coins and",
+          "  +10 Complexity Depth (reduces query latency costs by 15%).",
+          "* AI Alchemist: Neural networks & model tuner. Starts with +50 XP and",
+          "  +10 DSA Intelligence (deals 15% extra damage in the DSA Arena).",
+          "* UI/UX Rogue: Styling & Design master. Starts with +50 Reputation and",
+          "  +10 Synergy Charisma (boosts trust gains in visual novel stories by 15%).",
           "",
-          "GAMEPLAY LOOP",
-          "1. Complete contracts to earn Coins and XP.",
-          "2. Spend Focus Points and Coins to unlock constellation nodes.",
-          "3. Node upgrades directly boost your developer attributes.",
-          "4. Risk: Failing a contract simulation deducts 1 Heart and 20 XP.",
-          "5. Lockout: If hearts reach 0, spend 50 Coins to reboot your systems.",
-          "6. Job Market: Market shifts change node costs and quest rewards dynamically."
+          "THE STRATEGY PLAYBOOK",
+          "1. Contracts Board: Accept freelance gigs from the metropolis lobby. Complete",
+          "   coding tasks under pressure to build currency reserves.",
+          "2. Constellation Nodes: Unlocking nodes awards stat gains. Balance your build",
+          "   between UI, databases, and algorithms to qualify for top-tier jobs.",
+          "3. Risks & Outages: Failing a contract task costs 1 Heart. If hearts hit 0,",
+          "   your system locks out. Spend 50 coins in the profile center to reboot.",
+          "4. Market Swings: Career markets shift dynamically. Node costs and quest rewards",
+          "   fluctuate based on sector demand."
         ];
         break;
       case 'sql-heist':
-        title = "Data Bank: SQL Heist";
+        title = "Data Bank: SQL Heist Player Manual";
         lines = [
-          "GAME CONCEPT & MECHANICS",
-          "Hack Relational Database terminals inside a high-security vault.",
-          "Formulate query statements to track system intruders and recover files.",
+          "MISSION OBJECTIVE",
+          "Hack relational database terminals inside a high-security vault.",
+          "Inspect table schemas, formulate SQL statements, track database",
+          "intruders, and recover security files.",
           "",
-          "SQL CHEAT SHEET FOR STUDENTS",
-          "* SELECT / FROM: Retrieve columns from a target table.",
-          "* WHERE: Filter records (e.g. status = 'active').",
-          "* JOIN / ON: Combine rows from two or more tables based on a related column.",
-          "* GROUP BY / HAVING: Group results and apply filter aggregates.",
-          "* LIMIT: Restrict output to the top N rows.",
+          "STUDENT SQL CHEAT SHEET",
+          "* SELECT: Speficies target columns to retrieve.",
+          "* WHERE: Filters rows matching criteria (e.g. status = 'OFFLINE').",
+          "* JOIN / ON: Links matching primary keys across tables.",
+          "* GROUP BY: Aggregates records. Use HAVING to filter grouped data.",
+          "* ORDER BY: Sorts records (ASC/DESC). Use LIMIT to restrict rows.",
           "",
-          "GAMEPLAY LOOP",
-          "1. Analyze query briefs and table schemas.",
-          "2. Type SQL query code in the terminal console.",
-          "3. Pass test assertions to solve cases, gain Coins and Reputation."
+          "CASE LEVEL SOLVE CODES (HINTS)",
+          "* Case 1 (Security cams): SELECT location FROM security_cameras",
+          "  WHERE status = 'OFFLINE' to find open access spots.",
+          "* Case 2 (Employee clearance): SELECT access_code FROM badge_registry",
+          "  JOIN employees ON badge_registry.emp_id = employees.emp_id",
+          "  WHERE name = 'Sarah Connor'.",
+          "* Case 3 (Intruder traces): SELECT ip_address FROM network_logs",
+          "  WHERE action = 'DENIED' GROUP BY ip_address HAVING count(*) > 1."
         ];
         break;
       case 'algo-arena':
-        title = "DSA Arena: Algorithm Arena";
+        title = "DSA Arena: Algorithm Arena Player Manual";
         lines = [
-          "GAME CONCEPT & MECHANICS",
-          "Fight algorithmic monsters using optimal computational complexity attacks.",
-          "Test your coding speed and correctness in data structure duels.",
+          "GAME CONCEPT & FIGHTER SCHEME",
+          "Battle data structures monsters inside the computer memory heap.",
+          "Attack beasts by choosing the optimal algorithmic complexity for coding solutions.",
           "",
-          "DATA STRUCTURE WEAPONRY",
-          "* Arrays & Lists: Fast index lookups but slow linear insertions.",
-          "* HashMaps: Constant time complexity O(1) searches. Excellent for caching.",
-          "* Stacks & Queues: LIFO/FIFO pipelines. Used for brackets and graph sweeps.",
-          "* Trees & Graphs: DFS (recursion) and BFS (queue) traversal searches.",
+          "MONSTER WEAKNESS MANUAL",
+          "* Array Beast (Level 1): Vulnerable to Indexing & Binary Search.",
+          "  * Strategy: Access arrays in O(1) constant time, binary search in O(log n).",
+          "* String Phantom (Level 2): Vulnerable to Pattern Matching & String manipulations.",
+          "  * Strategy: KMP algorithms search substrings in O(N+M) linear time.",
+          "* Tree Golem (Level 3): Vulnerable to Recursion & Graph traversals.",
+          "  * Strategy: BFS/DFS traversals visit all tree nodes in O(V+E) time.",
           "",
-          "GAMEPLAY LOOP",
-          "1. Select a problem category (Arrays, Searching, Sorting, DP).",
-          "2. Optimize code templates to pass complexity bounds.",
-          "3. Defeat the monster before running out of runtime execution clocks."
+          "COMPLEXITY ATTACKS CHEAT SHEET",
+          "* O(1) [Ultimate attack]: Direct index access, HashMap lookups.",
+          "* O(log n) [Strong slash]: Binary search in sorted arrays.",
+          "* O(n) [Linear swipe]: Single loop array traversals.",
+          "* O(n log n) [Dual strike]: Optimal sorting (Merge Sort / Quick Sort).",
+          "* O(n^2) [Weak tackle]: Nested loops (Bubble Sort / Selection Sort)."
         ];
         break;
       case 'apti-rush':
-        title = "Aptitude District: Apti Rush";
+        title = "Aptitude District: Apti Rush Player Manual";
         lines = [
-          "GAME CONCEPT & MECHANICS",
-          "Fast-paced time-attack general reasoning runner.",
-          "Answer quants and logic puzzles in under 10 seconds to maintain multipliers.",
+          "GAME CONCEPT & RUNNER SPEEDRUN",
+          "A high-speed mathematical runner. Solve reasoning and verbal puzzles",
+          "in under 10 seconds to dodge sector obstacles and maintain multipliers.",
           "",
-          "TOPICS & CATEGORIES",
-          "* Quantitative Aptitude: Percentages, Ratios, Speed-Distance, Profit & Loss.",
-          "* Logical Reasoning: Coding-decoding, blood relations, syllogisms, patterns.",
-          "* Verbal Ability: Synonyms, grammar checks, sentence completions.",
+          "PUZZLE SOLVER SHORTCUTS",
+          "* Combined Work rates: Time taken by A & B together = (X × Y) / (X + Y).",
+          "* Speed Conversion: Convert km/h to m/s by multiplying by 5/18.",
+          "* Percentage Splits: Calculate 15% as 10% + half of 10%.",
+          "* Profit & Loss: Selling Price = Cost Price × (100 + Profit%) / 100.",
           "",
-          "GAMEPLAY LOOP",
-          "1. Answer quants and reasoning questions before hitting obstacles.",
-          "2. Maintain correct answer streaks to build score combo multipliers."
+          "STREAK & SCORE SYSTEMS",
+          "1. Correct answers increase your streak counter.",
+          "2. Streak milestones (5, 10, 20) double your combo score multiplier.",
+          "3. High combo multiplier grants extra coins and placement credits."
         ];
         break;
       case 'startup-garage':
-        title = "Startup Garage: Simulator";
+        title = "Startup Garage Tycoon Player Manual";
         lines = [
-          "GAME CONCEPT & MECHANICS",
-          "Bootstrapped manager simulator. Allocate developer hours,",
-          "hire staff, balance Hype vs Code Quality, and build a SaaS unicorn.",
+          "GAME CONCEPT & METRICS PANEL",
+          "Tycoon simulation where you grow a SaaS company from a small garage.",
+          "Allocate development sprints and build a tech giant.",
           "",
-          "BALANCING METRICS",
-          "* Hype Index: Attracts users and raises valuation. Boosted via Marketing.",
-          "* Code Quality: Avoids server crash events. Raised via QA sprints.",
-          "* Funding Runway: Keep daily burn-rates positive and negotiate VC checks.",
+          "CORE STATS METERS",
+          "* Cash Flow: Salaries + servers consume money. Bankruptcy hits if cash is 0.",
+          "* Hype Index: Attracts users and raises company valuation.",
+          "* Code Quality: Prevents server bugs. Low code quality halts user growth.",
+          "* Monthly Recurring Revenue (MRR): Direct income generated from users.",
           "",
-          "GAMEPLAY LOOP",
-          "1. Distribute developer sprints across Feature, QA, and Marketing teams.",
-          "2. Hire specialists and navigate market crash events to scale valuation."
+          "DEVELOPMENT SPRINTS GUIDE",
+          "* Feature Sprints: Raise product tier and boost MRR cashflow.",
+          "* QA Sprints: squash server bugs and clean server logs.",
+          "* Marketing Sprints: Build public hype and accelerate user onboarding.",
+          "* Server Upgrades: Reduce latency to maximize onboarding speed."
         ];
         break;
       case 'internship-detective':
-        title = "Office Complex: Internship Detective";
+        title = "Internship Detective Visual Novel Player Manual";
         lines = [
-          "GAME CONCEPT & MECHANICS",
-          "Survive corporate workplace sprints and Git merge conflicts in",
-          "an interactive branching novel dialogue game.",
+          "GAME CONCEPT & INVESTIGATION STEPS",
+          "Survive SDE incident outages and git conflict reviews.",
+          "Connect clues on the pinboard corkboard, manage relationship meters,",
+          "and pitch system fixes to the Tech Lead.",
           "",
-          "PLACEMENT DIPLOMACY",
-          "* Corporate Reputation: Raised by solving friction and code reviews.",
-          "* Git Conflicts: Merging master branches safely without breaking main builds.",
-          "* Sprints Choice: Balancing robust architecture vs fast timeline releases.",
+          "DIPLOMATIC SCORE METER",
+          "* Rohan (Senior Dev): Skeptical backend wizard. Trust rises by checking SOP runbooks.",
+          "* Neha (Tech Lead): Diplomatic planner. Alignment rises by prioritizing clients.",
           "",
-          "GAMEPLAY LOOP",
-          "1. Read workplace story scenario cards.",
-          "2. Choose dialogue routes balancing code quality and colleague alignment points."
+          "CASE FILE WALKTHROUGHS",
+          "* Level 1 (DB Outage): Connect Server logs + Replica lag metrics.",
+          "  * Fix: Redirect analytical reads to secondary replica.",
+          "* Level 2 (Git Conflict): Connect Git commits + Code diff reports.",
+          "  * Fix: Revert buggy commit, resolve locally, push test suites.",
+          "* Level 3 (API Gateway): Connect Traffic spams + Firewall settings.",
+          "  * Fix: Deploy Nginx token-bucket IP Rate limiter reverse proxies."
         ];
         break;
       default:
-        title = "Silicon Metropolis Hub";
+        title = "Silicon Metropolis Placement Manual";
         lines = [
-          "Choose a training sector to solve placement scenarios, earn coins,",
+          "Choose a training sector card to solve placement challenges, earn coins,",
           "gain reputation, and build your placement eligibility rating."
         ];
     }
