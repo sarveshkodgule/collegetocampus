@@ -33,4 +33,7 @@ const QuestionSchema = new mongoose.Schema({
   }
 });
 
+// Speed up database queries filter lookups
+QuestionSchema.index({ category: 1, difficulty: 1 });
+
 module.exports = mongoose.model('Question', QuestionSchema);

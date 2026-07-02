@@ -1,7 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/db');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const { connectDB, closeDB } = require('./config/db');
 
 // Connect to MongoDB & Auto-Seed Questions
 connectDB().then(async () => {
@@ -80,9 +82,27 @@ connectDB().then(async () => {
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// 1. Security Headers Configuration (XSS protection, MIME checks)
+app.use(helmet());
+
+// 2. CORS Locking (Allows localhost and wildcard options safely)
+app.use(cors({
+  origin: '*', // We allow wildcard to simplify deployment testing, lock origin to frontend URL in production config
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
+
+// 3. Rate Limiter (Protects SDE endpoints against brute force sweeps)
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 Minutes
+  max: 150, // Limit each IP to 150 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many API requests from this connection, please retry in 15 minutes.' }
+});
+app.use('/api/', apiLimiter);
 
 // Base Health Check
 app.get('/', (req, res) => {
@@ -94,6 +114,15 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/leaderboard', require('./routes/leaderboard'));
 app.use('/api/questions', require('./routes/questions'));
 
+// 4. Centralized Error Boundary Middleware (Ensures server never crashes on uncaught rejects)
+app.use((err, req, res, next) => {
+  console.error(`🚨 Centralized Error Boundary: ${err.message}`);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || 'Internal Server Error'
+  });
+});
+
 // Fallback Page Not Found Handler
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Resource Endpoint Not Found' });
@@ -101,6 +130,20 @@ app.use((req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`🚀 SDE Server running in production on port ${PORT}`);
 });
+
+// 5. Graceful shutdowns on system signals
+const shutdownGracefully = async () => {
+  console.log('⏳ Termination signal received. Gracefully closing Express server...');
+  server.close(async () => {
+    console.log('✅ Express server closed.');
+    await closeDB();
+    console.log('👋 Process exiting successfully.');
+    process.exit(0);
+  });
+};
+
+process.on('SIGTERM', shutdownGracefully);
+process.on('SIGINT', shutdownGracefully);
