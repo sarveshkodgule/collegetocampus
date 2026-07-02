@@ -18,7 +18,7 @@ export default function LandingPage() {
   const [nameInput, setNameInput] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState('🚀');
 
-  const handleCredentialsSubmit = (e) => {
+  const handleCredentialsSubmit = async (e) => {
     e.preventDefault();
     if (!emailInput.trim() || !passInput.trim()) {
       alert("⚠️ Email and password are required!");
@@ -28,28 +28,114 @@ export default function LandingPage() {
     if (authMode === 'signup') {
       setSignupStep(2);
     } else {
-      // Sign In: directly enter game hub with defaults
-      usePlayerStore.setState({ 
-        name: emailInput.split('@')[0], 
-        avatar: '🚀',
-        activeGame: null // Enter the Hub
-      });
+      // Sign In: fetch token from server
+      try {
+        const response = await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: emailInput, password: passInput })
+        });
+        const data = await response.json();
+        
+        if (data.success) {
+          localStorage.setItem('token', data.token);
+          usePlayerStore.setState({ 
+            name: data.student.name, 
+            avatar: data.student.avatar,
+            rank: data.student.rank,
+            xp: data.student.xp,
+            coins: data.student.coins,
+            streak: data.student.streak,
+            classType: data.student.classType,
+            unlockedSkills: data.student.unlockedSkills,
+            heistLevelsCompleted: data.student.heistLevelsCompleted,
+            aptiHighScore: data.student.aptiHighScore,
+            activeGame: null // Enter the Hub
+          });
+        } else {
+          alert(`⚠️ Login Failed: ${data.message}`);
+        }
+      } catch (error) {
+        alert("🚨 Connection failed! Please make sure your Node.js backend is running on port 5000.");
+      }
     }
   };
 
-  const handleProfileSubmit = (e) => {
+  const handleProfileSubmit = async (e) => {
     e.preventDefault();
     if (!nameInput.trim()) {
       alert("⚠️ Handle name is required!");
       return;
     }
 
-    usePlayerStore.setState({ 
-      name: nameInput, 
-      avatar: selectedAvatar,
-      activeGame: null // Enter the Hub
-    });
+    // Sign Up: Register new student
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          email: emailInput, 
+          password: passInput, 
+          name: nameInput, 
+          avatar: selectedAvatar 
+        })
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        localStorage.setItem('token', data.token);
+        usePlayerStore.setState({ 
+          name: data.student.name, 
+          avatar: data.student.avatar,
+          rank: data.student.rank,
+          xp: data.student.xp,
+          coins: data.student.coins,
+          streak: data.student.streak,
+          classType: data.student.classType,
+          unlockedSkills: data.student.unlockedSkills,
+          heistLevelsCompleted: data.student.heistLevelsCompleted,
+          aptiHighScore: data.student.aptiHighScore,
+          activeGame: null // Enter the Hub
+        });
+      } else {
+        alert(`⚠️ Registration Failed: ${data.message}`);
+      }
+    } catch (error) {
+      alert("🚨 Connection failed! Please make sure your Node.js backend is running on port 5000.");
+    }
   };
+
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetch('http://localhost:5000/api/auth/me', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.student) {
+          usePlayerStore.setState({
+            name: data.student.name,
+            avatar: data.student.avatar,
+            rank: data.student.rank,
+            xp: data.student.xp,
+            coins: data.student.coins,
+            streak: data.student.streak,
+            classType: data.student.classType,
+            unlockedSkills: data.student.unlockedSkills,
+            heistLevelsCompleted: data.student.heistLevelsCompleted,
+            aptiHighScore: data.student.aptiHighScore,
+            activeGame: null // Enter Hub
+          });
+        } else {
+          localStorage.removeItem('token');
+        }
+      })
+      .catch(() => {
+        // Fallback silently if backend offline
+      });
+    }
+  }, []);
 
   const scrollToSection = (id) => {
     const el = document.getElementById(id);

@@ -44,6 +44,26 @@ export default function ProfilePage() {
   const level = Math.floor(xp / 100) + 1;
   const xpNeededForNext = 100 - (xp % 100);
 
+  const [leaderboard, setLeaderboard] = React.useState([]);
+
+  React.useEffect(() => {
+    fetch('http://localhost:5000/api/leaderboard')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.leaderboard) {
+          setLeaderboard(data.leaderboard);
+        }
+      })
+      .catch(() => {
+        // Fallback mock players
+        setLeaderboard([
+          { name: 'Rohan (Lead)', avatar: '👨‍💻', rank: 'Lead SDE', xp: 4200, classType: 'Backend Guardian' },
+          { name: 'Neha (Architect)', avatar: '👩‍💼', rank: 'Architect', xp: 3800, classType: 'UI/UX Rogue' },
+          { name: 'Thomas Neo', avatar: '🕶️', rank: 'Senior SDE', xp: 2100, classType: 'AI Alchemist' }
+        ]);
+      });
+  }, []);
+
   const playHoverSound = () => {
     try {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -197,6 +217,26 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
+
+        {/* Third Column: Global Leaderboard */}
+        <div className="game-card" style={styles.leaderboardCard}>
+          <h3 style={styles.panelTitle}>🏆 CAMPUS LEADERBOARD</h3>
+          <div style={styles.leaderboardList}>
+            {leaderboard.map((player, idx) => (
+              <div key={idx} style={styles.leaderboardRow} onMouseEnter={playHoverSound}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <span style={styles.rankNum}>{idx + 1}</span>
+                  <span style={{ fontSize: '1.25rem' }}>{player.avatar || '🚀'}</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                    <span style={styles.leaderName}>{player.name}</span>
+                    <span style={styles.leaderSub}>{player.classType || 'SDE Recruit'}</span>
+                  </div>
+                </div>
+                <span style={styles.leaderXp}>{player.xp} XP</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -221,10 +261,10 @@ const styles = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: '1.2fr 2fr',
+    gridTemplateColumns: '1.2fr 2fr 1.4fr',
     gap: '2rem',
     width: '100%',
-    maxWidth: '1050px',
+    maxWidth: '1200px',
     height: '100%',
     alignItems: 'center',
   },
@@ -422,5 +462,54 @@ const styles = {
     color: 'var(--text-secondary)',
     marginTop: '2px',
     lineHeight: '1.3',
+  },
+  leaderboardCard: {
+    backgroundColor: 'rgba(19, 23, 34, 0.75)',
+    padding: '1.5rem',
+    height: '100%',
+    minHeight: '420px',
+    display: 'flex',
+    flexDirection: 'column',
+    overflowY: 'auto'
+  },
+  leaderboardList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    marginTop: '0.5rem',
+    overflowY: 'auto',
+    flex: 1
+  },
+  leaderboardRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.15)',
+    padding: '0.5rem 0.75rem',
+    borderRadius: '6px',
+    border: '1px solid rgba(255,255,255,0.02)',
+    transition: 'all 0.2s ease',
+  },
+  rankNum: {
+    fontSize: '0.75rem',
+    fontWeight: 'bold',
+    fontFamily: 'var(--font-mono)',
+    color: 'var(--accent-color)',
+    width: '18px'
+  },
+  leaderName: {
+    fontSize: '0.85rem',
+    fontWeight: '700',
+    color: '#FFF'
+  },
+  leaderSub: {
+    fontSize: '0.65rem',
+    color: 'var(--text-secondary)'
+  },
+  leaderXp: {
+    fontSize: '0.85rem',
+    fontWeight: '800',
+    fontFamily: 'var(--font-mono)',
+    color: 'var(--accent-secondary)'
   }
 };

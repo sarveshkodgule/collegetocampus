@@ -11,6 +11,32 @@ const RANKS = [
   { name: 'CTO Legend', xpNeeded: 12000 }
 ];
 
+const syncProgressWithBackend = async (state) => {
+  const token = localStorage.getItem('token');
+  if (!token) return;
+
+  try {
+    await fetch('http://localhost:5000/api/auth/progress', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        xp: state.xp,
+        coins: state.coins,
+        streak: state.streak,
+        classType: state.classType,
+        unlockedSkills: state.unlockedSkills,
+        heistLevelsCompleted: state.heistLevelsCompleted,
+        aptiHighScore: state.aptiHighScore
+      })
+    });
+  } catch (error) {
+    console.warn("Backend sync failed:", error);
+  }
+};
+
 export const usePlayerStore = create((set, get) => ({
   // Player profile state
   name: 'Player 1',
@@ -37,26 +63,36 @@ export const usePlayerStore = create((set, get) => ({
 
   // Action methods
   setGame: (game) => set({ activeGame: game }),
-  setClass: (classType) => set({ classType }),
   
-  addXP: (amount) => set((state) => {
-    const newXP = state.xp + amount;
-    // Calculate new rank
-    let currentRank = 'Fresher';
-    for (let i = RANKS.length - 1; i >= 0; i--) {
-      if (newXP >= RANKS[i].xpNeeded) {
-        currentRank = RANKS[i].name;
-        break;
+  setClass: (classType) => {
+    set({ classType });
+    syncProgressWithBackend(get());
+  },
+  
+  addXP: (amount) => {
+    set((state) => {
+      const newXP = state.xp + amount;
+      // Calculate new rank
+      let currentRank = 'Fresher';
+      for (let i = RANKS.length - 1; i >= 0; i--) {
+        if (newXP >= RANKS[i].xpNeeded) {
+          currentRank = RANKS[i].name;
+          break;
+        }
       }
-    }
-    
-    return { 
-      xp: newXP, 
-      rank: currentRank 
-    };
-  }),
+      
+      return { 
+        xp: newXP, 
+        rank: currentRank 
+      };
+    });
+    syncProgressWithBackend(get());
+  },
 
-  addCoins: (amount) => set((state) => ({ coins: state.coins + amount })),
+  addCoins: (amount) => {
+    set((state) => ({ coins: state.coins + amount }));
+    syncProgressWithBackend(get());
+  },
   
   loseHeart: () => set((state) => {
     const newHearts = Math.max(0, state.hearts - 1);
@@ -69,36 +105,52 @@ export const usePlayerStore = create((set, get) => ({
 
   restoreHearts: () => set((state) => ({ hearts: state.maxHearts })),
 
-  unlockSkill: (skillId) => set((state) => {
-    if (state.unlockedSkills.includes(skillId)) return {};
-    return { unlockedSkills: [...state.unlockedSkills, skillId] };
-  }),
+  unlockSkill: (skillId) => {
+    set((state) => {
+      if (state.unlockedSkills.includes(skillId)) return {};
+      return { unlockedSkills: [...state.unlockedSkills, skillId] };
+    });
+    syncProgressWithBackend(get());
+  },
 
-  incrementStreak: () => set((state) => ({ streak: state.streak + 1 })),
+  incrementStreak: () => {
+    set((state) => ({ streak: state.streak + 1 }));
+    syncProgressWithBackend(get());
+  },
   
-  completeHeistLevel: () => set((state) => ({ 
-    heistLevelsCompleted: state.heistLevelsCompleted + 1 
-  })),
+  completeHeistLevel: () => {
+    set((state) => ({ 
+      heistLevelsCompleted: state.heistLevelsCompleted + 1 
+    }));
+    syncProgressWithBackend(get());
+  },
   
   setArenaLevel: (level) => set({ arenaLevel: level }),
-  setAptiHighScore: (score) => set((state) => ({ 
-    aptiHighScore: Math.max(state.aptiHighScore, score) 
-  })),
+  
+  setAptiHighScore: (score) => {
+    set((state) => ({ 
+      aptiHighScore: Math.max(state.aptiHighScore, score) 
+    }));
+    syncProgressWithBackend(get());
+  },
 
-  resetGame: () => set({
-    rank: 'Fresher',
-    xp: 0,
-    coins: 200,
-    reputation: 0,
-    hearts: 5,
-    streak: 3,
-    activeGame: null,
-    classType: null,
-    unlockedSkills: [],
-    heistLevelsCompleted: 0,
-    arenaLevel: 1,
-    aptiHighScore: 0,
-    startupMaxRevenue: 0,
-    detectiveEndingsUnlocked: []
-  })
+  resetGame: () => {
+    set({
+      rank: 'Fresher',
+      xp: 0,
+      coins: 200,
+      reputation: 0,
+      hearts: 5,
+      streak: 3,
+      activeGame: null,
+      classType: null,
+      unlockedSkills: [],
+      heistLevelsCompleted: 0,
+      arenaLevel: 1,
+      aptiHighScore: 0,
+      startupMaxRevenue: 0,
+      detectiveEndingsUnlocked: []
+    });
+    syncProgressWithBackend(get());
+  }
 }));
