@@ -264,6 +264,10 @@ export default function CodeInspector() {
   // IDE customization skin
   const [currentSkin, setCurrentSkin] = useState(SKINS[0]);
 
+  // Editing state for fixing code lines
+  const [editingLineIndex, setEditingLineIndex] = useState(null);
+  const [lineEditText, setLineEditText] = useState('');
+
   // Gameplay session stats
   const [timer, setTimer] = useState(120);
   const [enemyHp, setEnemyHp] = useState(100);
@@ -346,6 +350,8 @@ export default function CodeInspector() {
     setShowHintText(false);
     setIsTimeFrozen(false);
     setFrozenUsed(false);
+    setEditingLineIndex(null);
+    setLineEditText('');
     
     setActiveScreen('ide');
     if (soundEnabled) {
@@ -389,23 +395,19 @@ export default function CodeInspector() {
   // Code inspection selection clicks
   const handleInspectLine = (lineIndex) => {
     if (bugEliminated || activeScreen !== 'ide') return;
+    setEditingLineIndex(lineIndex);
+    setLineEditText(selectedMission.code[lineIndex]);
+  };
 
-    if (lineIndex === selectedMission.bugLine) {
-      // Correct click
-      if (soundEnabled) inspectorAudio.playLaser();
-      setBugEliminated(true);
-      setEnemyHp(0);
-      setScore(prev => prev + 100 * combo);
-      setCombo(prev => Math.min(10, prev + 1));
-      
-      setTimeout(() => {
-        setActiveScreen('victory');
-        if (soundEnabled) inspectorAudio.playUpgrade();
-      }, 1000);
-    } else {
-      // Incorrect click
+  // Compile and verify code fix
+  const handleCompileFix = (lineIndex) => {
+    if (bugEliminated || activeScreen !== 'ide') return;
+
+    if (lineIndex !== selectedMission.bugLine) {
+      // Incorrect line selection penalty
       if (soundEnabled) inspectorAudio.playError();
-      setCombo(1); // Reset combo multiplier
+      setCombo(1);
+      setEditingLineIndex(null);
       setShield(prev => {
         const nextShield = prev - 1;
         if (nextShield <= 0) {
@@ -414,6 +416,63 @@ export default function CodeInspector() {
         }
         return nextShield;
       });
+      alert("🚨 COMPILER CRASH: You compiled modifications on a healthy, functional code line!");
+      return;
+    }
+
+    // Checking if the edit corrects the conceptual bug
+    const editedText = lineEditText.trim();
+    let isFixCorrect = false;
+
+    // Check query category or mission description characteristics
+    if (selectedMission.bugLine === 5) {
+      // Mission 1: Token Leak
+      isFixCorrect = editedText.includes('token') && !editedText.includes('null');
+    } else if (selectedMission.bugLine === 4) {
+      // Mission 2: SQL Injection
+      isFixCorrect = (editedText.includes('$1') || editedText.includes('?')) && !editedText.includes('+');
+    } else if (selectedMission.bugLine === 3) {
+      // Mission 3: Memory Leak
+      isFixCorrect = editedText.includes('delete') && editedText.includes('data');
+    } else {
+      // Fallback
+      isFixCorrect = editedText.length > 0 && editedText !== selectedMission.code[lineIndex].trim();
+    }
+
+    if (isFixCorrect) {
+      // Correct Fix compiled!
+      if (soundEnabled) inspectorAudio.playLaser();
+      setBugEliminated(true);
+      setEnemyHp(0);
+      setScore(prev => prev + 100 * combo);
+      setCombo(prev => Math.min(10, prev + 1));
+      setEditingLineIndex(null);
+      
+      // Update the code array locally so the player sees their fix rendered inside the IDE!
+      const updatedCode = [...selectedMission.code];
+      updatedCode[lineIndex] = lineEditText;
+      setSelectedMission(prev => ({
+        ...prev,
+        code: updatedCode
+      }));
+
+      setTimeout(() => {
+        setActiveScreen('victory');
+        if (soundEnabled) inspectorAudio.playUpgrade();
+      }, 1000);
+    } else {
+      // Incorrect Fix compiled
+      if (soundEnabled) inspectorAudio.playError();
+      setCombo(1);
+      setShield(prev => {
+        const nextShield = prev - 1;
+        if (nextShield <= 0) {
+          setActiveScreen('failed');
+          if (soundEnabled) inspectorAudio.playError();
+        }
+        return nextShield;
+      });
+      alert("🚨 COMPILATION ERROR: The compiler rejects your syntax fix. The bug is still active!");
     }
   };
 
@@ -555,6 +614,7 @@ export default function CodeInspector() {
                 {selectedMission.code.map((line, idx) => {
                   const isBugLine = idx === selectedMission.bugLine;
                   const isHighlighted = scannerActive && isBugLine;
+                  const isEditing = idx === editingLineIndex;
                   return (
                     <div 
                       key={idx}
@@ -563,15 +623,50 @@ export default function CodeInspector() {
                         backgroundColor: isHighlighted ? 'rgba(239, 68, 68, 0.25)' : 'transparent',
                         borderLeft: isHighlighted ? '3px solid var(--danger-color)' : 'none'
                       }}
-                      onClick={() => handleInspectLine(idx)}
+                      onClick={() => !isEditing && handleInspectLine(idx)}
                     >
                       <span style={styles.lineNumberCol}>{idx + 1}</span>
-                      <pre style={{ 
-                        ...styles.codePre,
-                        color: isHighlighted ? 'var(--danger-color)' : xrayActive && isBugLine ? 'var(--accent-color)' : '#9CDCFE'
-                      }}>
-                        {line}
-                      </pre>
+                      {isEditing ? (
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flex: 1, paddingRight: '1rem' }} onClick={(e) => e.stopPropagation()}>
+                          <input
+                            type="text"
+                            value={lineEditText}
+                            onChange={(e) => setLineEditText(e.target.value)}
+                            style={{
+                              flex: 1,
+                              backgroundColor: '#1a1f2c',
+                              border: `1px solid ${currentSkin.primary}`,
+                              color: '#58A6FF',
+                              fontFamily: 'var(--font-mono)',
+                              fontSize: '0.8rem',
+                              padding: '2px 8px',
+                              borderRadius: '4px'
+                            }}
+                            autoFocus
+                          />
+                          <button
+                            className="game-btn game-btn-primary"
+                            style={{ padding: '2px 8px', fontSize: '0.7rem', backgroundColor: 'var(--success-color)', borderColor: 'var(--success-color)' }}
+                            onClick={() => handleCompileFix(idx)}
+                          >
+                            ✓ Compile
+                          </button>
+                          <button
+                            className="game-btn"
+                            style={{ padding: '2px 8px', fontSize: '0.7rem' }}
+                            onClick={() => setEditingLineIndex(null)}
+                          >
+                            ✕ Cancel
+                          </button>
+                        </div>
+                      ) : (
+                        <pre style={{ 
+                          ...styles.codePre,
+                          color: isHighlighted ? 'var(--danger-color)' : xrayActive && isBugLine ? 'var(--accent-color)' : '#9CDCFE'
+                        }}>
+                          {line}
+                        </pre>
+                      )}
                     </div>
                   );
                 })}

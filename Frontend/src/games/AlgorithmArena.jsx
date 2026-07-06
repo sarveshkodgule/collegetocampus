@@ -1057,6 +1057,12 @@ export default function AlgorithmArena() {
     }, 1200);
   };
 
+  // Restart campaign from level 1
+  const restartGame = () => {
+    setLevelIndex(0);
+    setBattleState('lobby');
+  };
+
   // Loot chest claimed
   const claimLoot = () => {
     if (!isMuted) playCoinSound();
@@ -1263,7 +1269,7 @@ export default function AlgorithmArena() {
           </p>
 
           <div style={{ display: 'flex', gap: '1rem' }}>
-            <button className="game-btn game-btn-primary" onClick={startCombat}>Launch Ship</button>
+            <button className="game-btn game-btn-primary" onClick={restartGame}>Launch Ship</button>
             <button className="game-btn" onClick={() => setGame(null)}>Return to Hub</button>
           </div>
         </div>
