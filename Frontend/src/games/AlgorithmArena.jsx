@@ -339,6 +339,36 @@ export default function AlgorithmArena() {
   const [playerShields, setPlayerShields] = useState(3);
   const [qIndex, setQIndex] = useState(0);
   const [combatText, setCombatText] = useState('');
+
+  // Shuffled Dynamic questions from MongoDB
+  const [monsters, setMonsters] = useState(MONSTERS);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/questions?category=algo-arena')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.questions && data.questions.length > 0) {
+          const mappedMonsters = MONSTERS.map(monster => {
+            const difficultyFilter = monster.level === 1 ? 'easy' : monster.level === 2 ? 'medium' : 'hard';
+            const dbQuestions = data.questions
+              .filter(q => q.difficulty === difficultyFilter)
+              .map(q => ({
+                q: q.question,
+                opts: q.options,
+                correct: q.correctAnswer,
+                tip: q.tip
+              }));
+            return {
+              ...monster,
+              questions: dbQuestions.length > 0 ? dbQuestions : monster.questions
+            };
+          });
+          setMonsters(mappedMonsters);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   const [activeQuestion, setActiveQuestion] = useState(null);
   const [selectedOpt, setSelectedOpt] = useState(null);
   const [isAnswerCorrect, setIsAnswerCorrect] = useState(null);
@@ -365,7 +395,7 @@ export default function AlgorithmArena() {
   const monsterHpRef = useRef(100);
   const playerShieldsRef = useRef(3);
 
-  const activeMonster = MONSTERS[levelIndex] || MONSTERS[0];
+  const activeMonster = monsters[levelIndex] || monsters[0];
 
   // Callback references to run safely inside requestAnimationFrame
   const handleMonsterHitRef = useRef(null);
@@ -1034,7 +1064,7 @@ export default function AlgorithmArena() {
     addXP(50 * activeMonster.level);
 
     const nextIndex = levelIndex + 1;
-    if (nextIndex >= MONSTERS.length) {
+    if (nextIndex >= monsters.length) {
       setBattleState('victory');
     } else {
       setLevelIndex(nextIndex);

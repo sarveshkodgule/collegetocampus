@@ -4,12 +4,12 @@ const QuestionSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ['sql-heist', 'algo-arena', 'apti-rush']
+    enum: ['sql-heist', 'algo-arena', 'apti-rush', 'code-inspector']
   },
   difficulty: {
     type: String,
     required: true,
-    enum: ['easy', 'medium', 'hard']
+    enum: ['easy', 'medium', 'hard', 'critical'] // Added critical for Code Inspector high threat missions
   },
   question: {
     type: String,

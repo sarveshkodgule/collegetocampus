@@ -10,6 +10,7 @@ import AlgorithmArena from './games/AlgorithmArena';
 import AptitudeDistrict from './games/AptitudeDistrict';
 import StartupGarage from './games/StartupGarage';
 import InternshipDetective from './games/InternshipDetective';
+import CodeInspector from './games/CodeInspector';
 
 export default function App() {
   const { activeGame } = usePlayerStore();
@@ -31,6 +32,8 @@ export default function App() {
         return 'theme-startup-garage';
       case 'internship-detective':
         return 'theme-internship-detective';
+      case 'code-inspector':
+        return 'theme-code-inspector';
       default:
         return 'theme-hub';
     }
@@ -55,6 +58,8 @@ export default function App() {
         return <StartupGarage />;
       case 'internship-detective':
         return <InternshipDetective />;
+      case 'code-inspector':
+        return <CodeInspector />;
       default:
         return <Hub />;
     }

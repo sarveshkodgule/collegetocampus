@@ -81,6 +81,17 @@ const BUILDINGS = [
     accentClass: 'theme-startup-garage',
     difficulty: 'Management',
     reputationReward: '+40 Rep'
+  },
+  {
+    id: 'code-inspector',
+    title: 'PR Review Sector',
+    subtitle: 'Code Inspector',
+    description: 'Stop software disasters! Scan, debug, and eliminate BUG-0 corrupted code in a live, animated IDE cockpit.',
+    icon: Terminal,
+    color: '#EC4899', // Fuchsia
+    accentClass: 'theme-code-inspector',
+    difficulty: 'Critical',
+    reputationReward: '+35 Rep'
   }
 ];
 

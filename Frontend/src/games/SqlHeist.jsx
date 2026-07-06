@@ -277,6 +277,29 @@ export default function SqlHeist() {
   const [levelIndex, setLevelIndex] = useState(0);
   const [battleState, setBattleState] = useState('lobby'); // 'lobby', 'briefing', 'hacking', 'incoming', 'complete', 'gameover'
   
+  // Shuffled dynamic cases list from MongoDB
+  const [casesList, setCasesList] = useState(CASES);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/questions?category=sql-heist')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.questions && data.questions.length > 0) {
+          const mappedCases = data.questions.map((q, idx) => ({
+            level: idx + 1,
+            title: q.extraDetails?.title || `Case #${idx + 1}`,
+            targetTable: q.extraDetails?.targetTable || 'security_cameras',
+            desc: q.extraDetails?.desc || q.question,
+            instructions: q.extraDetails?.instructions || q.question,
+            hint: q.tip,
+            clue: q.extraDetails?.clue || 'Evidence scrubbed.'
+          }));
+          setCasesList(mappedCases);
+        }
+      })
+      .catch(() => {});
+  }, []);
+  
   // Dynamic virtual DB state mimicking database changes
   const [virtualDb, setVirtualDb] = useState(JSON.parse(JSON.stringify(DB_SCHEMAS)));
   
@@ -299,7 +322,7 @@ export default function SqlHeist() {
   const canvasRef = useRef(null);
   const hoveredNode = useRef(null);
 
-  const activeCase = CASES[levelIndex] || CASES[0];
+  const activeCase = casesList[levelIndex] || casesList[0];
 
   // Map nodes definitions
   const nodes = [
@@ -635,7 +658,7 @@ export default function SqlHeist() {
   // Advance level or win
   const proceedNext = () => {
     const nextIndex = levelIndex + 1;
-    if (nextIndex >= CASES.length) {
+    if (nextIndex >= casesList.length) {
       setBattleState('complete');
       addCoins(250);
       addXP(150);
@@ -756,7 +779,7 @@ export default function SqlHeist() {
                 <div style={styles.corkboard}>
                   <h4 style={styles.boardTitle}>INVESTIGATION PROFILE BOARD</h4>
                   <div style={styles.evidenceGrid}>
-                    {CASES.map((c, idx) => {
+                    {casesList.map((c, idx) => {
                       const isUnlocked = unlockedClues.includes(c.level);
                       return (
                         <div 

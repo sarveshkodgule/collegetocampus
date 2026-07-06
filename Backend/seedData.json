@@ -1,0 +1,200 @@
+[
+  {
+    "category": "sql-heist",
+    "difficulty": "easy",
+    "question": "SELECT * FROM security_cameras WHERE status = 'OFFLINE';",
+    "options": [
+      "SELECT location FROM security_cameras WHERE status = 'OFFLINE'",
+      "SELECT camera_id FROM security_cameras WHERE status = 'ACTIVE'",
+      "UPDATE security_cameras SET status = 'OFFLINE'",
+      "SELECT * FROM security_cameras"
+    ],
+    "correctAnswer": 0,
+    "tip": "SELECT * FROM security_cameras WHERE status = 'OFFLINE';",
+    "extraDetails": {
+      "title": "Offline Security Loops",
+      "targetTable": "security_cameras",
+      "desc": "The corporate security cameras are locking us out. Locate all security cameras that are currently offline so our infiltration squad can slip in.",
+      "instructions": "Write a query to SELECT all columns from `security_cameras` where the `status` is OFFLINE.",
+      "clue": "Found camera loop IDs 102 and 103 offline, revealing guard blind spots."
+    }
+  },
+  {
+    "category": "sql-heist",
+    "difficulty": "medium",
+    "question": "SELECT * FROM network_logs WHERE ip_address LIKE '192.168.4.%' AND action = 'DENIED';",
+    "options": [
+      "SELECT access_code FROM badge_registry WHERE emp_id = 2",
+      "SELECT access_code FROM badge_registry JOIN employees ON badge_registry.emp_id = employees.emp_id WHERE employees.name = 'Thomas Anderson'",
+      "SELECT name FROM employees JOIN badge_registry ON employees.emp_id = 2",
+      "SELECT access_code FROM badge_registry WHERE name = 'Thomas Anderson'"
+    ],
+    "correctAnswer": 1,
+    "tip": "SELECT * FROM network_logs WHERE ip_address LIKE '192.168.4.%' AND action = 'DENIED';",
+    "extraDetails": {
+      "title": "Tracing the Intruder",
+      "targetTable": "network_logs",
+      "desc": "An rogue probe hit the firewall. Scan the network logs to isolate blocked entries coming from the unindexed 192.168.4.* address subnet.",
+      "instructions": "SELECT all columns from `network_logs` where `ip_address` starts with 192.168.4. and the `action` is DENIED.",
+      "clue": "Located active denial logs from Thomas Anderson’s cyber terminal."
+    }
+  },
+  {
+    "category": "sql-heist",
+    "difficulty": "hard",
+    "question": "SELECT access_code FROM employees JOIN badge_registry ON employees.emp_id = badge_registry.emp_id WHERE name = 'Sarah Connor';",
+    "options": [
+      "SELECT access_code FROM badge_registry WHERE emp_id = 2",
+      "SELECT access_code FROM employees JOIN badge_registry ON employees.emp_id = badge_registry.emp_id WHERE name = 'Sarah Connor'",
+      "SELECT name FROM employees JOIN badge_registry ON employees.emp_id = 2",
+      "SELECT access_code FROM badge_registry WHERE name = 'Thomas Anderson'"
+    ],
+    "correctAnswer": 1,
+    "tip": "SELECT access_code FROM employees JOIN badge_registry ON employees.emp_id = badge_registry.emp_id WHERE name = 'Sarah Connor';",
+    "extraDetails": {
+      "title": "Sarah’s Passcode Access",
+      "targetTable": "employees",
+      "desc": "We need to forge a lobby clearance badge. Retrieve Sarah Connor's personal security access code by merging employees and badge records.",
+      "instructions": "SELECT `access_code` from `employees` joined with `badge_registry` on `emp_id` where employee name is Sarah Connor.",
+      "clue": "Lobby entry passcode decrypted: ORION_7792"
+    }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "easy",
+    "question": "What is the time complexity to retrieve an array element directly using its memory index?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n²)"
+    ],
+    "correctAnswer": 0,
+    "tip": "Array lookups use direct memory offsets, resolving instantly in constant O(1) time."
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "Which divide-and-conquer sorting algorithm guarantees a worst-case O(n log n) complexity and preserves element stability?",
+    "options": [
+      "Quick Sort",
+      "Merge Sort",
+      "Heap Sort",
+      "Bubble Sort"
+    ],
+    "correctAnswer": 1,
+    "tip": "Merge Sort divides arrays recursively, merging them in O(n log n) time while maintaining stability."
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "Which graph algorithm finds the single-source shortest path in a weighted graph containing negative edge weights without cycle issues?",
+    "options": [
+      "Dijkstra's Algorithm",
+      "Bellman-Ford Algorithm",
+      "Kruskal's Algorithm",
+      "Breadth-First Search"
+    ],
+    "correctAnswer": 1,
+    "tip": "Bellman-Ford checks all edges V-1 times, detecting negative weight loops which Dijkstra fails to handle."
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "easy",
+    "question": "Worker A can build a firewall in 12 hours, and Worker B takes 24 hours. Working together, how long will they take?",
+    "options": [
+      "6 hours",
+      "8 hours",
+      "10 hours",
+      "12 hours"
+    ],
+    "correctAnswer": 1,
+    "tip": "Use the combined work formula: (A × B) / (A + B). In this case: (12 × 24) / (12 + 24) = 288 / 36 = 8 hours."
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "medium",
+    "question": "Convert a server connection download rate of 72 km/h into meters per second equivalents.",
+    "options": [
+      "15 m/s",
+      "20 m/s",
+      "25 m/s",
+      "30 m/s"
+    ],
+    "correctAnswer": 1,
+    "tip": "To convert km/h to m/s, multiply the rate by 5/18. Here: 72 × (5/18) = 4 × 5 = 20 m/s."
+  },
+  {
+    "category": "code-inspector",
+    "difficulty": "easy",
+    "question": "A secret key variable is accidentally assigned to null in the headers setup.",
+    "options": [
+      "// AuthManager.js - Setup Header",
+      "const axios = require('axios');",
+      "function configureHeaders(token) {",
+      "  const headers = {",
+      "    'Content-Type': 'application/json',",
+      "    'Authorization': null, // BUG FOUND HERE!",
+      "    'X-Client-ID': 'MOB_4489'",
+      "  };",
+      "  return headers;",
+      "}"
+    ],
+    "correctAnswer": 5,
+    "tip": "Check line 6. The authorization token should not be statically set to null.",
+    "extraDetails": {
+      "file": "AuthManager.js",
+      "dept": "🏢 Mobile Team",
+      "threat": "LOW",
+      "enemy": { "name": "🐛 Null Bug", "icon": "🐛", "hp": 100 }
+    }
+  },
+  {
+    "category": "code-inspector",
+    "difficulty": "medium",
+    "question": "Retrieve the access code from badge_registry for employee Thomas Anderson.",
+    "options": [
+      "// TransactionVault.js - Query Account",
+      "const db = require('pg-pool');",
+      "async function getAccountInfo(userId) {",
+      "  // CONCATENATING RAW STRINGS INVITES SQL INJECTIONS!",
+      "  const query = \"SELECT * FROM users WHERE id = '\" + userId + \"'\";",
+      "  const res = await db.query(query);",
+      "  return res.rows[0];",
+      "}"
+    ],
+    "correctAnswer": 4,
+    "tip": "Observe line 5. Raw input string concatenation allows SQL injections.",
+    "extraDetails": {
+      "file": "TransactionVault.js",
+      "dept": "🏦 Banking System",
+      "threat": "HIGH",
+      "enemy": { "name": "💀 SQL Phantom", "icon": "💀", "hp": 120 }
+    }
+  },
+  {
+    "category": "code-inspector",
+    "difficulty": "critical",
+    "question": "A vector buffer array is expanding infinitely inside a loop without releasing pointers.",
+    "options": [
+      "// ThrusterController.cpp - Fuel Vector",
+      "#include <vector>",
+      "void balanceThrusters(int loops) {",
+      "  std::vector<double>* data = new std::vector<double>();",
+      "  for (int i = 0; i < loops; ++i) {",
+      "    data->push_back(i * 1.45);",
+      "  }",
+      "  // BUG: Memory allocation pointer is never deleted or cleared!",
+      "  // delete data; missing here!",
+      "}"
+    ],
+    "correctAnswer": 3,
+    "tip": "Look at line 4. An allocated pointer array is created on heap but never freed.",
+    "extraDetails": {
+      "file": "ThrusterController.cpp",
+      "dept": "🚀 Space Software",
+      "threat": "CRITICAL",
+      "enemy": { "name": "👾 Memory Leech", "icon": "👾", "hp": 150 }
+    }
+  }
+]
