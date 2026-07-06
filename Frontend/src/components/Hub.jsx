@@ -92,6 +92,17 @@ const BUILDINGS = [
     accentClass: 'theme-code-inspector',
     difficulty: 'Critical',
     reputationReward: '+35 Rep'
+  },
+  {
+    id: 'interview-escape',
+    title: 'Assessment Suite',
+    subtitle: 'Interview Escape Room',
+    description: 'Solve technical riddles under lock! Traverse SQL, DSA, debugging, and behavioral rooms to earn the Offer Letter.',
+    icon: Shield,
+    color: '#00F3FF', // Cyan
+    accentClass: 'theme-interview-escape',
+    difficulty: 'Adventure',
+    reputationReward: '+60 Rep'
   }
 ];
 
