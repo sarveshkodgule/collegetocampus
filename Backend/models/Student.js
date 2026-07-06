@@ -65,7 +65,6 @@ const StudentSchema = new mongoose.Schema({
 });
 
 // Indexing for rapid queries at high scale
-StudentSchema.index({ email: 1 });
 StudentSchema.index({ xp: -1 }); // High-performance leaderboard sorting
 
 // Encrypt password using bcrypt before saving
