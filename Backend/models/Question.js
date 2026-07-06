@@ -4,7 +4,7 @@ const QuestionSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ['sql-heist', 'algo-arena', 'apti-rush', 'code-inspector']
+    enum: ['sql-heist', 'algo-arena', 'apti-rush', 'code-inspector', 'resume-tycoon']
   },
   difficulty: {
     type: String,

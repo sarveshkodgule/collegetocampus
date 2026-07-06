@@ -75,7 +75,7 @@
   {
     "category": "algo-arena",
     "difficulty": "medium",
-    "question": "Which divide-and-conquer sorting algorithm guarantees a worst-case O(n log n) complexity and preserves element stability?",
+    "question": "Which divide-and-conuer sorting algorithm guarantees a worst-case O(n log n) complexity and preserves element stability?",
     "options": [
       "Quick Sort",
       "Merge Sort",
@@ -196,5 +196,57 @@
       "threat": "CRITICAL",
       "enemy": { "name": "👾 Memory Leech", "icon": "👾", "hp": 150 }
     }
+  },
+  {
+    "category": "resume-tycoon",
+    "difficulty": "easy",
+    "question": "What is the optimal time complexity to search a sorted array?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n²)"
+    ],
+    "correctAnswer": 1,
+    "tip": "Binary Search cuts search intervals in half, resolving in O(log n)."
+  },
+  {
+    "category": "resume-tycoon",
+    "difficulty": "medium",
+    "question": "Average lookup complexity in a well-distributed Hash Map?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n log n)"
+    ],
+    "correctAnswer": 0,
+    "tip": "Hashing maps keys directly to buckets, resolving lookups in constant O(1) time."
+  },
+  {
+    "category": "resume-tycoon",
+    "difficulty": "hard",
+    "question": "Worst-case time complexity of Quick Sort partitions?",
+    "options": [
+      "O(log n)",
+      "O(n)",
+      "O(n log n)",
+      "O(n²)"
+    ],
+    "correctAnswer": 3,
+    "tip": "If the pivot consistently splits highly unbalanced subsets, Quick Sort degrades to quadratic O(n²)."
+  },
+  {
+    "category": "resume-tycoon",
+    "difficulty": "easy",
+    "question": "What is the space complexity of an in-place Bubble Sort?",
+    "options": [
+      "O(1)",
+      "O(log n)",
+      "O(n)",
+      "O(n²)"
+    ],
+    "correctAnswer": 0,
+    "tip": "In-place swaps require only a single temp pointer, taking constant O(1) space."
   }
 ]
