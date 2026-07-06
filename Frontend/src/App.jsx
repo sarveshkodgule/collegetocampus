@@ -12,6 +12,7 @@ import StartupGarage from './games/StartupGarage';
 import InternshipDetective from './games/InternshipDetective';
 import CodeInspector from './games/CodeInspector';
 import InterviewEscapeRoom from './games/InterviewEscapeRoom';
+import ResumeBuilderTycoon from './games/ResumeBuilderTycoon';
 
 export default function App() {
   const { activeGame } = usePlayerStore();
@@ -37,6 +38,8 @@ export default function App() {
         return 'theme-code-inspector';
       case 'interview-escape':
         return 'theme-interview-escape';
+      case 'resume-tycoon':
+        return 'theme-resume-tycoon';
       default:
         return 'theme-hub';
     }
@@ -65,6 +68,8 @@ export default function App() {
         return <CodeInspector />;
       case 'interview-escape':
         return <InterviewEscapeRoom />;
+      case 'resume-tycoon':
+        return <ResumeBuilderTycoon />;
       default:
         return <Hub />;
     }

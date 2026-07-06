@@ -103,6 +103,17 @@ const BUILDINGS = [
     accentClass: 'theme-interview-escape',
     difficulty: 'Adventure',
     reputationReward: '+60 Rep'
+  },
+  {
+    id: 'resume-tycoon',
+    title: 'Development Center',
+    subtitle: 'Resume Builder Tycoon',
+    description: 'Life simulator. Allocate weekly hours, study DSA, deploy repos, and network to graduate with elite portfolios.',
+    icon: Laptop,
+    color: '#F97316', // Orange
+    accentClass: 'theme-resume-tycoon',
+    difficulty: 'Strategy',
+    reputationReward: '+45 Rep'
   }
 ];
 
