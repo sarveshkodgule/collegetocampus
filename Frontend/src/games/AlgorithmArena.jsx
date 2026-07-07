@@ -1014,19 +1014,18 @@ export default function AlgorithmArena() {
     setMonsterHp(nextHp);
 
     setTimeout(() => {
-      // Check level outcomes
       const nextQ = qIndex + 1;
-      if (nextHp <= 0 || nextQ >= activeMonster.questions.length) {
-        if (playerShieldsRef.current > 0) {
-          if (!isMuted) {
-            playExplosionSound();
-            playVictorySound();
-          }
-          setBattleState('loot');
-        } else {
-          if (!isMuted) playDefeatSound();
-          setBattleState('gameover');
+      if (nextHp <= 0) {
+        // Boss is defeated!
+        if (!isMuted) {
+          playExplosionSound();
+          playVictorySound();
         }
+        setBattleState('loot');
+      } else if (nextQ >= activeMonster.questions.length) {
+        // Out of questions but Boss is still alive! Game Over!
+        if (!isMuted) playDefeatSound();
+        setBattleState('gameover');
       } else {
         setQIndex(nextQ);
         loadQuestion(nextQ);
@@ -1047,8 +1046,15 @@ export default function AlgorithmArena() {
       } else {
         const nextQ = qIndex + 1;
         if (nextQ >= activeMonster.questions.length) {
-          if (!isMuted) playVictorySound();
-          setBattleState('loot');
+          // Out of questions. Only win if the boss was defeated!
+          if (monsterHpRef.current <= 0) {
+            if (!isMuted) playVictorySound();
+            setBattleState('loot');
+          } else {
+            // Boss is still alive! Game Over!
+            if (!isMuted) playDefeatSound();
+            setBattleState('gameover');
+          }
         } else {
           setQIndex(nextQ);
           loadQuestion(nextQ);
