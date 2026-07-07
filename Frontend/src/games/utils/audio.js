@@ -50,7 +50,7 @@ export function playSlashSound() {
   osc.frequency.setValueAtTime(800, audioCtx.currentTime);
   osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.15);
 
-  gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.45, audioCtx.currentTime);
   gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
 
   osc.connect(gain);
@@ -72,7 +72,7 @@ export function playSpellSound() {
   osc.frequency.setValueAtTime(200, audioCtx.currentTime);
   osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.3);
 
-  gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.32, audioCtx.currentTime);
   gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
 
   osc.connect(gain);
@@ -99,7 +99,7 @@ export function playExplosionSound() {
   osc2.frequency.setValueAtTime(80, audioCtx.currentTime);
   osc2.frequency.linearRampToValueAtTime(20, audioCtx.currentTime + 0.4);
 
-  gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.55, audioCtx.currentTime);
   gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.45);
 
   osc.connect(gain);
@@ -124,7 +124,7 @@ export function playCoinSound() {
     osc.type = 'sine';
     osc.frequency.setValueAtTime(freq, audioCtx.currentTime + delay);
 
-    gain.gain.setValueAtTime(0.15, audioCtx.currentTime + delay);
+    gain.gain.setValueAtTime(0.25, audioCtx.currentTime + delay);
     gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + delay + dur);
 
     osc.connect(gain);
@@ -151,7 +151,7 @@ export function playVictorySound() {
     osc.type = 'triangle';
     osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.12);
 
-    gain.gain.setValueAtTime(0.2, audioCtx.currentTime + idx * 0.12);
+    gain.gain.setValueAtTime(0.3, audioCtx.currentTime + idx * 0.12);
     gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + idx * 0.12 + 0.3);
 
     osc.connect(gain);
@@ -174,7 +174,7 @@ export function playDefeatSound() {
   osc.frequency.setValueAtTime(300, audioCtx.currentTime);
   osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.6);
 
-  gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.38, audioCtx.currentTime);
   gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
 
   osc.connect(gain);
@@ -211,7 +211,7 @@ export function playBgm() {
     osc.type = 'sine';
     osc.frequency.setValueAtTime(melody[step % melody.length], audioCtx.currentTime);
 
-    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.14, audioCtx.currentTime);
     gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.35);
 
     osc.connect(gain);
@@ -227,7 +227,7 @@ export function playBgm() {
     echoOsc.type = 'sine';
     echoOsc.frequency.setValueAtTime(melody[step % melody.length] * 2, audioCtx.currentTime + 0.15);
 
-    echoGain.gain.setValueAtTime(0.02, audioCtx.currentTime + 0.15);
+    echoGain.gain.setValueAtTime(0.04, audioCtx.currentTime + 0.15);
     echoGain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
 
     echoOsc.connect(echoGain);
@@ -259,7 +259,7 @@ export function playKeyClick() {
   osc.type = 'triangle';
   osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
   
-  gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.07, audioCtx.currentTime);
   gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
   
   osc.connect(gain);
@@ -280,7 +280,7 @@ export function playAlarmSound() {
   osc.frequency.setValueAtTime(300, audioCtx.currentTime);
   osc.frequency.linearRampToValueAtTime(600, audioCtx.currentTime + 0.45);
   
-  gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.26, audioCtx.currentTime);
   gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.48);
   
   osc.connect(gain);
@@ -323,7 +323,7 @@ export function playCyberBgm() {
     filter.type = 'lowpass';
     filter.frequency.setValueAtTime(180, audioCtx.currentTime);
 
-    gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.34, audioCtx.currentTime);
     gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.55);
 
     osc.connect(filter);
@@ -381,7 +381,7 @@ export function playHubBgm() {
 
       // Very soft volume, slow attack & decay envelope
       gain.gain.setValueAtTime(0, time);
-      gain.gain.linearRampToValueAtTime(0.04, time + 0.8); // soft swell
+      gain.gain.linearRampToValueAtTime(0.18, time + 0.8); // soft swell
       gain.gain.exponentialRampToValueAtTime(0.001, time + 2.8); // long tail decay
 
       osc.connect(filter);
@@ -413,7 +413,7 @@ export function playCardHover() {
   osc.type = 'sine';
   osc.frequency.setValueAtTime(800 + Math.random() * 200, audioCtx.currentTime);
   
-  gain.gain.setValueAtTime(0.012, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.022, audioCtx.currentTime);
   gain.gain.linearRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
   
   osc.connect(gain);
