@@ -58,6 +58,22 @@ const StudentSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  collegeName: {
+    type: String,
+    default: ''
+  },
+  department: {
+    type: String,
+    default: ''
+  },
+  gradYear: {
+    type: Number,
+    default: null
+  },
+  rollNumber: {
+    type: String,
+    default: ''
+  },
   createdAt: {
     type: Date,
     default: Date.now

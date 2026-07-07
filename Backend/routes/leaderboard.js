@@ -8,7 +8,7 @@ const Student = require('../models/Student');
 router.get('/', async (req, res) => {
   try {
     const ranks = await Student.find({})
-      .select('name avatar rank xp classType')
+      .select('name avatar rank xp classType email')
       .sort({ xp: -1 })
       .limit(100); // Return top 100 players
 

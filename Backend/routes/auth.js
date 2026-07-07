@@ -16,7 +16,7 @@ const generateToken = (id) => {
 // @access  Public
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password, avatar } = req.body;
+    const { name, email, password, avatar, collegeName, department, gradYear, rollNumber } = req.body;
 
     const studentExists = await Student.findOne({ email });
     if (studentExists) {
@@ -27,7 +27,11 @@ router.post('/register', async (req, res) => {
       name,
       email,
       password,
-      avatar: avatar || '🧙'
+      avatar: avatar || '🧙',
+      collegeName: collegeName || '',
+      department: department || '',
+      gradYear: gradYear || null,
+      rollNumber: rollNumber || ''
     });
 
     if (student) {
@@ -46,7 +50,11 @@ router.post('/register', async (req, res) => {
           classType: student.classType,
           unlockedSkills: student.unlockedSkills,
           heistLevelsCompleted: student.heistLevelsCompleted,
-          aptiHighScore: student.aptiHighScore
+          aptiHighScore: student.aptiHighScore,
+          collegeName: student.collegeName,
+          department: student.department,
+          gradYear: student.gradYear,
+          rollNumber: student.rollNumber
         }
       });
     } else {
@@ -81,7 +89,11 @@ router.post('/login', async (req, res) => {
           classType: student.classType,
           unlockedSkills: student.unlockedSkills,
           heistLevelsCompleted: student.heistLevelsCompleted,
-          aptiHighScore: student.aptiHighScore
+          aptiHighScore: student.aptiHighScore,
+          collegeName: student.collegeName,
+          department: student.department,
+          gradYear: student.gradYear,
+          rollNumber: student.rollNumber
         }
       });
     } else {
