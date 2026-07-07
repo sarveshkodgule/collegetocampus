@@ -359,102 +359,99 @@ export default function Hub() {
         <p style={styles.cityDesc}>Select a sector to begin training, earn points, and level up your placement eligibility.</p>
       </div>
 
-      {/* 2-Column Split: Grid of Buildings (left) & Global Leaderboard (right) */}
-      <div style={styles.workspaceSplit}>
-        {/* Grid of Buildings Column */}
-        <div style={styles.gridColumn}>
-          <div style={styles.grid}>
-            {BUILDINGS.map((b) => {
-              const IconComponent = b.icon;
+      {/* Top Global Leaderboard Row */}
+      <div style={styles.topLeaderboardBanner} className="game-card">
+        <div style={styles.leaderboardHeader}>
+          <Trophy size={18} color="#EAB308" className="pulse-glow-animation" />
+          <div style={styles.leaderboardTitleGroup}>
+            <span style={styles.leaderboardMainTitle}>METROPOLIS LEADERBOARD</span>
+            <span style={styles.leaderboardSubtitle}>Top placement contenders in real-time sync</span>
+          </div>
+        </div>
+        
+        <div style={styles.leaderboardRowList}>
+          {loadingLeaderboard ? (
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Loading SDE standings...</div>
+          ) : (
+            (leaderboard.length > 0 ? leaderboard : [
+              { name: 'Linus Torvalds', avatar: '🐧', rank: 'Architect', xp: 2400, email: 'linus@torvalds.org' },
+              { name: 'Thomas Anderson', avatar: '🕶️', rank: 'Tech Lead', xp: 1800, email: 'neo@matrix.io' },
+              { name: 'Sarah Connor', avatar: '🦾', rank: 'Developer', xp: 1200, email: 'sconnor@cyberdyne.com' }
+            ]).slice(0, 3).map((player, idx) => {
+              const playerUsername = player.email ? player.email.split('@')[0] : player.name.toLowerCase().replace(/\s+/g, '');
               return (
-                <div 
-                  key={b.id} 
-                  className="game-card" 
-                  style={{ ...styles.card, '--accent-color': b.color }}
-                  onClick={() => setGame(b.id)}
-                  onMouseEnter={playCardHover}
-                >
-                  {/* Card Header */}
-                  <div style={styles.cardHeader}>
-                    <div style={{ ...styles.iconWrapper, backgroundColor: `rgba(${hexToRgb(b.color)}, 0.1)`, borderColor: b.color }}>
-                      <IconComponent size={28} color={b.color} />
-                    </div>
-                    <div style={styles.difficultyBadge}>{b.difficulty}</div>
+                <div key={idx} style={styles.leaderboardPill}>
+                  <span style={styles.pillRankBadge}>
+                    {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
+                  </span>
+                  <span style={styles.pillAvatar}>{player.avatar || '🚀'}</span>
+                  <div style={styles.pillInfo}>
+                    <span style={styles.pillName}>{player.name}</span>
+                    <span style={styles.pillRank}>@{playerUsername}</span>
                   </div>
-
-                  {/* Card Body */}
-                  <div style={styles.cardBody}>
-                    <h3 style={styles.cardTitle}>{b.title}</h3>
-                    <h4 style={{ ...styles.cardSubtitle, color: b.color }}>{b.subtitle}</h4>
-                    <p style={styles.cardDesc}>{b.description}</p>
-                  </div>
-
-                  {/* Card Footer / Rewards */}
-                  <div style={styles.cardFooter}>
-                    <div style={styles.rewardBadge}>
-                      <Star size={12} fill="#EAB308" color="#EAB308" />
-                      <span>{b.reputationReward}</span>
-                    </div>
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                      <button 
-                        className="game-btn" 
-                        style={{ padding: '0.4rem 0.8rem', fontSize: '0.7rem', borderColor: b.color, color: b.color, backgroundColor: 'transparent' }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDownloadPDF(b.id);
-                        }}
-                      >
-                        📄 Guide PDF
-                      </button>
-                      <span className="game-btn game-btn-primary" style={styles.enterBtn}>
-                        ENTER SECTOR
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Glowing Background Accent */}
-                  <div style={{ ...styles.glowBacklight, backgroundColor: b.color }}></div>
+                  <span style={styles.pillXp}>{player.xp} XP</span>
                 </div>
               );
-            })}
-          </div>
-        </div>
-
-        {/* Global Leaderboard Column (Glassmorphic) */}
-        <div style={styles.leaderboardColumn} className="game-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '8px', marginBottom: '8px' }}>
-            <Trophy size={18} color="#EAB308" />
-            <span style={{ fontSize: '0.85rem', fontWeight: 'bold', letterSpacing: '0.5px', color: '#FFF' }}>METROPOLIS LEADERBOARD</span>
-          </div>
-          
-          {loadingLeaderboard ? (
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textAlign: 'center', padding: '1rem 0' }}>
-              Loading standings...
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {(leaderboard.length > 0 ? leaderboard : [
-                { name: 'Linus Torvalds', avatar: '🐧', rank: 'Architect', xp: 2400 },
-                { name: 'Thomas Anderson', avatar: '🕶️', rank: 'Tech Lead', xp: 1800 },
-                { name: 'Sarah Connor', avatar: '🦾', rank: 'Developer', xp: 1200 }
-              ]).slice(0, 5).map((player, idx) => (
-                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.15)', padding: '8px 10px', borderRadius: '8px', fontSize: '0.75rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontWeight: 'bold', color: idx === 0 ? '#EAB308' : idx === 1 ? '#94A3B8' : idx === 2 ? '#B45309' : 'var(--text-secondary)' }}>
-                      {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
-                    </span>
-                    <span style={{ fontSize: '1rem' }}>{player.avatar || '🚀'}</span>
-                    <div>
-                      <div style={{ fontWeight: 'bold', color: '#FFF' }}>{player.name}</div>
-                      <div style={{ fontSize: '0.6rem', color: 'var(--text-secondary)' }}>{player.rank || 'SDE Candidate'}</div>
-                    </div>
-                  </div>
-                  <span style={{ fontWeight: 'bold', color: '#00F3FF' }}>{player.xp} XP</span>
-                </div>
-              ))}
-            </div>
+            })
           )}
         </div>
+      </div>
+
+      {/* Grid of Buildings */}
+      <div style={styles.grid}>
+        {BUILDINGS.map((b) => {
+          const IconComponent = b.icon;
+          return (
+            <div 
+              key={b.id} 
+              className="game-card" 
+              style={{ ...styles.card, '--accent-color': b.color }}
+              onClick={() => setGame(b.id)}
+              onMouseEnter={playCardHover}
+            >
+              {/* Card Header */}
+              <div style={styles.cardHeader}>
+                <div style={{ ...styles.iconWrapper, backgroundColor: `rgba(${hexToRgb(b.color)}, 0.1)`, borderColor: b.color }}>
+                  <IconComponent size={28} color={b.color} />
+                </div>
+                <div style={styles.difficultyBadge}>{b.difficulty}</div>
+              </div>
+
+              {/* Card Body */}
+              <div style={styles.cardBody}>
+                <h3 style={styles.cardTitle}>{b.title}</h3>
+                <h4 style={{ ...styles.cardSubtitle, color: b.color }}>{b.subtitle}</h4>
+                <p style={styles.cardDesc}>{b.description}</p>
+              </div>
+
+              {/* Card Footer / Rewards */}
+              <div style={styles.cardFooter}>
+                <div style={styles.rewardBadge}>
+                  <Star size={12} fill="#EAB308" color="#EAB308" />
+                  <span>{b.reputationReward}</span>
+                </div>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <button 
+                    className="game-btn" 
+                    style={{ padding: '0.4rem 0.8rem', fontSize: '0.7rem', borderColor: b.color, color: b.color, backgroundColor: 'transparent' }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDownloadPDF(b.id);
+                    }}
+                  >
+                    📄 Guide PDF
+                  </button>
+                  <span className="game-btn game-btn-primary" style={styles.enterBtn}>
+                    ENTER SECTOR
+                  </span>
+                </div>
+              </div>
+
+              {/* Glowing Background Accent */}
+              <div style={{ ...styles.glowBacklight, backgroundColor: b.color }}></div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Daily Challenge Board Footer */}
@@ -530,7 +527,7 @@ const styles = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+    gridTemplateColumns: 'repeat(3, 1fr)',
     gap: '2rem',
     width: '100%',
     maxWidth: '1200px',
@@ -667,30 +664,83 @@ const styles = {
     color: 'var(--accent-secondary)',
     boxShadow: 'var(--glow-secondary)',
   },
-  workspaceSplit: {
-    display: 'flex',
-    gap: '2rem',
+  topLeaderboardBanner: {
     width: '100%',
     maxWidth: '1200px',
     margin: '0 auto',
-    alignItems: 'flex-start',
-    flexWrap: 'wrap'
-  },
-  gridColumn: {
-    flex: 2.2,
-    minWidth: '320px'
-  },
-  leaderboardColumn: {
-    flex: 0.8,
-    minWidth: '280px',
+    padding: '1rem 2rem',
     backgroundColor: 'rgba(15, 23, 42, 0.45)',
     backdropFilter: 'blur(10px)',
     border: '1px solid rgba(0, 243, 255, 0.1)',
     borderRadius: '16px',
-    padding: '1.5rem',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: '2rem',
+    flexWrap: 'wrap',
+  },
+  leaderboardHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+  },
+  leaderboardTitleGroup: {
     display: 'flex',
     flexDirection: 'column',
+    textAlign: 'left',
+  },
+  leaderboardMainTitle: {
+    fontSize: '0.85rem',
+    fontWeight: 'bold',
+    letterSpacing: '1px',
+    color: '#FFF',
+  },
+  leaderboardSubtitle: {
+    fontSize: '0.65rem',
+    color: 'var(--text-secondary)',
+  },
+  leaderboardRowList: {
+    display: 'flex',
     gap: '1rem',
-    width: '100%'
+    flex: 1,
+    justifyContent: 'flex-end',
+    flexWrap: 'wrap',
+  },
+  leaderboardPill: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    border: '1px solid rgba(255, 255, 255, 0.03)',
+    padding: '6px 14px',
+    borderRadius: '9999px',
+    fontSize: '0.75rem',
+    minWidth: '180px',
+  },
+  pillRankBadge: {
+    fontWeight: 'bold',
+  },
+  pillAvatar: {
+    fontSize: '1rem',
+  },
+  pillInfo: {
+    display: 'flex',
+    flexDirection: 'column',
+    textAlign: 'left',
+  },
+  pillName: {
+    fontWeight: 'bold',
+    color: '#FFF',
+    lineHeight: '1.2',
+  },
+  pillRank: {
+    fontSize: '0.55rem',
+    color: 'var(--text-secondary)',
+    textTransform: 'uppercase',
+  },
+  pillXp: {
+    fontWeight: 'bold',
+    color: '#00F3FF',
+    marginLeft: 'auto',
   }
 };

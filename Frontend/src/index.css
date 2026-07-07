@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@500;700&family=Outfit:wght@300;400;600;800&display=swap');
 
 /* Reset & Base Setup */
+html {
+  scroll-behavior: smooth;
+}
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;

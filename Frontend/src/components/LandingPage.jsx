@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { usePlayerStore } from '../store/usePlayerStore';
-import { Terminal, Cpu, ShieldAlert, Sparkles, LogIn, Lock, Mail, User, ShieldCheck, Info, BookOpen, Compass } from 'lucide-react';
+import { Terminal, Cpu, ShieldAlert, Sparkles, LogIn, Lock, Mail, User, ShieldCheck, Info, BookOpen, Compass, GraduationCap, Building2 } from 'lucide-react';
 
-const AVATARS = ['🚀', '💻', '🧠', '🤖', '⚔️', '🏢', '🕵️', '🧙'];
+const AVATAR_GROUPS = [
+  { category: '🤖 AI & Tech', list: ['🤖', '🦾', '🧠', '👾', '📡'] },
+  { category: '🕶️ Hacker Security', list: ['🕶️', '🕵️', '🎭', '🛡️', '🔑'] },
+  { category: '🧙 Sages & Wizards', list: ['🧙', '🧙‍♀️', '🔮', '🦁', '🦊'] },
+  { category: '🚀 Space & Gears', list: ['💻', '🚀', '🛰️', '⚛️', '⚙️'] }
+];
+const AVATARS = AVATAR_GROUPS.flatMap(g => g.list);
 
 export default function LandingPage() {
   const { setGame } = usePlayerStore();
@@ -10,13 +16,19 @@ export default function LandingPage() {
   // Navigation & Modal state
   const [modalActive, setModalActive] = useState(false);
   const [authMode, setAuthMode] = useState('signup'); // 'signup', 'signin'
-  const [signupStep, setSignupStep] = useState(1); // 1: credentials, 2: profile details
+  const [signupStep, setSignupStep] = useState(1); // 1: credentials, 2: college details, 3: profile details
   
   // Auth Form State
   const [emailInput, setEmailInput] = useState('');
   const [passInput, setPassInput] = useState('');
   const [nameInput, setNameInput] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState('🚀');
+
+  // College Onboarding Form State
+  const [collegeNameInput, setCollegeNameInput] = useState('');
+  const [departmentInput, setDepartmentInput] = useState('');
+  const [gradYearInput, setGradYearInput] = useState('');
+  const [rollNumberInput, setRollNumberInput] = useState('');
 
   const handleCredentialsSubmit = async (e) => {
     e.preventDefault();
@@ -26,7 +38,7 @@ export default function LandingPage() {
     }
 
     if (authMode === 'signup') {
-      setSignupStep(2);
+      setSignupStep(2); // Move to College Details
     } else {
       // Sign In: fetch token from server
       try {
@@ -50,6 +62,10 @@ export default function LandingPage() {
             unlockedSkills: data.student.unlockedSkills,
             heistLevelsCompleted: data.student.heistLevelsCompleted,
             aptiHighScore: data.student.aptiHighScore,
+            collegeName: data.student.collegeName,
+            department: data.student.department,
+            gradYear: data.student.gradYear,
+            rollNumber: data.student.rollNumber,
             activeGame: null // Enter the Hub
           });
         } else {
@@ -59,6 +75,15 @@ export default function LandingPage() {
         alert("🚨 Connection failed! Please make sure your Node.js backend is running on port 5000.");
       }
     }
+  };
+
+  const handleCollegeDetailsSubmit = (e) => {
+    e.preventDefault();
+    if (!collegeNameInput.trim() || !departmentInput.trim() || !gradYearInput.trim() || !rollNumberInput.trim()) {
+      alert("⚠️ All college information fields are required!");
+      return;
+    }
+    setSignupStep(3); // Move to Profile setup
   };
 
   const handleProfileSubmit = async (e) => {
@@ -77,7 +102,11 @@ export default function LandingPage() {
           email: emailInput, 
           password: passInput, 
           name: nameInput, 
-          avatar: selectedAvatar 
+          avatar: selectedAvatar,
+          collegeName: collegeNameInput,
+          department: departmentInput,
+          gradYear: parseInt(gradYearInput, 10),
+          rollNumber: rollNumberInput
         })
       });
       const data = await response.json();
@@ -95,6 +124,10 @@ export default function LandingPage() {
           unlockedSkills: data.student.unlockedSkills,
           heistLevelsCompleted: data.student.heistLevelsCompleted,
           aptiHighScore: data.student.aptiHighScore,
+          collegeName: data.student.collegeName,
+          department: data.student.department,
+          gradYear: data.student.gradYear,
+          rollNumber: data.student.rollNumber,
           activeGame: null // Enter the Hub
         });
       } else {
@@ -125,6 +158,10 @@ export default function LandingPage() {
             unlockedSkills: data.student.unlockedSkills,
             heistLevelsCompleted: data.student.heistLevelsCompleted,
             aptiHighScore: data.student.aptiHighScore,
+            collegeName: data.student.collegeName,
+            department: data.student.department,
+            gradYear: data.student.gradYear,
+            rollNumber: data.student.rollNumber,
             activeGame: null // Enter Hub
           });
         } else {
@@ -281,7 +318,7 @@ export default function LandingPage() {
             <button style={styles.closeBtn} onClick={() => setModalActive(false)}>×</button>
             
             {/* Step 1: Normal Credentials */}
-            {signupStep === 1 ? (
+            {signupStep === 1 && (
               <div>
                 <div style={styles.tabsRow}>
                   <button 
@@ -336,12 +373,90 @@ export default function LandingPage() {
                   </button>
                 </form>
               </div>
-            ) : (
-              /* Step 2: Onboarding Setup (Only for Sign Up) */
+            )}
+
+            {/* Step 2: College Details Onboarding (Registration Only) */}
+            {authMode === 'signup' && signupStep === 2 && (
+              <form onSubmit={handleCollegeDetailsSubmit} style={styles.form}>
+                <div style={styles.onboardHeading}>
+                  <h3>🎓 Academic Verification</h3>
+                  <p>Register your college details for institutional scoring.</p>
+                </div>
+
+                <div style={styles.inputGroup}>
+                  <label style={styles.label}>COLLEGE / UNIVERSITY</label>
+                  <div style={styles.inputWrapper}>
+                    <Building2 size={16} color="var(--text-secondary)" />
+                    <input 
+                      type="text" 
+                      placeholder="e.g. Stanford University" 
+                      value={collegeNameInput}
+                      onChange={(e) => setCollegeNameInput(e.target.value)}
+                      style={styles.input}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div style={styles.inputGroup}>
+                  <label style={styles.label}>DEPARTMENT / BRANCH</label>
+                  <div style={styles.inputWrapper}>
+                    <GraduationCap size={16} color="var(--text-secondary)" />
+                    <input 
+                      type="text" 
+                      placeholder="e.g. Computer Science" 
+                      value={departmentInput}
+                      onChange={(e) => setDepartmentInput(e.target.value)}
+                      style={styles.input}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '1rem' }}>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>GRAD YEAR</label>
+                    <div style={styles.inputWrapper}>
+                      <input 
+                        type="number" 
+                        placeholder="2027" 
+                        value={gradYearInput}
+                        onChange={(e) => setGradYearInput(e.target.value)}
+                        style={styles.input}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>STUDENT ID / ROLL NO</label>
+                    <div style={styles.inputWrapper}>
+                      <input 
+                        type="text" 
+                        placeholder="e.g. CS-9081" 
+                        value={rollNumberInput}
+                        onChange={(e) => setRollNumberInput(e.target.value)}
+                        style={styles.input}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <button type="submit" className="game-btn game-btn-primary" style={styles.submitBtn}>
+                  Verify & Proceed
+                </button>
+                <button type="button" style={styles.backBtn} onClick={() => setSignupStep(1)}>
+                  ← Back to Credentials
+                </button>
+              </form>
+            )}
+
+            {/* Step 3: Avatar & Display Handle Selection */}
+            {authMode === 'signup' && signupStep === 3 && (
               <form onSubmit={handleProfileSubmit} style={styles.form}>
                 <div style={styles.onboardHeading}>
                   <h3>🛠️ Setup Character Module</h3>
-                  <p>Choose your display handle and system avatar.</p>
+                  <p>Choose your handle and categorized system avatar.</p>
                 </div>
 
                 <div style={styles.inputGroup}>
@@ -359,28 +474,39 @@ export default function LandingPage() {
                   </div>
                 </div>
 
+                {/* Categorized Avatar Groups */}
                 <div style={styles.inputGroup}>
-                  <label style={styles.label}>SELECT SYSTEM AVATAR</label>
-                  <div style={styles.avatarGrid}>
-                    {AVATARS.map((av) => (
-                      <button
-                        key={av}
-                        type="button"
-                        style={{ 
-                          ...styles.avatarBtn, 
-                          borderColor: selectedAvatar === av ? 'var(--accent-color)' : 'var(--border-color)',
-                          backgroundColor: selectedAvatar === av ? 'rgba(99, 102, 241, 0.1)' : 'var(--bg-tertiary)'
-                        }}
-                        onClick={() => setSelectedAvatar(av)}
-                      >
-                        {av}
-                      </button>
+                  <label style={styles.label}>CHOOSE SYSTEM AVATAR</label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '160px', overflowY: 'auto', paddingRight: '4px' }}>
+                    {AVATAR_GROUPS.map((group) => (
+                      <div key={group.category} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <span style={{ fontSize: '0.65rem', fontWeight: 'bold', color: 'var(--accent-color)', letterSpacing: '0.5px' }}>{group.category}</span>
+                        <div style={styles.avatarGrid}>
+                          {group.list.map((av) => (
+                            <button
+                              key={av}
+                              type="button"
+                              style={{ 
+                                ...styles.avatarBtn, 
+                                borderColor: selectedAvatar === av ? 'var(--accent-color)' : 'var(--border-color)',
+                                backgroundColor: selectedAvatar === av ? 'rgba(99, 102, 241, 0.1)' : 'var(--bg-tertiary)'
+                              }}
+                              onClick={() => setSelectedAvatar(av)}
+                            >
+                              {av}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
 
                 <button type="submit" className="game-btn game-btn-primary" style={styles.submitBtn}>
                   Create Profile & Enter Grid
+                </button>
+                <button type="button" style={styles.backBtn} onClick={() => setSignupStep(2)}>
+                  ← Back to College Details
                 </button>
               </form>
             )}

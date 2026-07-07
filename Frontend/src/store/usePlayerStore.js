@@ -49,6 +49,10 @@ export const usePlayerStore = create((set, get) => ({
   maxHearts: 5,
   streak: 3, // Mocking a 3-day streak to start with a nice visual
   activeGame: 'landing', // 'landing', 'hub', 'career-tower', 'sql-heist', 'algo-arena', 'startup-garage', 'internship-detective', 'apti-rush', 'profile'
+  collegeName: '',
+  department: '',
+  gradYear: null,
+  rollNumber: '',
 
   // Skill Tree state
   classType: null, // 'Frontend Mage', 'Backend Guardian', 'AI Alchemist', 'UI/UX Rogue'
@@ -149,7 +153,11 @@ export const usePlayerStore = create((set, get) => ({
       arenaLevel: 1,
       aptiHighScore: 0,
       startupMaxRevenue: 0,
-      detectiveEndingsUnlocked: []
+      detectiveEndingsUnlocked: [],
+      collegeName: '',
+      department: '',
+      gradYear: null,
+      rollNumber: ''
     });
     syncProgressWithBackend(get());
   }
