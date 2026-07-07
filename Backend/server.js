@@ -9,14 +9,15 @@ const { connectDB, closeDB } = require('./config/db');
 connectDB().then(async () => {
   try {
     const Question = require('./models/Question');
-    const count = await Question.countDocuments();
-    if (count === 0) {
-      console.log('🌱 Seeding initial database questions...');
+    const hasNewSeed = await Question.findOne({ 'extraDetails.file': 'reporting.sql' });
+    if (!hasNewSeed) {
+      console.log('🌱 Database needs seeding/updating. Clearing old questions and seeding new ones...');
+      await Question.deleteMany({});
       const fs = require('fs');
       const path = require('path');
       const seedQuestions = JSON.parse(fs.readFileSync(path.join(__dirname, './seedData.json'), 'utf8'));
       await Question.insertMany(seedQuestions);
-      console.log('✅ Initial database questions seeded successfully!');
+      console.log('✅ Database questions seeded successfully!');
     }
   } catch (err) {
     console.error('❌ Database seeding failed:', err.message);

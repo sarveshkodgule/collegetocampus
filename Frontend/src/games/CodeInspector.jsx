@@ -20,7 +20,7 @@ const inspectorAudio = {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       this.ctx = new AudioContextClass();
       this.masterGain = this.ctx.createGain();
-      this.masterGain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+      this.masterGain.gain.setValueAtTime(0.2, this.ctx.currentTime); // Boosted master gain volume
       this.masterGain.connect(this.ctx.destination);
     } catch (e) {
       console.warn("Inspector audio engine failed to load:", e);
@@ -211,6 +211,111 @@ const MISSIONS = [
     ],
     bugLine: 3,
     reward: { coins: 200, xp: 90 }
+  },
+  {
+    id: 4,
+    title: 'Python Threading Data Race',
+    dept: '🐍 Data Science Team',
+    threat: 'MEDIUM',
+    enemy: { name: '👾 Race Condition', icon: '👾', hp: 110 },
+    timeLimit: 90,
+    hint: 'Mutating a Python list or dictionary directly while iterating over it in another thread throws a RuntimeError.',
+    file: 'datasaver.py',
+    code: [
+      `import threading`,
+      `active_connections = {'user1': 'online', 'user2': 'idle'}`,
+      `def clean_inactive_connections():`,
+      `  # BUG: Iterating directly over the dict keys while deleting items!`,
+      `  for user in active_connections:`,
+      `    if active_connections[user] == 'idle':`,
+      `      del active_connections[user] // RUNTIME EXCEPTION HERE!`,
+      `  print('Clean complete.')`
+    ],
+    bugLine: 4,
+    reward: { coins: 140, xp: 55 }
+  },
+  {
+    id: 5,
+    title: 'JavaScript Scope Leak',
+    dept: '🌐 Web Platform',
+    threat: 'LOW',
+    enemy: { name: '👻 Memory Leak', icon: '👻', hp: 90 },
+    timeLimit: 100,
+    hint: 'Assigning variables without const/let/var declarations binds them to global scope, leaking memory.',
+    file: 'authHandler.js',
+    code: [
+      `function setupUserSession(user) {`,
+      `  const sessionToken = generateToken(user.id);`,
+      `  // BUG: Missing let/const declaration leaks variable to global window object!`,
+      `  globalSessionStore = { token: sessionToken, active: true };`,
+      `  return globalSessionStore;`,
+      `}`
+    ],
+    bugLine: 3,
+    reward: { coins: 90, xp: 45 }
+  },
+  {
+    id: 6,
+    title: 'C++ Stack Overflow Vulnerability',
+    dept: '🛡️ Cybersecurity Ops',
+    threat: 'CRITICAL',
+    enemy: { name: '💀 Buffer Overflow', icon: '💀', hp: 160 },
+    timeLimit: 80,
+    hint: 'Using strcpy or gets directly transfers uncontrolled buffer sizes onto stack buffers.',
+    file: 'network_parser.cpp',
+    code: [
+      `#include <cstring>`,
+      `void parseIncomingBuffer(char* networkStream) {`,
+      `  char stackBuffer[32];`,
+      `  // BUG: strcpy does not check size limits, causing stack buffer overflows!`,
+      `  strcpy(stackBuffer, networkStream);`,
+      `}`
+    ],
+    bugLine: 4,
+    reward: { coins: 210, xp: 95 }
+  },
+  {
+    id: 7,
+    title: 'Java Iterator Modification',
+    dept: '☕ Enterprise Services',
+    threat: 'MEDIUM',
+    enemy: { name: '⚡ Thread Crash', icon: '⚡', hp: 130 },
+    timeLimit: 85,
+    hint: 'Modifying a Java ArrayList structurally inside a foreach loop throws ConcurrentModificationException.',
+    file: 'TaskService.java',
+    code: [
+      `import java.util.ArrayList;`,
+      `public void filterCompletedTasks(ArrayList<String> tasks) {`,
+      `  // BUG: Removing items inside a foreach loop breaks iterator`,
+      `  for (String task : tasks) {`,
+      `    if (task.contains("COMPLETE")) {`,
+      `      tasks.remove(task);`,
+      `    }`,
+      `  }`,
+      `}`
+    ],
+    bugLine: 5,
+    reward: { coins: 160, xp: 70 }
+  },
+  {
+    id: 8,
+    title: 'SQL Zero-Division Vulnerability',
+    dept: '📊 Analytics Team',
+    threat: 'LOW',
+    enemy: { name: '🐛 Divide By Zero', icon: '🐛', hp: 85 },
+    timeLimit: 110,
+    hint: 'Dividing metrics directly by count variables will crash the query engine when denominator is zero.',
+    file: 'reporting.sql',
+    code: [
+      `-- Generate daily server report`,
+      `SELECT`,
+      `  server_id,`,
+      `  -- BUG: Directly dividing by total_requests which could be zero!`,
+      `  total_latency / total_requests AS avg_latency`,
+      `FROM server_metrics;`
+    ],
+    bugLine: 4,
+    reward: { coins: 100, xp: 50 }
   }
 ];
 
@@ -294,7 +399,7 @@ export default function CodeInspector() {
 
   // Sounds loops setup
   useEffect(() => {
-    if (soundEnabled && activeScreen === 'ide') {
+    if (soundEnabled && (activeScreen === 'ide' || activeScreen === 'briefing')) {
       inspectorAudio.isEnabled = true;
       // If timer is critical, speed up the heartbeat
       const tempo = timer < 30 ? 200 : 350;

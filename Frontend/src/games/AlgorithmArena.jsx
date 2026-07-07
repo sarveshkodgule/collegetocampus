@@ -344,14 +344,13 @@ export default function AlgorithmArena() {
   const [monsters, setMonsters] = useState(MONSTERS);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/questions?category=algo-arena')
+    fetch('http://localhost:5000/api/questions?category=algo-arena&limit=100')
       .then(res => res.json())
       .then(data => {
         if (data.success && data.questions && data.questions.length > 0) {
           const mappedMonsters = MONSTERS.map(monster => {
-            const difficultyFilter = monster.level === 1 ? 'easy' : monster.level === 2 ? 'medium' : 'hard';
             const dbQuestions = data.questions
-              .filter(q => q.difficulty === difficultyFilter)
+              .filter(q => q.extraDetails && q.extraDetails.subCategory === monster.type)
               .map(q => ({
                 q: q.question,
                 opts: q.options,

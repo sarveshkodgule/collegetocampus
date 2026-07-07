@@ -646,11 +646,18 @@ export default function ResumeBuilderTycoon() {
               <p style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Increases dev project compiling rate by 50%.</p>
               <button 
                 className="game-btn game-btn-primary" 
-                style={{ backgroundColor: '#F97316', borderColor: '#F97316', color: '#000', fontSize: '0.7rem', padding: '4px' }}
+                style={{ 
+                  backgroundColor: (laptopUpgrade === 'SSD Dev Rig' || laptopUpgrade === 'Elite Workstation') ? 'rgba(255, 255, 255, 0.08)' : '#F97316', 
+                  borderColor: (laptopUpgrade === 'SSD Dev Rig' || laptopUpgrade === 'Elite Workstation') ? 'rgba(255, 255, 255, 0.1)' : '#F97316', 
+                  color: (laptopUpgrade === 'SSD Dev Rig' || laptopUpgrade === 'Elite Workstation') ? 'var(--text-secondary)' : '#000', 
+                  fontSize: '0.7rem', 
+                  padding: '4px',
+                  cursor: (laptopUpgrade === 'SSD Dev Rig' || laptopUpgrade === 'Elite Workstation') ? 'not-allowed' : 'pointer'
+                }}
                 onClick={() => handleBuyLaptop('SSD Dev Rig', 80)}
                 disabled={laptopUpgrade === 'SSD Dev Rig' || laptopUpgrade === 'Elite Workstation'}
               >
-                Buy (80 Coins)
+                {laptopUpgrade === 'SSD Dev Rig' || laptopUpgrade === 'Elite Workstation' ? 'Owned' : 'Buy (80 Coins)'}
               </button>
             </div>
 
@@ -659,11 +666,18 @@ export default function ResumeBuilderTycoon() {
               <p style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Increases dev compiling speed by 150%.</p>
               <button 
                 className="game-btn game-btn-primary" 
-                style={{ backgroundColor: '#F97316', borderColor: '#F97316', color: '#000', fontSize: '0.7rem', padding: '4px' }}
+                style={{ 
+                  backgroundColor: (laptopUpgrade === 'Elite Workstation') ? 'rgba(255, 255, 255, 0.08)' : '#F97316', 
+                  borderColor: (laptopUpgrade === 'Elite Workstation') ? 'rgba(255, 255, 255, 0.1)' : '#F97316', 
+                  color: (laptopUpgrade === 'Elite Workstation') ? 'var(--text-secondary)' : '#000', 
+                  fontSize: '0.7rem', 
+                  padding: '4px',
+                  cursor: (laptopUpgrade === 'Elite Workstation') ? 'not-allowed' : 'pointer'
+                }}
                 onClick={() => handleBuyLaptop('Elite Workstation', 180)}
                 disabled={laptopUpgrade === 'Elite Workstation'}
               >
-                Buy (180 Coins)
+                {laptopUpgrade === 'Elite Workstation' ? 'Owned' : 'Buy (180 Coins)'}
               </button>
             </div>
           </div>

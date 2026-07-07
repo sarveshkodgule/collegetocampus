@@ -11,6 +11,8 @@ const escapeAudio = {
   ctx: null,
   masterGain: null,
   isEnabled: true,
+  bgmInterval: null,
+  bgmStep: 0,
 
   init() {
     if (this.ctx) return;
@@ -18,10 +20,47 @@ const escapeAudio = {
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       this.ctx = new AudioContextClass();
       this.masterGain = this.ctx.createGain();
-      this.masterGain.gain.setValueAtTime(0.03, this.ctx.currentTime);
+      this.masterGain.gain.setValueAtTime(0.12, this.ctx.currentTime); // Boosted master gain volume
       this.masterGain.connect(this.ctx.destination);
     } catch (e) {
       console.warn("Escape audio engine failed to load:", e);
+    }
+  },
+
+  playBgm(speedMs = 400) {
+    this.init();
+    if (!this.ctx || this.bgmInterval || !this.isEnabled) return;
+    if (this.ctx.state === 'suspended') this.ctx.resume();
+
+    // Mysterious ambient chime chords loop
+    const melody = [220.00, 261.63, 293.66, 329.63, 392.00, 329.63, 293.66, 261.63];
+
+    this.bgmStep = 0;
+    this.bgmInterval = setInterval(() => {
+      const time = this.ctx.currentTime;
+      
+      // Soft ambient low chime (triangle)
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(melody[this.bgmStep % melody.length] / 2, time);
+
+      gain.gain.setValueAtTime(0.12, time);
+      gain.gain.linearRampToValueAtTime(0.001, time + (speedMs / 1000) - 0.05);
+
+      osc.connect(gain);
+      gain.connect(this.masterGain);
+      osc.start(time);
+      osc.stop(time + (speedMs / 1000));
+
+      this.bgmStep++;
+    }, speedMs);
+  },
+
+  stopBgm() {
+    if (this.bgmInterval) {
+      clearInterval(this.bgmInterval);
+      this.bgmInterval = null;
     }
   },
 
@@ -219,6 +258,18 @@ export default function InterviewEscapeRoom() {
   // Custom states
   const activeLevel = ESCAPE_LEVELS[currentLevelIdx] || ESCAPE_LEVELS[0];
   const [soundEnabled, setSoundEnabled] = useState(true);
+
+  // Handle background music loop
+  useEffect(() => {
+    if (soundEnabled && activeScreen !== 'menu') {
+      escapeAudio.isEnabled = true;
+      escapeAudio.stopBgm();
+      escapeAudio.playBgm();
+    } else {
+      escapeAudio.stopBgm();
+    }
+    return () => escapeAudio.stopBgm();
+  }, [soundEnabled, activeScreen]);
 
   // SQL Vault Chamber states
   const [sqlQuery, setSqlQuery] = useState('');

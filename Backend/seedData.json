@@ -62,41 +62,281 @@
   {
     "category": "algo-arena",
     "difficulty": "easy",
-    "question": "What is the time complexity to retrieve an array element directly using its memory index?",
-    "options": [
-      "O(1)",
-      "O(log n)",
-      "O(n)",
-      "O(n²)"
-    ],
+    "question": "What is the time complexity to access an element in an array of size N using its index?",
+    "options": ["O(1)", "O(log n)", "O(n)", "O(n²)"],
     "correctAnswer": 0,
-    "tip": "Array lookups use direct memory offsets, resolving instantly in constant O(1) time."
+    "tip": "Array lookups use direct memory offsets, resolving instantly in constant O(1) time.",
+    "extraDetails": { "subCategory": "array" }
   },
   {
     "category": "algo-arena",
     "difficulty": "medium",
-    "question": "Which divide-and-conuer sorting algorithm guarantees a worst-case O(n log n) complexity and preserves element stability?",
-    "options": [
-      "Quick Sort",
-      "Merge Sort",
-      "Heap Sort",
-      "Bubble Sort"
-    ],
+    "question": "Which sorting algorithm has a guaranteed worst-case time complexity of O(n log n) and is stable?",
+    "options": ["Quick Sort", "Merge Sort", "Heap Sort", "Selection Sort"],
     "correctAnswer": 1,
-    "tip": "Merge Sort divides arrays recursively, merging them in O(n log n) time while maintaining stability."
+    "tip": "Merge Sort is a stable, divide-and-conquer sort with a guaranteed O(n log n) complexity.",
+    "extraDetails": { "subCategory": "array" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "What is the time complexity of comparing two strings of lengths M and N for equality in the worst case?",
+    "options": ["O(1)", "O(min(M, N))", "O(M + N)", "O(M * N)"],
+    "correctAnswer": 1,
+    "tip": "In the worst case, we must compare characters up to the length of the shorter string, so O(min(M, N)).",
+    "extraDetails": { "subCategory": "string" }
   },
   {
     "category": "algo-arena",
     "difficulty": "hard",
-    "question": "Which graph algorithm finds the single-source shortest path in a weighted graph containing negative edge weights without cycle issues?",
-    "options": [
-      "Dijkstra's Algorithm",
-      "Bellman-Ford Algorithm",
-      "Kruskal's Algorithm",
-      "Breadth-First Search"
-    ],
+    "question": "Which string pattern matching algorithm operates in O(N + M) worst-case time using a prefix table?",
+    "options": ["Naive Search", "KMP (Knuth-Morris-Pratt)", "Rabin-Karp", "Boyer-Moore"],
     "correctAnswer": 1,
-    "tip": "Bellman-Ford checks all edges V-1 times, detecting negative weight loops which Dijkstra fails to handle."
+    "tip": "KMP precomputes a prefix table (LPS) to skip redundant comparisons, running in O(N + M).",
+    "extraDetails": { "subCategory": "string" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "easy",
+    "question": "Which data structure operates on a Last-In, First-Out (LIFO) access pattern?",
+    "options": ["Queue", "Stack", "Linked List", "Heap"],
+    "correctAnswer": 1,
+    "tip": "Stacks are LIFO structures (elements are added and removed from the same end).",
+    "extraDetails": { "subCategory": "stackqueue" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "What is the time complexity of enqueue and dequeue operations in an optimal Queue implementation?",
+    "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+    "correctAnswer": 0,
+    "tip": "Both enqueue and dequeue operate in O(1) constant time when using pointers to the front and rear.",
+    "extraDetails": { "subCategory": "stackqueue" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "If you push elements [10, 20, 30] sequentially onto a stack, what is the output order if you pop them all?",
+    "options": ["[10, 20, 30]", "[30, 20, 10]", "[20, 30, 10]", "[10, 30, 20]"],
+    "correctAnswer": 1,
+    "tip": "The last element pushed (30) is the first popped, then 20, then 10 (LIFO order).",
+    "extraDetails": { "subCategory": "stackqueue" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "What is the worst-case lookup time complexity of a Hash Map if all elements hash to the same bucket?",
+    "options": ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+    "correctAnswer": 2,
+    "tip": "If all keys collide, they form a single list, degrading the search time to linear O(n).",
+    "extraDetails": { "subCategory": "hash" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "Which collision resolution technique stores colliding elements in a separate linked list at the hash bucket?",
+    "options": ["Linear Probing", "Quadratic Probing", "Double Hashing", "Separate Chaining"],
+    "correctAnswer": 3,
+    "tip": "Separate Chaining solves collisions by linking elements into a list at the corresponding bucket index.",
+    "extraDetails": { "subCategory": "hash" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "What is a primary advantage of open addressing over separate chaining in hash tables?",
+    "options": ["Lower worst-case complexity", "Better cache locality", "Simple resizing", "No hash calculation needed"],
+    "correctAnswer": 1,
+    "tip": "Open addressing stores all elements inside the table array directly, improving CPU cache utilization.",
+    "extraDetails": { "subCategory": "hash" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "easy",
+    "question": "Which binary tree traversal visits nodes in the order: Left Subtree, Root, Right Subtree?",
+    "options": ["Pre-order", "In-order", "Post-order", "Level-order"],
+    "correctAnswer": 1,
+    "tip": "In-order traversal visits left-subtree, root, then right-subtree (L-Root-R).",
+    "extraDetails": { "subCategory": "tree" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "What is the height of a balanced Binary Search Tree containing N elements in the worst case?",
+    "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+    "correctAnswer": 1,
+    "tip": "A balanced BST maintains a height of O(log n), keeping search operations logarithmic.",
+    "extraDetails": { "subCategory": "tree" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "Which traversal of a BST yields elements in sorted ascending order?",
+    "options": ["Pre-order", "In-order", "Post-order", "Breadth-First"],
+    "correctAnswer": 1,
+    "tip": "In-order traversal visits BST keys in strictly increasing order (sorted ascending).",
+    "extraDetails": { "subCategory": "tree" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "easy",
+    "question": "In a Min-Heap represented as an array, at what index is the minimum element always located?",
+    "options": ["Last index (n - 1)", "Root index (0)", "Middle index (n / 2)", "Random index"],
+    "correctAnswer": 1,
+    "tip": "The root of a min-heap holds the smallest value, located at array index 0.",
+    "extraDetails": { "subCategory": "heap" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "What is the worst-case time complexity of inserting a new element into a Max-Heap of size N?",
+    "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+    "correctAnswer": 1,
+    "tip": "Inserting an element adds it at the bottom and bubbles it up, which takes O(log n) swaps.",
+    "extraDetails": { "subCategory": "heap" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "What is the time complexity to build a Heap from an unsorted array of size N?",
+    "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+    "correctAnswer": 2,
+    "tip": "Using the bottom-up heapify algorithm, a heap can be constructed in O(n) linear time.",
+    "extraDetails": { "subCategory": "heap" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "easy",
+    "question": "Which algorithm uses a FIFO Queue to traverse graph nodes level-by-level?",
+    "options": ["Depth-First Search (DFS)", "Breadth-First Search (BFS)", "Bellman-Ford", "Prim"],
+    "correctAnswer": 1,
+    "tip": "BFS explores neighbor nodes level-by-level using a FIFO Queue.",
+    "extraDetails": { "subCategory": "graph" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "What data structure is typically used to implement Depth-First Search (DFS) recursively or iteratively?",
+    "options": ["Queue", "Stack", "Heap", "Hash Table"],
+    "correctAnswer": 1,
+    "tip": "DFS uses a Stack (the call stack recursively or an explicit stack iteratively) to backtrack.",
+    "extraDetails": { "subCategory": "graph" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "What is the worst-case time complexity of BFS on an adjacency list graph with V vertices and E edges?",
+    "options": ["O(V)", "O(E)", "O(V + E)", "O(V * E)"],
+    "correctAnswer": 2,
+    "tip": "BFS visits each vertex and edge once, yielding a time complexity of O(V + E).",
+    "extraDetails": { "subCategory": "graph" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "A graph with vertices V and no cycles is called a tree. How many edges does it have?",
+    "options": ["V", "V - 1", "V + 1", "2V"],
+    "correctAnswer": 1,
+    "tip": "A tree (a connected acyclic graph) with V vertices always has exactly V - 1 edges.",
+    "extraDetails": { "subCategory": "graph" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "Why can Dijkstra's algorithm NOT be used on graphs with negative edge weights?",
+    "options": ["It runs in an infinite loop", "It makes greedy decisions that cannot be corrected later", "It only works on trees", "It requires undirected graphs"],
+    "correctAnswer": 1,
+    "tip": "Dijkstra's algorithm assumes paths only get longer. Negative weights invalidate this greedy assumption.",
+    "extraDetails": { "subCategory": "dijkstra" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "Which algorithm finds shortest paths in a graph with negative edge weights (provided there are no negative cycles)?",
+    "options": ["Dijkstra", "Bellman-Ford", "Kruskal", "Floyd-Warshall"],
+    "correctAnswer": 1,
+    "tip": "Bellman-Ford can handle negative weights and detect negative-weight cycles in O(V * E) time.",
+    "extraDetails": { "subCategory": "dijkstra" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "What is the time complexity of Kruskal's algorithm to find a Minimum Spanning Tree of a graph with E edges?",
+    "options": ["O(V²)", "O(E log E)", "O(E log V)", "Both O(E log E) and O(E log V) are equivalent"],
+    "correctAnswer": 3,
+    "tip": "Sorting edges takes O(E log E). Since E <= V², log E is O(log V), making O(E log E) and O(E log V) equivalent.",
+    "extraDetails": { "subCategory": "dijkstra" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "Which data structure is typically used to optimize Dijkstra's algorithm to run in O(E log V) time?",
+    "options": ["Stack", "Binary Search Tree", "Min-Priority Queue / Min-Heap", "Queue"],
+    "correctAnswer": 2,
+    "tip": "A Min-Priority Queue enables retrieving the vertex with the minimum distance in O(log V) time.",
+    "extraDetails": { "subCategory": "dijkstra" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "easy",
+    "question": "What is the top-down approach to Dynamic Programming called?",
+    "options": ["Tabulation", "Memoization", "Recursion", "Backtracking"],
+    "correctAnswer": 1,
+    "tip": "Memoization is the top-down recursive caching technique; Tabulation is the bottom-up table-filling technique.",
+    "extraDetails": { "subCategory": "dp" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "What is the time complexity of the classic Knapsack 0/1 problem solved using Dynamic Programming with N items and weight capacity W?",
+    "options": ["O(2^N)", "O(N log N)", "O(N * W)", "O(N + W)"],
+    "correctAnswer": 2,
+    "tip": "The DP solution fills a table of size N x W, resulting in a time complexity of O(N * W) (pseudo-polynomial).",
+    "extraDetails": { "subCategory": "dp" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "What does Dynamic Programming require that makes it different from simple Divide-and-Conquer?",
+    "options": ["Recursive calls", "Overlapping subproblems", "Sorted inputs", "Linear space"],
+    "correctAnswer": 1,
+    "tip": "DP is used when subproblems overlap and are recomputed multiple times. Divide-and-Conquer splits into independent subproblems.",
+    "extraDetails": { "subCategory": "dp" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "What is the time complexity of solving the Longest Common Subsequence (LCS) of two strings of lengths M and N using DP?",
+    "options": ["O(M + N)", "O(M * N)", "O(2^(M+N))", "O(M² + N²)"],
+    "correctAnswer": 1,
+    "tip": "LCS uses a 2D table of dimensions (M+1) x (N+1), taking O(M * N) time.",
+    "extraDetails": { "subCategory": "dp" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "easy",
+    "question": "What search strategy does Backtracking search use to search for solutions in a state-space tree?",
+    "options": ["Breadth-First Search (BFS)", "Depth-First Search (DFS) with pruning", "Greedy Selection", "Dijkstra's Search"],
+    "correctAnswer": 1,
+    "tip": "Backtracking uses DFS to traverse the state space, pruning invalid branches as soon as constraints are violated.",
+    "extraDetails": { "subCategory": "backtrack" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "Which of the following problems is most commonly solved using a Backtracking algorithm?",
+    "options": ["Fibonacci Sequence", "Sudoku Solver", "Kruskal's MST", "Binary Search"],
+    "correctAnswer": 1,
+    "tip": "Sudoku involves trying candidates in cells and backtracking when a constraint (row/col/grid) is violated.",
+    "extraDetails": { "subCategory": "backtrack" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "What is the worst-case time complexity of the N-Queens placement problem solved using backtracking?",
+    "options": ["O(N²)", "O(N log N)", "O(N!)", "O(2^N)"],
+    "correctAnswer": 2,
+    "tip": "N-Queens checks column assignments, which is a permutation problem taking O(N!) in the worst case.",
+    "extraDetails": { "subCategory": "backtrack" }
   },
   {
     "category": "apti-rush",
@@ -248,5 +488,115 @@
     ],
     "correctAnswer": 0,
     "tip": "In-place swaps require only a single temp pointer, taking constant O(1) space."
+  },
+  {
+    "category": "code-inspector",
+    "difficulty": "medium",
+    "question": "Python Threading Data Race",
+    "options": [
+      "import threading",
+      "active_connections = {'user1': 'online', 'user2': 'idle'}",
+      "def clean_inactive_connections():",
+      "  # BUG: Iterating directly over the dict keys while deleting items!",
+      "  for user in active_connections:",
+      "    if active_connections[user] == 'idle':",
+      "      del active_connections[user] // RUNTIME EXCEPTION HERE!",
+      "  print('Clean complete.')"
+    ],
+    "correctAnswer": 4,
+    "tip": "Mutating a Python list or dictionary directly while iterating over it in another thread throws a RuntimeError.",
+    "extraDetails": {
+      "file": "datasaver.py",
+      "dept": "🐍 Data Science Team",
+      "threat": "MEDIUM",
+      "enemy": { "name": "👾 Race Condition", "icon": "👾", "hp": 110 }
+    }
+  },
+  {
+    "category": "code-inspector",
+    "difficulty": "easy",
+    "question": "JavaScript Scope Leak",
+    "options": [
+      "function setupUserSession(user) {",
+      "  const sessionToken = generateToken(user.id);",
+      "  // BUG: Missing let/const declaration leaks variable to global window object!",
+      "  globalSessionStore = { token: sessionToken, active: true };",
+      "  return globalSessionStore;",
+      "}"
+    ],
+    "correctAnswer": 3,
+    "tip": "Assigning variables without const/let/var declarations binds them to global scope, leaking memory.",
+    "extraDetails": {
+      "file": "authHandler.js",
+      "dept": "🌐 Web Platform",
+      "threat": "LOW",
+      "enemy": { "name": "👻 Memory Leak", "icon": "👻", "hp": 90 }
+    }
+  },
+  {
+    "category": "code-inspector",
+    "difficulty": "critical",
+    "question": "C++ Stack Overflow Vulnerability",
+    "options": [
+      "#include <cstring>",
+      "void parseIncomingBuffer(char* networkStream) {",
+      "  char stackBuffer[32];",
+      "  // BUG: strcpy does not check size limits, causing stack buffer overflows!",
+      "  strcpy(stackBuffer, networkStream);",
+      "}"
+    ],
+    "correctAnswer": 4,
+    "tip": "Using strcpy or gets directly transfers uncontrolled buffer sizes onto stack buffers.",
+    "extraDetails": {
+      "file": "network_parser.cpp",
+      "dept": "🛡️ Cybersecurity Ops",
+      "threat": "CRITICAL",
+      "enemy": { "name": "💀 Buffer Overflow", "icon": "💀", "hp": 160 }
+    }
+  },
+  {
+    "category": "code-inspector",
+    "difficulty": "medium",
+    "question": "Java Iterator Modification",
+    "options": [
+      "import java.util.ArrayList;",
+      "public void filterCompletedTasks(ArrayList<String> tasks) {",
+      "  // BUG: Removing items inside a foreach loop breaks iterator",
+      "  for (String task : tasks) {",
+      "    if (task.contains(\"COMPLETE\")) {",
+      "      tasks.remove(task);",
+      "    }",
+      "  }",
+      "}"
+    ],
+    "correctAnswer": 5,
+    "tip": "Modifying a Java ArrayList structurally inside a foreach loop throws ConcurrentModificationException.",
+    "extraDetails": {
+      "file": "TaskService.java",
+      "dept": "☕ Enterprise Services",
+      "threat": "MEDIUM",
+      "enemy": { "name": "⚡ Thread Crash", "icon": "⚡", "hp": 130 }
+    }
+  },
+  {
+    "category": "code-inspector",
+    "difficulty": "easy",
+    "question": "SQL Zero-Division Vulnerability",
+    "options": [
+      "-- Generate daily server report",
+      "SELECT",
+      "  server_id,",
+      "  -- BUG: Directly dividing by total_requests which could be zero!",
+      "  total_latency / total_requests AS avg_latency",
+      "FROM server_metrics;"
+    ],
+    "correctAnswer": 4,
+    "tip": "Dividing metrics directly by count variables will crash the query engine when denominator is zero.",
+    "extraDetails": {
+      "file": "reporting.sql",
+      "dept": "📊 Analytics Team",
+      "threat": "LOW",
+      "enemy": { "name": "🐛 Divide By Zero", "icon": "🐛", "hp": 85 }
+    }
   }
 ]
