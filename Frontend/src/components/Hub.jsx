@@ -10,7 +10,8 @@ import {
   Trophy, 
   Clock, 
   Star,
-  Shield
+  Shield,
+  Laptop
 } from 'lucide-react';
 
 import { jsPDF } from 'jspdf';
