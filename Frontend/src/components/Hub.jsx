@@ -9,7 +9,8 @@ import {
   Rocket, 
   Trophy, 
   Clock, 
-  Star 
+  Star,
+  Shield
 } from 'lucide-react';
 
 import { jsPDF } from 'jspdf';
