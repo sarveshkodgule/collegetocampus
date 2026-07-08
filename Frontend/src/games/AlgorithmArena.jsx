@@ -332,7 +332,7 @@ const MONSTERS = [
 ];
 
 export default function AlgorithmArena() {
-  const { coins, addCoins, addXP, xp, setGame } = usePlayerStore();
+  const { coins, addCoins, addXP, xp, setGame, completeDailyChallenge } = usePlayerStore();
 
   const [levelIndex, setLevelIndex] = useState(0);
   const [battleState, setBattleState] = useState('lobby'); // 'lobby', 'combat', 'loot', 'victory', 'gameover'
@@ -1024,6 +1024,9 @@ export default function AlgorithmArena() {
         if (!isMuted) {
           playExplosionSound();
           playVictorySound();
+        }
+        if (localStorage.getItem('active_daily_challenge_game') === 'algo-arena') {
+          completeDailyChallenge();
         }
         setBattleState('loot');
       } else if (nextQ >= activeMonster.questions.length) {
