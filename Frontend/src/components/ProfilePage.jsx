@@ -14,10 +14,10 @@ const ACHIEVEMENTS = [
   {
     id: 'algo_slayer',
     title: 'Algorithm Gladiator',
-    desc: 'Defeated a data monster in the DSA Arena.',
+    desc: 'Defeated a data structure monster in the DSA Arena.',
     icon: ShieldCheck,
     color: '#EF4444',
-    check: (s) => s.xp >= 40 // Completed one battle
+    check: (s) => s.xp >= 40
   },
   {
     id: 'placement_hunter',
@@ -33,16 +33,47 @@ const ACHIEVEMENTS = [
     desc: 'Successfully launched a SaaS company from a dorm room.',
     icon: Cpu,
     color: '#F97316',
-    check: (s) => s.xp >= 80 // Won Startup Garage
+    check: (s) => s.xp >= 80
+  },
+  {
+    id: 'decryptor_auditor',
+    title: 'Compiler Auditor',
+    desc: 'Audited and debugged corrupt code lines in Code Decryptor.',
+    icon: ShieldAlert,
+    color: '#EC4899',
+    check: (s) => s.xp >= 60
+  },
+  {
+    id: 'codex_scholar',
+    title: 'Databank Archivist',
+    desc: 'Unlocked all Metropolis database entries in the Codex Terminal.',
+    icon: Star,
+    color: '#00F3FF',
+    check: (s) => localStorage.getItem('metropolis_codex_opened') === 'true' || s.xp >= 20
   }
 ];
 
 export default function ProfilePage() {
   const store = usePlayerStore();
-  const { name, avatar, rank, xp, coins, streak, classType, unlockedSkills, heistLevelsCompleted, aptiHighScore, setGame } = store;
+  const { 
+    name, avatar, rank, xp, coins, streak, classType, unlockedSkills, 
+    heistLevelsCompleted, aptiHighScore, setGame,
+    collegeName, department, gradYear, rollNumber, email
+  } = store;
 
   const level = Math.floor(xp / 100) + 1;
   const xpNeededForNext = 100 - (xp % 100);
+
+  const getAcademicYear = (year) => {
+    if (!year) return 'N/A';
+    const currentYear = new Date().getFullYear();
+    const diff = year - currentYear;
+    if (diff >= 3) return 'FY (First Year)';
+    if (diff === 2) return 'SY (Second Year)';
+    if (diff === 1) return 'TY (Third Year)';
+    if (diff <= 0) return 'LY (Final Year / Graduate)';
+    return `${year} Grad`;
+  };
 
   const [leaderboard, setLeaderboard] = React.useState([]);
 
@@ -50,9 +81,26 @@ export default function ProfilePage() {
     fetch('http://localhost:5000/api/leaderboard')
       .then(res => res.json())
       .then(data => {
-        if (data.success && data.leaderboard) {
-          setLeaderboard(data.leaderboard);
+        const fallbackMocks = [
+          { name: 'Rohan (Lead)', avatar: '👨‍💻', rank: 'Lead SDE', xp: 4200, classType: 'Backend Guardian', email: 'rohan@silicon.io' },
+          { name: 'Neha (Architect)', avatar: '👩‍💼', rank: 'Architect', xp: 3800, classType: 'UI/UX Rogue', email: 'neha@silicon.io' },
+          { name: 'Thomas Neo', avatar: '🕶️', rank: 'Senior SDE', xp: 2100, classType: 'AI Alchemist', email: 'neo@silicon.io' }
+        ];
+
+        let dbLeaderboard = [];
+        if (data.success && data.leaderboard && data.leaderboard.length > 0) {
+          dbLeaderboard = data.leaderboard;
         }
+
+        // Merge & deduplicate
+        const displayList = [...dbLeaderboard];
+        fallbackMocks.forEach(mock => {
+          if (!displayList.some(p => p.name === mock.name || p.email === mock.email)) {
+            displayList.push(mock);
+          }
+        });
+        displayList.sort((a, b) => b.xp - a.xp);
+        setLeaderboard(displayList);
       })
       .catch(() => {
         // Fallback mock players
@@ -112,6 +160,11 @@ export default function ProfilePage() {
           </button>
           
           <h2 style={styles.hackerName}>{name}</h2>
+          {email && (
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', marginBottom: '0.5rem' }}>
+              @{email.split('@')[0]}
+            </div>
+          )}
           <div style={styles.rankBadge}>
             <Award size={14} color="#00F3FF" />
             <span>{rank}</span>
@@ -158,6 +211,17 @@ export default function ProfilePage() {
                 Choose Class
               </button>
             )}
+          </div>
+
+          {/* Academic Profile */}
+          <div style={{ ...styles.specBox, marginTop: '1rem' }}>
+            <span style={styles.specLabel}>🎓 ACADEMIC STANDING</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', fontSize: '0.75rem', marginTop: '0.5rem', textAlign: 'left' }}>
+              <div><strong style={{ color: 'var(--accent-secondary)' }}>University:</strong> <span style={{ color: '#FFF' }}>{collegeName || 'N/A'}</span></div>
+              <div><strong style={{ color: 'var(--accent-secondary)' }}>Branch:</strong> <span style={{ color: '#FFF' }}>{department || 'N/A'}</span></div>
+              <div><strong style={{ color: 'var(--accent-secondary)' }}>Student ID:</strong> <span style={{ color: '#FFF' }}>{rollNumber || 'N/A'}</span></div>
+              <div><strong style={{ color: 'var(--accent-secondary)' }}>Year Standing:</strong> <span style={{ color: 'var(--accent-color)', fontWeight: 'bold' }}>{getAcademicYear(gradYear)}</span></div>
+            </div>
           </div>
         </div>
 
@@ -252,21 +316,18 @@ function hexToRgb(hex) {
 const styles = {
   container: {
     padding: '2.5rem',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 'calc(100vh - 70px)',
+    minHeight: 'calc(100vh - 70px)',
     width: '100vw',
     overflowY: 'auto',
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: '1.2fr 2fr 1.4fr',
+    gridTemplateColumns: '1.4fr 2fr 1.4fr',
     gap: '2rem',
     width: '100%',
     maxWidth: '1200px',
-    height: '100%',
-    alignItems: 'center',
+    margin: '0 auto',
+    alignItems: 'start',
   },
   detailsCard: {
     backgroundColor: 'rgba(19, 23, 34, 0.75)',

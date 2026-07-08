@@ -49,6 +49,7 @@ export const usePlayerStore = create((set, get) => ({
   maxHearts: 5,
   streak: 3, // Mocking a 3-day streak to start with a nice visual
   activeGame: 'landing', // 'landing', 'hub', 'career-tower', 'sql-heist', 'algo-arena', 'startup-garage', 'internship-detective', 'apti-rush', 'profile'
+  email: '',
   collegeName: '',
   department: '',
   gradYear: null,
@@ -154,6 +155,7 @@ export const usePlayerStore = create((set, get) => ({
       aptiHighScore: 0,
       startupMaxRevenue: 0,
       detectiveEndingsUnlocked: [],
+      email: '',
       collegeName: '',
       department: '',
       gradYear: null,

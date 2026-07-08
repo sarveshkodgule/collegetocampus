@@ -337,9 +337,26 @@ export default function Hub() {
     fetch('http://localhost:5000/api/leaderboard')
       .then(res => res.json())
       .then(data => {
+        const fallbackMocks = [
+          { name: 'Linus Torvalds', avatar: '🐧', rank: 'Architect', xp: 2400, email: 'linus@torvalds.org' },
+          { name: 'Thomas Anderson', avatar: '🕶️', rank: 'Tech Lead', xp: 1800, email: 'neo@matrix.io' },
+          { name: 'Sarah Connor', avatar: '🦾', rank: 'Developer', xp: 1200, email: 'sconnor@cyberdyne.com' }
+        ];
+
+        let dbLeaderboard = [];
         if (data.success && data.leaderboard && data.leaderboard.length > 0) {
-          setLeaderboard(data.leaderboard);
+          dbLeaderboard = data.leaderboard;
         }
+
+        // Merge & deduplicate
+        const displayList = [...dbLeaderboard];
+        fallbackMocks.forEach(mock => {
+          if (!displayList.some(p => p.name === mock.name || p.email === mock.email)) {
+            displayList.push(mock);
+          }
+        });
+        displayList.sort((a, b) => b.xp - a.xp);
+        setLeaderboard(displayList);
         setLoadingLeaderboard(false);
       })
       .catch(() => {
@@ -384,7 +401,10 @@ export default function Hub() {
             boxShadow: 'var(--glow-secondary)',
             borderColor: 'var(--accent-secondary)'
           }}
-          onClick={() => setCodexOpen(true)}
+          onClick={() => {
+            setCodexOpen(true);
+            localStorage.setItem('metropolis_codex_opened', 'true');
+          }}
         >
           <Database size={14} /> 📁 DATABANK CODEX TERMINAL
         </button>
@@ -404,11 +424,7 @@ export default function Hub() {
           {loadingLeaderboard ? (
             <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Loading SDE standings...</div>
           ) : (
-            (leaderboard.length > 0 ? leaderboard : [
-              { name: 'Linus Torvalds', avatar: '🐧', rank: 'Architect', xp: 2400, email: 'linus@torvalds.org' },
-              { name: 'Thomas Anderson', avatar: '🕶️', rank: 'Tech Lead', xp: 1800, email: 'neo@matrix.io' },
-              { name: 'Sarah Connor', avatar: '🦾', rank: 'Developer', xp: 1200, email: 'sconnor@cyberdyne.com' }
-            ]).slice(0, 3).map((player, idx) => {
+            leaderboard.slice(0, 3).map((player, idx) => {
               const playerUsername = player.email ? player.email.split('@')[0] : player.name.toLowerCase().replace(/\s+/g, '');
               return (
                 <div key={idx} style={styles.leaderboardPill}>
