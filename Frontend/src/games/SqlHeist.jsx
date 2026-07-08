@@ -728,9 +728,9 @@ export default function SqlHeist() {
 
       {/* 3. ACTIVE HACKING TERMINAL */}
       {battleState === 'hacking' && (
-        <div style={styles.workspace}>
+        <div style={styles.workspace} className="sql-workspace">
           {/* Left panel: Maps / Board / Preview tabs */}
-          <div style={styles.leftPane}>
+          <div style={styles.leftPane} className="sql-pane sql-left-pane">
             <div style={styles.tabsHeader}>
               <button 
                 style={{ ...styles.tabBtn, color: activeTab === 'map' ? 'var(--accent-color)' : 'var(--text-secondary)', borderBottom: activeTab === 'map' ? '2px solid var(--accent-color)' : 'none' }}
@@ -840,7 +840,7 @@ export default function SqlHeist() {
           </div>
 
           {/* Right panel: SQL Editor Terminal & output logs */}
-          <div style={styles.rightPane}>
+          <div style={styles.rightPane} className="sql-pane sql-right-pane">
             <div style={styles.editorCard} className="game-card">
               <div style={styles.editorHeader}>
                 <div style={{ display: 'flex', gap: '6px' }}>

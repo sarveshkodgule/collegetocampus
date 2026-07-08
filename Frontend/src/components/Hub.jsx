@@ -467,7 +467,7 @@ export default function Hub() {
       </div>
 
       {/* Grid of Buildings */}
-      <div style={styles.grid}>
+      <div style={styles.grid} className="hub-grid">
         {BUILDINGS.map((b) => {
           const IconComponent = b.icon;
           return (

@@ -77,7 +77,7 @@ const TYCOON_LEVELS = [
 ];
 
 export default function ResumeBuilderTycoon() {
-  const { addCoins, addXP, setGame, completeDailyChallenge } = usePlayerStore();
+  const { addCoins, addXP, setGame, completeDailyChallenge, triggerNotification } = usePlayerStore();
 
   // Campaign State
   const [currentLevelIdx, setCurrentLevelIdx] = useState(0);
@@ -297,11 +297,12 @@ export default function ResumeBuilderTycoon() {
   // Shopping transactions
   const handleBuyLaptop = (laptop, cost) => {
     if (coins < cost) {
-      alert("⚠️ INSUFFICIENT FUNDS: You do not have enough coins!");
+      triggerNotification("Insufficient Coins!", `Need ${cost} coins to purchase ${laptop}`, "⚠️");
       return;
     }
     setCoins(c => c - cost);
     setLaptopUpgrade(laptop);
+    triggerNotification("Hardware Upgraded!", `Successfully purchased ${laptop}!`, "🛍️");
     if (soundEnabled) tycoonAudio.playBeep(880, 0.15);
   };
 

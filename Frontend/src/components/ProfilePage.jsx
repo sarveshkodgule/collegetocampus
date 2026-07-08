@@ -142,8 +142,8 @@ export default function ProfilePage() {
   };
 
   return (
-    <div style={styles.container} className="grid-overlay">
-      <div style={styles.grid}>
+    <div style={styles.container} className="grid-overlay profile-container">
+      <div style={styles.grid} className="profile-grid">
         {/* Left Card: Player Details */}
         <div className="game-card" style={styles.detailsCard}>
           <div style={styles.avatarWrapper} className="float-animation">

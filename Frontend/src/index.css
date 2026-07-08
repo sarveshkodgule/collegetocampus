@@ -325,3 +325,119 @@ body {
 .blink-animation {
   animation: blink 1s infinite;
 }
+
+@keyframes slideInRight {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.slide-in-right {
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ==========================================================================
+   Tablet & Mobile Responsive Design System (All Devices Adaptability)
+   ========================================================================== */
+
+/* 1. Global Viewport Adjustments */
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* 2. Tablet Adaptive Rules (Under 1024px) */
+@media (max-width: 1024px) {
+  /* Profile Page Layout: Stack side-columns under primary content card */
+  .profile-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+}
+
+/* 3. Mobile Adaptive Rules (Under 768px) */
+@media (max-width: 768px) {
+  /* Header Stacking */
+  .game-header {
+    height: auto !important;
+    flex-direction: column !important;
+    padding: 1rem !important;
+    gap: 0.75rem !important;
+  }
+
+  .game-header-stats {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    width: 100% !important;
+  }
+
+  /* Metropolis Hub Layouts */
+  .hub-header {
+    text-align: center !important;
+    padding: 1.5rem 1rem !important;
+  }
+
+  .hub-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.25rem !important;
+    padding: 1rem !important;
+  }
+
+  /* Metropolis Leaderboard Banner wrapper */
+  .game-card.topLeaderboardBanner, 
+  div[style*="topLeaderboardBanner"] {
+    flex-direction: column !important;
+    padding: 1.25rem !important;
+    gap: 1rem !important;
+    text-align: center !important;
+  }
+
+  div[style*="leaderboardRowList"] {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0.5rem !important;
+  }
+
+  div[style*="leaderboardPill"] {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* SQL Heist Split Workspace */
+  .sql-workspace,
+  div[style*="workspace"] {
+    flex-direction: column !important;
+    height: auto !important;
+    overflow-y: auto !important;
+  }
+
+  .sql-pane,
+  div[style*="leftPane"],
+  div[style*="rightPane"] {
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Daily Challenge Board Wrapper */
+  div[style*="dailyBoard"] {
+    padding: 1rem !important;
+    margin: 1.5rem 1rem !important;
+  }
+
+  div[style*="dailyMission"] {
+    flex-direction: column !important;
+    gap: 1rem !important;
+    text-align: center !important;
+  }
+
+  div[style*="dailyBtn"] {
+    width: 100% !important;
+  }
+
+  /* Career Node Info panel */
+  div[style*="detailsPane"] {
+    position: static !important;
+    width: 100% !important;
+    margin-top: 1rem !important;
+  }
+}

@@ -15,7 +15,38 @@ import InterviewEscapeRoom from './games/InterviewEscapeRoom';
 import ResumeBuilderTycoon from './games/ResumeBuilderTycoon';
 
 export default function App() {
-  const { activeGame } = usePlayerStore();
+  const { activeGame, notification } = usePlayerStore();
+
+  const playToastSound = () => {
+    try {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      const ctx = new AudioContextClass();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+      osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
+      osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2); // G5
+      osc.frequency.setValueAtTime(1046.50, ctx.currentTime + 0.3); // C6
+      
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.5);
+    } catch (e) {
+      // Audio context disabled or requires user interaction first
+    }
+  };
+
+  React.useEffect(() => {
+    if (notification) {
+      playToastSound();
+    }
+  }, [notification]);
 
   // Dynamic Theme Class mapping to CSS variables in index.css
   const getThemeClass = () => {
@@ -45,7 +76,7 @@ export default function App() {
     }
   };
 
-  // State router for mounting active game mode
+  // State router for mapping active game mode
   const renderGameContent = () => {
     switch (activeGame) {
       case 'landing':
@@ -81,6 +112,17 @@ export default function App() {
       <main style={styles.mainContent}>
         {renderGameContent()}
       </main>
+
+      {/* Global Gamification Toast Notification Overlay */}
+      {notification && (
+        <div style={styles.toastContainer} className="slide-in-right">
+          <div style={styles.toastIcon}>{notification.icon}</div>
+          <div style={styles.toastBody}>
+            <span style={styles.toastTitle}>{notification.title}</span>
+            <span style={styles.toastMessage}>{notification.message}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -99,5 +141,39 @@ const styles = {
     flex: 1,
     overflow: 'hidden',
     position: 'relative',
+  },
+  toastContainer: {
+    position: 'fixed',
+    top: '80px',
+    right: '24px',
+    zIndex: 9999,
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '12px 20px',
+    backgroundColor: 'rgba(19, 23, 34, 0.85)',
+    border: '1px solid var(--accent-secondary)',
+    borderRadius: '12px',
+    boxShadow: 'var(--glow-secondary), 0 8px 32px rgba(0,0,0,0.5)',
+    backdropFilter: 'blur(8px)',
+  },
+  toastIcon: {
+    fontSize: '1.5rem',
+  },
+  toastBody: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  toastTitle: {
+    fontSize: '0.85rem',
+    fontWeight: 'bold',
+    fontFamily: 'var(--font-title)',
+    color: 'var(--accent-secondary)',
+    letterSpacing: '0.5px',
+  },
+  toastMessage: {
+    fontSize: '0.75rem',
+    color: 'var(--text-primary)',
+    marginTop: '2px',
   }
 };

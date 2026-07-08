@@ -24,7 +24,7 @@ export default function Header() {
   const progressPercent = Math.min(100, xpInCurrentLevel);
 
   return (
-    <header style={styles.header}>
+    <header style={styles.header} className="game-header">
       {/* Brand / Title */}
       <div style={styles.brand} onClick={() => setGame(null)}>
         <span style={styles.logoIcon}>🎮</span>
@@ -32,7 +32,7 @@ export default function Header() {
       </div>
 
       {/* Stats Panel */}
-      <div style={styles.statsContainer}>
+      <div style={styles.statsContainer} className="game-header-stats">
         {/* Streak */}
         <div style={styles.statItem} title="Daily Streak">
           <Flame size={18} color="#FF5722" className="float-animation" />

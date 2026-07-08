@@ -321,7 +321,7 @@ export default function LifeArchitect() {
   const { 
     classType, setClass, coins, addCoins, xp, addXP, 
     unlockedSkills, unlockSkill, reputation, setGame,
-    hearts, loseHeart, restoreHearts, rank
+    hearts, loseHeart, restoreHearts, rank, triggerNotification
   } = usePlayerStore();
 
   // Navigation and view states
@@ -452,7 +452,7 @@ export default function LifeArchitect() {
     // Check prerequisites
     if (node.requires && !unlockedSkills.includes(node.requires)) {
       gameAudio.playQuestFailure();
-      alert(`⚠️ Path locked! Unlock "${SKILL_NODES.find(n => n.id === node.requires).label}" first.`);
+      triggerNotification("Path Locked", `Unlock "${SKILL_NODES.find(n => n.id === node.requires).label}" first!`, "🔒");
       return;
     }
 
@@ -462,13 +462,13 @@ export default function LifeArchitect() {
 
     if (availableFP < actualFpCost) {
       gameAudio.playQuestFailure();
-      alert('⚠️ Insufficient Focus Points! Level up or complete quests to gain points.');
+      triggerNotification("Low Focus Points", "Level up or solve challenges to earn points!", "⚠️");
       return;
     }
 
     if (coins < actualCoinCost) {
       gameAudio.playQuestFailure();
-      alert('⚠️ Insufficient Gold Coins! Complete company quests or hack Data Banks.');
+      triggerNotification("Insufficient Coins", "Solve company quests or hack Data Banks!", "💰");
       return;
     }
 
@@ -476,6 +476,7 @@ export default function LifeArchitect() {
     unlockSkill(node.id);
     addCoins(-actualCoinCost);
     gameAudio.playNodeUnlock();
+    triggerNotification("Skill Unlocked!", `Successfully unlocked "${node.label}"!`, "✨");
 
     // Stat bonuses
     const bonusStats = { ...stats };

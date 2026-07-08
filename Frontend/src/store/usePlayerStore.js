@@ -65,9 +65,20 @@ export const usePlayerStore = create((set, get) => ({
   aptiHighScore: 0,
   startupMaxRevenue: 0,
   detectiveEndingsUnlocked: [],
+  notification: null,
 
   // Action methods
   setGame: (game) => set({ activeGame: game }),
+
+  triggerNotification: (title, message, icon = '🔔') => {
+    set({ notification: { title, message, icon } });
+    setTimeout(() => {
+      const current = get().notification;
+      if (current && current.title === title && current.message === message) {
+        set({ notification: null });
+      }
+    }, 4000);
+  },
   
   setClass: (classType) => {
     set({ classType });
@@ -159,7 +170,7 @@ export const usePlayerStore = create((set, get) => ({
           rank: data.rank
         });
         localStorage.removeItem('active_daily_challenge_game');
-        alert(`🎁 DAILY CHALLENGE COMPLETED! Claimed +50 SDE Coins and +30 XP!`);
+        get().triggerNotification('🎁 Daily Challenge Completed!', 'Claimed +50 SDE Coins and +30 XP!', '📅');
       }
     } catch (err) {
       console.error(err);
