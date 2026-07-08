@@ -61,7 +61,7 @@ router.post('/register', async (req, res) => {
       res.status(400).json({ success: false, message: 'Invalid student registration data' });
     }
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, message: error.message, error: error.message });
   }
 });
 
@@ -100,7 +100,7 @@ router.post('/login', async (req, res) => {
       res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, message: error.message, error: error.message });
   }
 });
 
@@ -112,7 +112,7 @@ router.get('/me', protect, async (req, res) => {
     const student = await Student.findById(req.student.id);
     res.json({ success: true, student });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, message: error.message, error: error.message });
   }
 });
 
