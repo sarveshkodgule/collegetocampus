@@ -328,7 +328,7 @@ const SKINS = [
 ];
 
 export default function CodeInspector() {
-  const { addCoins, addXP, setGame, rank } = usePlayerStore();
+  const { addCoins, addXP, setGame, rank, completeDailyChallenge } = usePlayerStore();
 
   // Screen State
   const [activeScreen, setActiveScreen] = useState('briefing'); // 'briefing', 'ide', 'victory', 'failed'
@@ -553,6 +553,9 @@ export default function CodeInspector() {
     if (isFixCorrect) {
       // Correct Fix compiled!
       setConfettiActive(true);
+      if (localStorage.getItem('active_daily_challenge_game') === 'code-inspector') {
+        completeDailyChallenge();
+      }
       if (soundEnabled) inspectorAudio.playLaser();
       setBugEliminated(true);
       setEnemyHp(0);

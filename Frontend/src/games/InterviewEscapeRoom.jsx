@@ -245,11 +245,88 @@ const ESCAPE_LEVELS = [
       ]
     },
     reward: { coins: 150, xp: 75 }
+  },
+  {
+    level: 4,
+    title: 'API Gateway Firewall Control',
+    difficulty: 'Hard',
+    sqlChallenge: {
+      dbTable: 'guard_patrols',
+      instructions: 'Unlock Firewall node! Join guard_patrols and system_audit to retrieve zone for failed event logs.',
+      expectedQuery: "SELECT zone FROM guard_patrols JOIN system_audit ON guard_patrols.guard_id = system_audit.user_id WHERE event_type = 'LOGIN_FAIL';",
+      tip: "Use JOIN ... ON guard_id = user_id WHERE event_type = 'LOGIN_FAIL'"
+    },
+    dsaChallenge: {
+      question: 'Which hash collision resolution strategy inserts elements into the next available slot sequentially?',
+      options: ['Chaining', 'Linear Probing', 'Double Hashing', 'Rehashing'],
+      correctIndex: 1,
+      tip: 'Linear probing searches index + 1 sequentially for empty slots.'
+    },
+    codingChallenge: {
+      file: 'server.js',
+      code: [
+        "const express = require('express');",
+        "const app = express();",
+        "// BUG: Dividing by zero on endpoint count!",
+        "const activeCount = 100 / 0;"
+      ],
+      bugLine: 3,
+      expectedFix: "const activeCount = 100 / 10;",
+      tip: "Avoid divisions by zero inside server.js."
+    },
+    hrChallenge: {
+      question: "The Recruiter asks: 'How do you handle disagreement with your Tech Lead?'",
+      options: [
+        { text: "Argue with them until they submit.", value: -20, feedback: "Incorrect. Respectful alignment is better." },
+        { text: "Schedule a 1-on-1, explain my perspective with data, and align on a consensus.", value: 30, feedback: "Excellent! Constructive debate using metrics shows professional maturity." },
+        { text: "Accept it quietly, then write different code behind their back.", value: -30, feedback: "Deceptive and violates team trust." }
+      ]
+    },
+    reward: { coins: 180, xp: 90 }
+  },
+  {
+    level: 5,
+    title: 'The Mainframe System Core',
+    difficulty: 'Expert',
+    sqlChallenge: {
+      dbTable: 'login_attempts',
+      instructions: 'Expose intruders! Select count of login attempts grouping by username having count greater than 5.',
+      expectedQuery: "SELECT username, COUNT(*) FROM login_attempts GROUP BY username HAVING COUNT(*) > 5;",
+      tip: "Use GROUP BY username HAVING COUNT(*) > 5"
+    },
+    dsaChallenge: {
+      question: 'What is the average time complexity to retrieve an element from a Hash Table with good distribution?',
+      options: ['O(1)', 'O(log N)', 'O(N)', 'O(N log N)'],
+      correctIndex: 0,
+      tip: 'Hash tables offer constant O(1) lookups on average.'
+    },
+    codingChallenge: {
+      file: 'leak.py',
+      code: [
+        "cache = []",
+        "def process(data):",
+        "  # BUG: Global array leak growing infinite memory!",
+        "  global cache",
+        "  cache.append(data)"
+      ],
+      bugLine: 0,
+      expectedFix: "cache = None",
+      tip: "Release global cache scope in Python arrays."
+    },
+    hrChallenge: {
+      question: "The Recruiter asks: 'Why do you want to join our company?'",
+      options: [
+        { text: "Just for the high salary and corporate perks.", value: -10, feedback: "Lacks motivational alignment." },
+        { text: "Your engineering culture, scaling products, and SDE alignment fits my career goals.", value: 30, feedback: "Brilliant! Researching culture shows true alignment." },
+        { text: "My parents forced me to find any job.", value: -20, feedback: "Lacks motivation and interest." }
+      ]
+    },
+    reward: { coins: 200, xp: 100 }
   }
 ];
 
 export default function InterviewEscapeRoom() {
-  const { addCoins, addXP, setGame } = usePlayerStore();
+  const { addCoins, addXP, setGame, completeDailyChallenge } = usePlayerStore();
 
   // Campaign level selector states
   const [currentLevelIdx, setCurrentLevelIdx] = useState(0);
@@ -461,6 +538,9 @@ export default function InterviewEscapeRoom() {
       // Unlocked next level
       setUnlockedLevel(prev => Math.max(prev, activeLevel.level + 1));
       setConfettiActive(true);
+      if (localStorage.getItem('active_daily_challenge_game') === 'interview-escape') {
+        completeDailyChallenge();
+      }
       setActiveScreen('victory');
       if (soundEnabled) escapeAudio.playBeep(659.25, 0.3); // E5 arpeggio
     } else {

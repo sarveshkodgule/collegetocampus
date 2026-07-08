@@ -332,6 +332,8 @@ export default function Hub() {
 
   const [leaderboard, setLeaderboard] = useState([]);
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(true);
+  const [dailyChallenge, setDailyChallenge] = useState(null);
+  const [loadingDaily, setLoadingDaily] = useState(true);
 
   useEffect(() => {
     fetch('http://localhost:5000/api/leaderboard')
@@ -361,6 +363,26 @@ export default function Hub() {
       })
       .catch(() => {
         setLoadingLeaderboard(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const headers = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    fetch('http://localhost:5000/api/daily-challenge', { headers })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setDailyChallenge(data);
+        }
+        setLoadingDaily(false);
+      })
+      .catch(() => {
+        setLoadingDaily(false);
       });
   }, []);
 
@@ -508,16 +530,37 @@ export default function Hub() {
           <h3 style={styles.dailyTitle}>ACTIVE DAILY MISSION</h3>
         </div>
         <div style={styles.dailyMission}>
-          <p style={styles.dailyMissionText}>
-            🔥 Solve a **Medium** database breach case in the **Data Bank** today to unlock +50 Coins and +1 Streak multiplier!
-          </p>
-          <button 
-            className="game-btn game-btn-primary" 
-            style={styles.dailyBtn}
-            onClick={() => setGame('sql-heist')}
-          >
-            Launch SQL Heist
-          </button>
+          {loadingDaily ? (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Syncing rotation matrix...</div>
+          ) : dailyChallenge ? (
+            <>
+              <p style={styles.dailyMissionText}>
+                🔥 <strong>Featured Challenge:</strong> {dailyChallenge.game.desc} (Reward: <span style={{ color: '#F59E0B', fontWeight: 'bold' }}>+{dailyChallenge.coinsReward} Coins</span>, <span style={{ color: '#00F3FF', fontWeight: 'bold' }}>+{dailyChallenge.xpReward} XP</span>)
+              </p>
+              {dailyChallenge.completed ? (
+                <button 
+                  className="game-btn" 
+                  style={{ ...styles.dailyBtn, borderColor: 'var(--success-color)', color: 'var(--success-color)', cursor: 'default', backgroundColor: 'transparent' }}
+                  disabled
+                >
+                  ✅ Completed Today
+                </button>
+              ) : (
+                <button 
+                  className="game-btn game-btn-primary" 
+                  style={styles.dailyBtn}
+                  onClick={() => {
+                    localStorage.setItem('active_daily_challenge_game', dailyChallenge.game.id);
+                    setGame(dailyChallenge.game.id);
+                  }}
+                >
+                  Launch {dailyChallenge.game.name}
+                </button>
+              )}
+            </>
+          ) : (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>System offline. Check connection.</div>
+          )}
         </div>
       </div>
 

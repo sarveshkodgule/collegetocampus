@@ -272,7 +272,7 @@ const CASES = [
 ];
 
 export default function SqlHeist() {
-  const { addCoins, addXP, setGame } = usePlayerStore();
+  const { addCoins, addXP, setGame, completeDailyChallenge } = usePlayerStore();
 
   const [levelIndex, setLevelIndex] = useState(0);
   const [battleState, setBattleState] = useState('lobby'); // 'lobby', 'briefing', 'hacking', 'incoming', 'complete', 'gameover'
@@ -662,6 +662,9 @@ export default function SqlHeist() {
       setBattleState('complete');
       addCoins(250);
       addXP(150);
+      if (localStorage.getItem('active_daily_challenge_game') === 'sql-heist') {
+        completeDailyChallenge();
+      }
     } else {
       setLevelIndex(nextIndex);
       setQueryInput('');

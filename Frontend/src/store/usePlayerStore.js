@@ -139,6 +139,33 @@ export const usePlayerStore = create((set, get) => ({
     syncProgressWithBackend(get());
   },
 
+  completeDailyChallenge: async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const res = await fetch('http://localhost:5000/api/daily-challenge/complete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await res.json();
+      if (data.success) {
+        set({
+          coins: data.coins,
+          xp: data.xp,
+          rank: data.rank
+        });
+        localStorage.removeItem('active_daily_challenge_game');
+        alert(`🎁 DAILY CHALLENGE COMPLETED! Claimed +50 SDE Coins and +30 XP!`);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  },
+
   resetGame: () => {
     set({
       rank: 'Fresher',

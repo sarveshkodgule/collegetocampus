@@ -71,11 +71,13 @@ const tycoonAudio = {
 const TYCOON_LEVELS = [
   { level: 1, title: 'Fresher Year Bootcamp', coinGoal: 100, xpReward: 50 },
   { level: 2, title: 'Open Source Launchpad', coinGoal: 250, xpReward: 75 },
-  { level: 3, title: 'The Hackathon Crusade', coinGoal: 400, xpReward: 100 }
+  { level: 3, title: 'The Hackathon Crusade', coinGoal: 400, xpReward: 100 },
+  { level: 4, title: 'The Startup Incubator Project', coinGoal: 600, xpReward: 150 },
+  { level: 5, title: 'Unicorn SDE Enterprise', coinGoal: 850, xpReward: 200 }
 ];
 
 export default function ResumeBuilderTycoon() {
-  const { addCoins, addXP, setGame } = usePlayerStore();
+  const { addCoins, addXP, setGame, completeDailyChallenge } = usePlayerStore();
 
   // Campaign State
   const [currentLevelIdx, setCurrentLevelIdx] = useState(0);
@@ -309,6 +311,9 @@ export default function ResumeBuilderTycoon() {
     
     if (isAccepted) {
       setConfettiActive(true);
+      if (localStorage.getItem('active_daily_challenge_game') === 'resume-tycoon') {
+        completeDailyChallenge();
+      }
       setPlacementOutcome({
         company: companyName,
         status: 'ACCEPTED',
@@ -708,9 +713,25 @@ export default function ResumeBuilderTycoon() {
 
           <div style={styles.companyGrid}>
             <div style={styles.companyItem} className="game-card">
+              <h5>OpenAI</h5>
+              <p style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Requires: DSA 90+, Dev 90+, CGPA 9.0+</p>
+              <button className="game-btn game-btn-primary" style={{ backgroundColor: '#F97316', borderColor: '#F97316', color: '#000' }} onClick={() => handleApplyCompany('OpenAI', 90, 90, 9.0)}>
+                Apply
+              </button>
+            </div>
+
+            <div style={styles.companyItem} className="game-card">
               <h5>Google</h5>
               <p style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Requires: DSA 80+, Dev 70+, CGPA 8.5+</p>
               <button className="game-btn game-btn-primary" style={{ backgroundColor: '#F97316', borderColor: '#F97316', color: '#000' }} onClick={() => handleApplyCompany('Google', 80, 70, 8.5)}>
+                Apply
+              </button>
+            </div>
+
+            <div style={styles.companyItem} className="game-card">
+              <h5>Netflix</h5>
+              <p style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>Requires: DSA 85+, Dev 80+, CGPA 8.8+</p>
+              <button className="game-btn game-btn-primary" style={{ backgroundColor: '#F97316', borderColor: '#F97316', color: '#000' }} onClick={() => handleApplyCompany('Netflix', 85, 80, 8.8)}>
                 Apply
               </button>
             </div>

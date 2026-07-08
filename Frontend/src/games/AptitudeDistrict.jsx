@@ -10,7 +10,7 @@ import { playCoinSound, playExplosionSound, playVictorySound, playDefeatSound } 
 
 // Procedural Question Generator
 function generateProceduralQuestion() {
-  const categories = ['QUANTITATIVE', 'LOGICAL', 'ALGEBRA', 'SERIES', 'PROFIT & LOSS'];
+  const categories = ['QUANTITATIVE', 'LOGICAL', 'ALGEBRA', 'SERIES', 'PROFIT & LOSS', 'PERMUTATION & PROBABILITY', 'RATIO & PROPORTION'];
   const category = categories[Math.floor(Math.random() * categories.length)];
   let text = '';
   let correctAnswer = 0;
@@ -107,6 +107,48 @@ function generateProceduralQuestion() {
         correctAnswer = cp - (cp * pPercent) / 100;
         text = `An item bought for ₹${cp} is sold at a loss of ${pPercent}%. What is its selling price?`;
         tip = `Loss = ${pPercent}% of ₹${cp} = ₹${(cp * pPercent) / 100}. Selling Price = Cost Price - Loss = ${cp} - ${(cp * pPercent) / 100} = ₹${correctAnswer}.`;
+      }
+      break;
+    }
+    case 'PERMUTATION & PROBABILITY': {
+      const subType = Math.random() > 0.5 ? 'balls' : 'dice';
+      if (subType === 'balls') {
+        const red = [3, 4, 5][Math.floor(Math.random() * 3)];
+        const blue = [5, 6, 7][Math.floor(Math.random() * 3)];
+        const total = red + blue;
+        text = `A bag contains ${red} red balls and ${blue} blue balls. If a ball is drawn at random, what is the probability (in %) of drawing a red ball?`;
+        correctAnswer = Math.round((red / total) * 100);
+        tip = `Probability = (Favorable outcomes) / (Total outcomes) = ${red} / ${total}. In percentage, it is (${red}/${total}) × 100 = ${correctAnswer}%.`;
+      } else {
+        const sumVal = [7, 8, 9][Math.floor(Math.random() * 3)];
+        // Outcomes for sum 7: (1,6), (2,5), (3,4), (4,3), (5,2), (6,1) -> 6 outcomes
+        // Outcomes for sum 8: (2,6), (3,5), (4,4), (5,3), (6,2) -> 5 outcomes
+        // Outcomes for sum 9: (3,6), (4,5), (5,4), (6,3) -> 4 outcomes
+        const outcomesCount = sumVal === 7 ? 6 : sumVal === 8 ? 5 : 4;
+        text = `Two dice are thrown simultaneously. What is the probability (in %) of getting a sum of exactly ${sumVal}?`;
+        correctAnswer = Math.round((outcomesCount / 36) * 100);
+        tip = `Total sample space of 2 dice is 36. Favorable outcomes for sum ${sumVal} is ${outcomesCount}. Probability = (${outcomesCount}/36) × 100 = ${correctAnswer}%.`;
+      }
+      break;
+    }
+    case 'RATIO & PROPORTION': {
+      const subType = Math.random() > 0.5 ? 'money' : 'mixture';
+      if (subType === 'money') {
+        const totalAmount = [500, 600, 800, 1000, 1200][Math.floor(Math.random() * 5)];
+        const r1 = [2, 3][Math.floor(Math.random() * 2)];
+        const r2 = [3, 5][Math.floor(Math.random() * 2)];
+        const sumParts = r1 + r2;
+        text = `Divide ₹${totalAmount} between Rohan and Neha in the ratio ${r1}:${r2}. What is Rohan's share in ₹?`;
+        correctAnswer = (totalAmount * r1) / sumParts;
+        tip = `Rohan's share is ${r1} parts out of ${sumParts} total parts. Rohan's share = (${r1}/${sumParts}) × ₹${totalAmount} = ₹${correctAnswer}.`;
+      } else {
+        const totalLitres = [40, 50, 60, 80, 100][Math.floor(Math.random() * 5)];
+        const r1 = [3, 4][Math.floor(Math.random() * 2)];
+        const r2 = 1;
+        const sumParts = r1 + r2;
+        text = `In a mixture of ${totalLitres} liters, milk and water are in the ratio ${r1}:${r2}. How many liters of milk are in the mixture?`;
+        correctAnswer = (totalLitres * r1) / sumParts;
+        tip = `Milk represents ${r1} parts out of ${sumParts} total parts. Milk volume = (${r1}/${sumParts}) × ${totalLitres} = ${correctAnswer} liters.`;
       }
       break;
     }
@@ -445,7 +487,7 @@ const arcadeAudio = {
 };
 
 export default function AptitudeDistrict() {
-  const { coins, addCoins, addXP, setAptiHighScore, aptiHighScore, setGame } = usePlayerStore();
+  const { coins, addCoins, addXP, setAptiHighScore, aptiHighScore, setGame, completeDailyChallenge } = usePlayerStore();
   
   const submitAnswerRef = useRef(null);
   
@@ -674,6 +716,11 @@ export default function AptitudeDistrict() {
     if (soundEnabled) arcadeAudio.playDefeatFall();
     if (score >= 150) {
       setConfettiActive(true);
+    }
+    if (score >= 50) {
+      if (localStorage.getItem('active_daily_challenge_game') === 'apti-rush') {
+        completeDailyChallenge();
+      }
     }
 
     // Sync score and coins to store
