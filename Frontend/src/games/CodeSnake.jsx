@@ -1037,7 +1037,7 @@ export default function CodeSnake() {
             Tokens verified. Releasing heap resources and caching segment definitions.
           </p>
           <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-            {levelIdx < LEVELS.length - 1 ? (
+            {levelIdx < LEVELS_POOL.length - 1 ? (
               <button className="game-btn game-btn-primary" onClick={() => startLevel(levelIdx + 1)}>
                 Next Level <ChevronRight size={14} />
               </button>

@@ -133,7 +133,7 @@ export default function LandingPage() {
           activeGame: null // Enter the Hub
         });
       } else {
-        alert(`⚠️ Registration Failed: ${data.message}`);
+        alert(`⚠️ Registration Failed: ${data.message || data.error || 'Unknown server error'}`);
       }
     } catch (error) {
       alert("🚨 Connection failed! Please make sure your Node.js backend is running on port 5000.");
