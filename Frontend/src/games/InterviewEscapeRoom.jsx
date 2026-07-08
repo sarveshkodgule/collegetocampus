@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ConfettiEffect from '../components/ConfettiEffect';
 import { usePlayerStore } from '../store/usePlayerStore';
 import { 
   Terminal, Shield, ShieldAlert, Cpu, Database, Play, ChevronRight, 
@@ -258,6 +259,8 @@ export default function InterviewEscapeRoom() {
   // Custom states
   const activeLevel = ESCAPE_LEVELS[currentLevelIdx] || ESCAPE_LEVELS[0];
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [shakeActive, setShakeActive] = useState(false);
+  const [confettiActive, setConfettiActive] = useState(false);
 
   // Handle background music loop
   useEffect(() => {
@@ -386,6 +389,8 @@ export default function InterviewEscapeRoom() {
       if (soundEnabled) escapeAudio.playDoorOpen();
       setCompletedRooms(prev => ({ ...prev, sql: true }));
     } else {
+      setShakeActive(true);
+      setTimeout(() => setShakeActive(false), 500);
       if (soundEnabled) escapeAudio.playBeep(180, 0.3, 'sawtooth');
       alert("🚨 DATABASE REJECT: Query compilation failed. Security lockout active!");
     }
@@ -398,6 +403,8 @@ export default function InterviewEscapeRoom() {
       setBridgeAnimationState('building');
       if (soundEnabled) escapeAudio.playDoorOpen();
     } else {
+      setShakeActive(true);
+      setTimeout(() => setShakeActive(false), 500);
       setBridgeAnimationState('collapsed');
       if (soundEnabled) escapeAudio.playBridgeCollapse();
       alert("💥 BRIDGE COLLAPSED: Bubble Sort was too slow! Your spaceship fell into the chasm.");
@@ -422,10 +429,14 @@ export default function InterviewEscapeRoom() {
         if (soundEnabled) escapeAudio.playDoorOpen();
         setCompletedRooms(prev => ({ ...prev, coding: true }));
       } else {
+        setShakeActive(true);
+        setTimeout(() => setShakeActive(false), 500);
         if (soundEnabled) escapeAudio.playBeep(180, 0.3, 'triangle');
         alert("🚨 SYNTAX ERROR: The robot logic rejected your patch code!");
       }
     } else {
+      setShakeActive(true);
+      setTimeout(() => setShakeActive(false), 500);
       if (soundEnabled) escapeAudio.playBeep(180, 0.3, 'triangle');
       alert("🚨 COMPILER OUTAGE: You edited a fully healthy system line!");
       setEditingLine(null);
@@ -435,6 +446,10 @@ export default function InterviewEscapeRoom() {
   // HR Dialog responses
   const handleSelectHr = (choice) => {
     setHrChoice(choice);
+    if (choice.value < 0) {
+      setShakeActive(true);
+      setTimeout(() => setShakeActive(false), 500);
+    }
     setRecruiterRelation(prev => Math.min(100, Math.max(0, prev + choice.value)));
     setDialogueText(choice.feedback);
     setCompletedRooms(prev => ({ ...prev, hr: true }));
@@ -445,9 +460,12 @@ export default function InterviewEscapeRoom() {
     if (recruiterRelation >= 65) {
       // Unlocked next level
       setUnlockedLevel(prev => Math.max(prev, activeLevel.level + 1));
+      setConfettiActive(true);
       setActiveScreen('victory');
       if (soundEnabled) escapeAudio.playBeep(659.25, 0.3); // E5 arpeggio
     } else {
+      setShakeActive(true);
+      setTimeout(() => setShakeActive(false), 500);
       setActiveScreen('failed');
       if (soundEnabled) escapeAudio.playBridgeCollapse();
     }
@@ -466,6 +484,7 @@ export default function InterviewEscapeRoom() {
     setHrChoice(null);
     setRecruiterRelation(50);
     setDialogueText(ESCAPE_LEVELS[idx].hrChallenge.question);
+    setConfettiActive(false);
 
     setActiveScreen('lobby');
   };
@@ -473,11 +492,13 @@ export default function InterviewEscapeRoom() {
   const handlePayoutClaim = () => {
     addCoins(activeLevel.reward.coins);
     addXP(activeLevel.reward.xp);
+    setConfettiActive(false);
     setActiveScreen('menu');
   };
 
   return (
-    <div style={{ ...styles.container, transform: isZooming ? 'scale(1.5)' : 'scale(1)' }}>
+    <div style={{ ...styles.container, transform: isZooming ? 'scale(1.5)' : 'scale(1)' }} className={shakeActive ? 'shake-animation' : ''}>
+      <ConfettiEffect active={confettiActive} />
       {/* Sound toggle button */}
       <button style={styles.soundBtn} onClick={() => setSoundEnabled(!soundEnabled)}>
         {soundEnabled ? <Volume2 size={16} color="#00F3FF" /> : <VolumeX size={16} color="var(--danger-color)" />}

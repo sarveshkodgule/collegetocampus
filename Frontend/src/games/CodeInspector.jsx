@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ConfettiEffect from '../components/ConfettiEffect';
 import { usePlayerStore } from '../store/usePlayerStore';
 import { 
   Terminal, Shield, ShieldAlert, Cpu, Database, Play, ChevronRight, 
@@ -333,6 +334,8 @@ export default function CodeInspector() {
   const [activeScreen, setActiveScreen] = useState('briefing'); // 'briefing', 'ide', 'victory', 'failed'
   const [selectedMission, setSelectedMission] = useState(MISSIONS[0]);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [shakeActive, setShakeActive] = useState(false);
+  const [confettiActive, setConfettiActive] = useState(false);
 
   // Dynamic missions data
   const [missions, setMissions] = useState(MISSIONS);
@@ -447,6 +450,7 @@ export default function CodeInspector() {
     setScore(0);
     setCombo(1);
     setBugEliminated(false);
+    setConfettiActive(false);
     setScannerCd(0);
     setXrayCd(0);
     setHintCd(0);
@@ -510,6 +514,8 @@ export default function CodeInspector() {
 
     if (lineIndex !== selectedMission.bugLine) {
       // Incorrect line selection penalty
+      setShakeActive(true);
+      setTimeout(() => setShakeActive(false), 500);
       if (soundEnabled) inspectorAudio.playError();
       setCombo(1);
       setEditingLineIndex(null);
@@ -546,6 +552,7 @@ export default function CodeInspector() {
 
     if (isFixCorrect) {
       // Correct Fix compiled!
+      setConfettiActive(true);
       if (soundEnabled) inspectorAudio.playLaser();
       setBugEliminated(true);
       setEnemyHp(0);
@@ -567,6 +574,8 @@ export default function CodeInspector() {
       }, 1000);
     } else {
       // Incorrect Fix compiled
+      setShakeActive(true);
+      setTimeout(() => setShakeActive(false), 500);
       if (soundEnabled) inspectorAudio.playError();
       setCombo(1);
       setShield(prev => {
@@ -584,11 +593,13 @@ export default function CodeInspector() {
   const handleClaimPayout = () => {
     addCoins(selectedMission.reward.coins);
     addXP(selectedMission.reward.xp);
+    setConfettiActive(false);
     setActiveScreen('briefing');
   };
 
   return (
-    <div style={{ ...styles.container, backgroundColor: currentSkin.bg }}>
+    <div style={{ ...styles.container, backgroundColor: currentSkin.bg }} className={shakeActive ? 'shake-animation' : ''}>
+      <ConfettiEffect active={confettiActive} />
       {/* Sound controllers */}
       <button 
         style={styles.soundBtn}

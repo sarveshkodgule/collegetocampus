@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ConfettiEffect from '../components/ConfettiEffect';
 import { usePlayerStore } from '../store/usePlayerStore';
 import { 
   Zap, Heart, Trophy, Timer, Play, ChevronRight, AlertTriangle, 
@@ -461,6 +462,7 @@ export default function AptitudeDistrict() {
   const [coinsCollected, setCoinsCollected] = useState(0);
   const [shields, setShields] = useState(3);
   const [shake, setShake] = useState(false);
+  const [confettiActive, setConfettiActive] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
   // Shop and customization state
@@ -557,6 +559,7 @@ export default function AptitudeDistrict() {
     setMaxCombo(0);
     setSelectedOpt(null);
     setIsCorrect(null);
+    setConfettiActive(false);
     setGameState('playing');
     setCurrentQuestion(generateProceduralQuestion());
     setTimeLeft(12);
@@ -669,6 +672,9 @@ export default function AptitudeDistrict() {
   const handleGameOver = () => {
     arcadeAudio.stopBgm();
     if (soundEnabled) arcadeAudio.playDefeatFall();
+    if (score >= 150) {
+      setConfettiActive(true);
+    }
 
     // Sync score and coins to store
     const finalCoinsGained = coinsCollected;
@@ -1458,6 +1464,7 @@ export default function AptitudeDistrict() {
 
   return (
     <div style={styles.container} className={shake ? 'shake-animation' : ''}>
+      <ConfettiEffect active={confettiActive} />
       {/* Background Sound controls */}
       <button style={styles.soundToggle} onClick={toggleSound}>
         {soundEnabled ? <Volume2 size={20} color="var(--accent-secondary)" /> : <VolumeX size={20} color="var(--danger-color)" />}

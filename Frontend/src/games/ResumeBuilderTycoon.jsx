@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ConfettiEffect from '../components/ConfettiEffect';
 import { usePlayerStore } from '../store/usePlayerStore';
 import { 
   Terminal, Shield, Cpu, Database, Play, ChevronRight, Award, 
@@ -81,6 +82,8 @@ export default function ResumeBuilderTycoon() {
   const [unlockedLevel, setUnlockedLevel] = useState(1);
   const [activeScreen, setActiveScreen] = useState('menu'); // 'menu', 'lobby', 'hostel', 'library', 'coding', 'hackathon', 'placement', 'shop', 'placement_result'
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [shakeActive, setShakeActive] = useState(false);
+  const [confettiActive, setConfettiActive] = useState(false);
 
   // Time & Semester System
   const [semester, setSemester] = useState(1); // Sem 1 -> Sem 3 -> Sem 4 (Placement)
@@ -247,6 +250,8 @@ export default function ResumeBuilderTycoon() {
         loadNextLibraryQuestion();
       }, 1200);
     } else {
+      setShakeActive(true);
+      setTimeout(() => setShakeActive(false), 500);
       setLibraryFeedback('❌ INCORRECT: Look up Big-O matrices.');
       if (soundEnabled) tycoonAudio.playBeep(220, 0.2, 'triangle');
     }
@@ -267,6 +272,7 @@ export default function ResumeBuilderTycoon() {
         if (next >= 100) {
           setProjectsCount(p => p + 1);
           setCoins(c => c + 40);
+          setConfettiActive(true);
           alert("🚀 PROJECT DEPLOYED! Credit: +1 Project, +40 SDE Coins!");
           return 0;
         }
@@ -302,6 +308,7 @@ export default function ResumeBuilderTycoon() {
     const isAccepted = dsaScore >= reqDsa && devScore >= reqDev && cgpa >= reqCgpa;
     
     if (isAccepted) {
+      setConfettiActive(true);
       setPlacementOutcome({
         company: companyName,
         status: 'ACCEPTED',
@@ -311,6 +318,8 @@ export default function ResumeBuilderTycoon() {
       addCoins(150);
       addXP(100);
     } else {
+      setShakeActive(true);
+      setTimeout(() => setShakeActive(false), 500);
       setPlacementOutcome({
         company: companyName,
         status: 'REJECTED',
@@ -336,12 +345,14 @@ export default function ResumeBuilderTycoon() {
     setLinkedinFollowers(100);
     setLaptopUpgrade('Standard Laptop');
     setHackathonCertificates(0);
+    setConfettiActive(false);
 
     setActiveScreen('lobby');
   };
 
   return (
-    <div style={styles.container}>
+    <div style={styles.container} className={shakeActive ? 'shake-animation' : ''}>
+      <ConfettiEffect active={confettiActive} />
       {/* Sound Controller Toggle */}
       <button style={styles.soundBtn} onClick={() => setSoundEnabled(!soundEnabled)}>
         {soundEnabled ? <Volume2 size={16} color="#F97316" /> : <VolumeX size={16} color="var(--danger-color)" />}

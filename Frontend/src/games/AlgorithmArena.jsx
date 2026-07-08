@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ConfettiEffect from '../components/ConfettiEffect';
 import { usePlayerStore } from '../store/usePlayerStore';
 import { 
   playSlashSound, 
@@ -339,6 +340,8 @@ export default function AlgorithmArena() {
   const [playerShields, setPlayerShields] = useState(3);
   const [qIndex, setQIndex] = useState(0);
   const [combatText, setCombatText] = useState('');
+  const [shakeActive, setShakeActive] = useState(false);
+  const [confettiActive, setConfettiActive] = useState(false);
 
   // Shuffled Dynamic questions from MongoDB
   const [monsters, setMonsters] = useState(MONSTERS);
@@ -942,6 +945,7 @@ export default function AlgorithmArena() {
     setMonsterHp(activeMonster.maxHp);
     setPlayerShields(3);
     setQIndex(0);
+    setConfettiActive(false);
     setCombatText(`Defeat the ${activeMonster.name}! Choose correct answers to fire your lasers.`);
     loadQuestion(0);
     setBattleState('combat');
@@ -1016,6 +1020,7 @@ export default function AlgorithmArena() {
       const nextQ = qIndex + 1;
       if (nextHp <= 0) {
         // Boss is defeated!
+        setConfettiActive(true);
         if (!isMuted) {
           playExplosionSound();
           playVictorySound();
@@ -1037,6 +1042,8 @@ export default function AlgorithmArena() {
     const nextShields = Math.max(0, playerShieldsRef.current - 1);
     playerShieldsRef.current = nextShields;
     setPlayerShields(nextShields);
+    setShakeActive(true);
+    setTimeout(() => setShakeActive(false), 500);
 
     setTimeout(() => {
       if (nextShields <= 0) {
@@ -1073,6 +1080,7 @@ export default function AlgorithmArena() {
     if (!isMuted) playCoinSound();
     addCoins(80 * activeMonster.level);
     addXP(50 * activeMonster.level);
+    setConfettiActive(false);
 
     const nextIndex = levelIndex + 1;
     if (nextIndex >= monsters.length) {
@@ -1084,7 +1092,8 @@ export default function AlgorithmArena() {
   };
 
   return (
-    <div style={styles.container}>
+    <div style={styles.container} className={shakeActive ? 'shake-animation' : ''}>
+      <ConfettiEffect active={confettiActive} />
       {/* HUD Mute Controller */}
       <button style={styles.muteBtn} onClick={toggleMute} title="Toggle Audio Synth">
         {isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />}
