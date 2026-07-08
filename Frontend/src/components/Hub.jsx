@@ -11,7 +11,8 @@ import {
   Clock, 
   Star,
   Shield,
-  Laptop
+  Laptop,
+  Database
 } from 'lucide-react';
 
 import { jsPDF } from 'jspdf';
@@ -121,6 +122,8 @@ const BUILDINGS = [
 
 export default function Hub() {
   const { setGame, coins, streak, rank } = usePlayerStore();
+  const [codexOpen, setCodexOpen] = useState(false);
+  const [codexTab, setCodexTab] = useState('algo');
 
   const handleDownloadPDF = (gameId) => {
     const doc = new jsPDF();
@@ -347,7 +350,18 @@ export default function Hub() {
   useEffect(() => {
     // Play cyberpunk city ambient loop
     playHubBgm();
-    return () => stopHubBgm();
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setCodexOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      stopHubBgm();
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   return (
@@ -357,6 +371,23 @@ export default function Hub() {
         <div style={styles.cityBadge}>SYSTEM MAIN HUB</div>
         <h2 style={styles.cityTitle}>SILICON METROPOLIS</h2>
         <p style={styles.cityDesc}>Select a sector to begin training, earn points, and level up your placement eligibility.</p>
+        <button 
+          className="game-btn game-btn-primary" 
+          style={{ 
+            marginTop: '0.5rem', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '8px', 
+            padding: '6px 16px', 
+            fontSize: '0.75rem',
+            background: 'linear-gradient(135deg, var(--accent-secondary) 0%, #0369a1 100%)',
+            boxShadow: 'var(--glow-secondary)',
+            borderColor: 'var(--accent-secondary)'
+          }}
+          onClick={() => setCodexOpen(true)}
+        >
+          <Database size={14} /> 📁 DATABANK CODEX TERMINAL
+        </button>
       </div>
 
       {/* Top Global Leaderboard Row */}
@@ -473,6 +504,173 @@ export default function Hub() {
           </button>
         </div>
       </div>
+
+      {/* 4. CODEX DATABASE OVERLAY MODAL */}
+      {codexOpen && (
+        <div style={styles.codexModal}>
+          <div style={styles.codexContent} className="game-card">
+            {/* Header */}
+            <div style={styles.codexHeader}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <Database size={24} color="var(--accent-secondary)" />
+                <h3 style={{ margin: 0, fontFamily: 'var(--font-title)', fontSize: '1.2rem', letterSpacing: '2px', color: '#FFF' }}>
+                  METROPOLIS CODEX TERMINAL
+                </h3>
+              </div>
+              <button 
+                className="game-btn" 
+                style={{ padding: '4px 10px', fontSize: '0.75rem', borderColor: 'var(--danger-color)', color: 'var(--danger-color)', backgroundColor: 'transparent' }}
+                onClick={() => setCodexOpen(false)}
+              >
+                Close databank [ESC]
+              </button>
+            </div>
+
+            {/* Main Tabs Navigation */}
+            <div style={styles.codexTabs}>
+              <button 
+                style={{ ...styles.codexTabBtn, borderBottom: codexTab === 'algo' ? '2px solid var(--accent-secondary)' : 'none', color: codexTab === 'algo' ? '#FFF' : 'var(--text-secondary)' }}
+                onClick={() => setCodexTab('algo')}
+              >
+                ⚔️ Boss Intel
+              </button>
+              <button 
+                style={{ ...styles.codexTabBtn, borderBottom: codexTab === 'decrypt' ? '2px solid var(--accent-secondary)' : 'none', color: codexTab === 'decrypt' ? '#FFF' : 'var(--text-secondary)' }}
+                onClick={() => setCodexTab('decrypt')}
+              >
+                🔎 Bug Registry
+              </button>
+              <button 
+                style={{ ...styles.codexTabBtn, borderBottom: codexTab === 'escape' ? '2px solid var(--accent-secondary)' : 'none', color: codexTab === 'escape' ? '#FFF' : 'var(--text-secondary)' }}
+                onClick={() => setCodexTab('escape')}
+              >
+                🔑 SQL Cryptography
+              </button>
+              <button 
+                style={{ ...styles.codexTabBtn, borderBottom: codexTab === 'tycoon' ? '2px solid var(--accent-secondary)' : 'none', color: codexTab === 'tycoon' ? '#FFF' : 'var(--text-secondary)' }}
+                onClick={() => setCodexTab('tycoon')}
+              >
+                🎓 Semester Manual
+              </button>
+            </div>
+
+            {/* Tab Contents */}
+            <div style={styles.codexBody}>
+              {codexTab === 'algo' && (
+                <div>
+                  <h4 style={{ color: 'var(--accent-secondary)', fontWeight: 'bold', marginBottom: '8px', fontSize: '0.9rem' }}>⚔️ ALGORITHM ARENA - MONSTER INTEL REFERENCE</h4>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                    Each Boss Golem in the Algorithm Arena is weak against certain complexity types or code paradigms. Use this cheat sheet to anticipate questions:
+                  </p>
+                  <div style={styles.codexGrid}>
+                    <div style={styles.codexItem} className="game-card">
+                      <strong style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem' }}>1. Array Beast:</strong>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Focuses on memory offset indexing, arrays lookup times (O(1)), and stability in sorting methods.</span>
+                    </div>
+                    <div style={styles.codexItem} className="game-card">
+                      <strong style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem' }}>2. String Phantom:</strong>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Focuses on string equality checks (O(min(M, N))) and skip patterns like Knuth-Morris-Pratt (KMP).</span>
+                    </div>
+                    <div style={styles.codexItem} className="game-card">
+                      <strong style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem' }}>3. Stack Sentinel:</strong>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Focuses on Last-In-First-Out (LIFO) recursive buffers and stack tracking algorithms.</span>
+                    </div>
+                    <div style={styles.codexItem} className="game-card">
+                      <strong style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem' }}>4. Hash Goblin:</strong>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Focuses on bucket hashing, open addressing, separate chaining, and linear collision run degradation (O(N)).</span>
+                    </div>
+                    <div style={styles.codexItem} className="game-card">
+                      <strong style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem' }}>5. Tree Guardian:</strong>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Focuses on balanced Binary Search Tree heights (O(log N)), tree traversals (In-order sorted output), and BST features.</span>
+                    </div>
+                    <div style={styles.codexItem} className="game-card">
+                      <strong style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem' }}>6. Heap Chimera:</strong>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Focuses on heap construction bounds (O(N)), Min/Max heap root index locations (0), and insertions (O(log N)).</span>
+                    </div>
+                    <div style={styles.codexItem} className="game-card">
+                      <strong style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem' }}>7. Graph Wyrm:</strong>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Focuses on BFS queuing, DFS backtracking recursion, V-1 tree edges, and adjacency list worst-case checks (O(V+E)).</span>
+                    </div>
+                    <div style={styles.codexItem} className="game-card">
+                      <strong style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem' }}>8. Dijkstra Dragon:</strong>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Focuses on single-source paths, negative edge weights conflicts, and priority queue optimizations (O(E log V)).</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {codexTab === 'decrypt' && (
+                <div>
+                  <h4 style={{ color: 'var(--accent-secondary)', fontWeight: 'bold', marginBottom: '8px', fontSize: '0.9rem' }}>🔎 CODE DECRYPTOR - COMPILER THREAT REGISTRY</h4>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                    Learn to audit source files like a security analyst. Here are common SDE compilation threats:
+                  </p>
+                  <div style={styles.codexGrid}>
+                    <div style={styles.codexItem} className="game-card">
+                      <strong style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem' }}>🐛 Null Pointer / Leaks:</strong>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Occurs when assigning core headers or credentials statically to null, or expanding dynamic vectors without deleting pointers.</span>
+                    </div>
+                    <div style={styles.codexItem} className="game-card">
+                      <strong style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem' }}>💀 SQL Concatenations:</strong>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Building database statements via raw string additions allows injections. Remedy using parameterized inputs ($1, ?).</span>
+                    </div>
+                    <div style={styles.codexItem} className="game-card">
+                      <strong style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem' }}>👾 Concurrency Mutex Locks:</strong>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Iterating dictionary keys or collections directly while deleting items in multiple threads throws runtime exceptions.</span>
+                    </div>
+                    <div style={styles.codexItem} className="game-card">
+                      <strong style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem' }}>🛡️ Stack Overflows:</strong>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Using raw functions like strcpy copies streams indiscriminately. Use safe limits bound calls.</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {codexTab === 'escape' && (
+                <div>
+                  <h4 style={{ color: 'var(--accent-secondary)', fontWeight: 'bold', marginBottom: '8px', fontSize: '0.9rem' }}>🔑 SQL CRYPTOGRAPHY - DATABASE GATEWAYS SHEET</h4>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                    Escape room panels verify queries dynamically. Review these query structures:
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div style={styles.codeSnippet} className="game-card">
+                      <code style={{ color: '#00F3FF', fontSize: '0.8rem' }}>SELECT * FROM security_cameras WHERE status = 'OFFLINE';</code>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Queries offline security locks.</span>
+                    </div>
+                    <div style={styles.codeSnippet} className="game-card">
+                      <code style={{ color: '#00F3FF', fontSize: '0.8rem' }}>SELECT access_code FROM employees JOIN badge_registry ON employees.emp_id = badge_registry.emp_id WHERE name = 'Thomas Anderson';</code>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Binds multiple tables on matching fields recursively.</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {codexTab === 'tycoon' && (
+                <div>
+                  <h4 style={{ color: 'var(--accent-secondary)', fontWeight: 'bold', marginBottom: '8px', fontSize: '0.9rem' }}>🎓 SEMESTER BALANCING MANUAL</h4>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                    Surviving campus semesters requires balancing energy and learning metrics:
+                  </p>
+                  <div style={styles.codexGrid}>
+                    <div style={styles.codexItem} className="game-card">
+                      <strong style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem' }}>🛌 Hostel Rests:</strong>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Energy drops when coding or studying. Take naps or watch podcasts to restore energy.</span>
+                    </div>
+                    <div style={styles.codexItem} className="game-card">
+                      <strong style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem' }}>📚 Library DSA:</strong>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Solve Big-O puzzles to raise DSA scores and CGPA scales.</span>
+                    </div>
+                    <div style={styles.codexItem} className="game-card">
+                      <strong style={{ color: 'var(--accent-secondary)', fontSize: '0.8rem' }}>🛍️ Tech Upgrades:</strong>
+                      <span style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '4px' }}>Buy SSD rigs or workstations from the shop to compile typing simulator scripts double-time.</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -742,5 +940,82 @@ const styles = {
     fontWeight: 'bold',
     color: '#00F3FF',
     marginLeft: 'auto',
+  },
+  codexModal: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100vw',
+    height: '100vh',
+    backgroundColor: 'rgba(5, 7, 12, 0.85)',
+    backdropFilter: 'blur(8px)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+    padding: '2rem',
+  },
+  codexContent: {
+    maxWidth: '850px',
+    width: '100%',
+    maxHeight: '85vh',
+    height: '100%',
+    backgroundColor: 'var(--bg-secondary)',
+    border: '2px solid var(--accent-secondary)',
+    borderRadius: '16px',
+    padding: '2rem',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1.5rem',
+    boxShadow: 'var(--glow-secondary)',
+  },
+  codexHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+    paddingBottom: '1rem',
+  },
+  codexTabs: {
+    display: 'flex',
+    gap: '1rem',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+  },
+  codexTabBtn: {
+    background: 'none',
+    border: 'none',
+    padding: '8px 16px',
+    fontSize: '0.85rem',
+    fontFamily: 'var(--font-title)',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    outline: 'none',
+  },
+  codexBody: {
+    flex: 1,
+    overflowY: 'auto',
+    textAlign: 'left',
+    paddingRight: '8px',
+  },
+  codexGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '1rem',
+    marginTop: '0.5rem',
+  },
+  codexItem: {
+    padding: '1rem',
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    border: '1px solid rgba(255, 255, 255, 0.04)',
+    borderRadius: '8px',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  codeSnippet: {
+    padding: '12px 18px',
+    backgroundColor: '#05070c',
+    border: '1px solid rgba(0, 243, 255, 0.15)',
+    borderRadius: '6px',
+    fontFamily: 'var(--font-mono)',
   }
 };
