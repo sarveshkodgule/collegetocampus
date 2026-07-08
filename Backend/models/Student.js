@@ -74,6 +74,10 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  lastDailyCompletedDate: {
+    type: String,
+    default: ''
+  },
   createdAt: {
     type: Date,
     default: Date.now
