@@ -13,6 +13,8 @@ import InternshipDetective from './games/InternshipDetective';
 import CodeInspector from './games/CodeInspector';
 import InterviewEscapeRoom from './games/InterviewEscapeRoom';
 import ResumeBuilderTycoon from './games/ResumeBuilderTycoon';
+import CodeSnake from './games/CodeSnake';
+import AiMasterChallenge from './games/AiMasterChallenge';
 
 export default function App() {
   const { activeGame, notification } = usePlayerStore();
@@ -71,6 +73,10 @@ export default function App() {
         return 'theme-interview-escape';
       case 'resume-tycoon':
         return 'theme-resume-tycoon';
+      case 'code-snake':
+        return 'theme-code-snake';
+      case 'ai-master':
+        return 'theme-ai-master';
       default:
         return 'theme-hub';
     }
@@ -101,6 +107,10 @@ export default function App() {
         return <InterviewEscapeRoom />;
       case 'resume-tycoon':
         return <ResumeBuilderTycoon />;
+      case 'code-snake':
+        return <CodeSnake />;
+      case 'ai-master':
+        return <AiMasterChallenge />;
       default:
         return <Hub />;
     }

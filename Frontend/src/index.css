@@ -105,6 +105,34 @@ html {
   --font-title: 'Cinzel', serif;
 }
 
+/* Code Snake - Retro Synthwave Arcade */
+.theme-code-snake {
+  --bg-primary: #07090E;
+  --bg-secondary: #131722;
+  --bg-tertiary: #1B2132;
+  --text-primary: #F0F5FA;
+  --text-secondary: #7F8C9F;
+  --accent-color: #10B981; /* Neon Emerald */
+  --accent-secondary: #00F3FF; /* Neon Cyan */
+  --glow-accent: 0 0 15px rgba(16, 185, 129, 0.4);
+  --glow-secondary: 0 0 15px rgba(0, 243, 255, 0.4);
+  --font-title: 'Orbitron', sans-serif;
+}
+
+/* AI Master Challenge - KBC Neon Tech show */
+.theme-ai-master {
+  --bg-primary: #0A0710;
+  --bg-secondary: #160F24;
+  --bg-tertiary: #23183A;
+  --text-primary: #F5F0FF;
+  --text-secondary: #9F8EBF;
+  --accent-color: #A855F7; /* Purple Glow */
+  --accent-secondary: #00F3FF; /* Cyan Highlight */
+  --glow-accent: 0 0 18px rgba(168, 85, 247, 0.5);
+  --glow-secondary: 0 0 18px rgba(0, 243, 255, 0.5);
+  --font-title: 'Orbitron', sans-serif;
+}
+
 /* 5. Startup Garage - Warm Hostel Room Indie Simulator */
 .theme-startup-garage {
   --bg-primary: #15110E;

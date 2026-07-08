@@ -117,6 +117,28 @@ const BUILDINGS = [
     accentClass: 'theme-resume-tycoon',
     difficulty: 'Strategy',
     reputationReward: '+45 Rep'
+  },
+  {
+    id: 'code-snake',
+    title: 'Code Snake Arena',
+    subtitle: 'Code Snake Traversal',
+    description: 'Navigate the compiler grid as a data stream. Collect syntax keywords, deploy blocks, and eliminate logic loops!',
+    icon: Terminal,
+    color: '#10B981', // Emerald
+    accentClass: 'theme-code-snake',
+    difficulty: 'Medium',
+    reputationReward: '+120 Rep'
+  },
+  {
+    id: 'ai-master',
+    title: 'AI Master Challenge',
+    subtitle: 'AI Master Show',
+    description: 'Futuristic TV game show. Answer AI/ML challenges, use model lifelines, bypass safe thresholds, and claim Champion standing.',
+    icon: Trophy,
+    color: '#00F3FF', // Cyan
+    accentClass: 'theme-ai-master',
+    difficulty: 'Hard',
+    reputationReward: '+150 Rep'
   }
 ];
 
@@ -273,6 +295,105 @@ export default function Hub() {
           "  * Fix: Revert buggy commit, resolve locally, push test suites.",
           "* Level 3 (API Gateway): Connect Traffic spams + Firewall settings.",
           "  * Fix: Deploy Nginx token-bucket IP Rate limiter reverse proxies."
+        ];
+        break;
+      case 'code-inspector':
+        title = "Code Inspector: Code Decryptor Manual";
+        lines = [
+          "GAME CONCEPT & AUDITING",
+          "Identify and patch compilation and logical bugs in modern codebase files.",
+          "Read code line snippets, spot error locations, and fix them under lock.",
+          "",
+          "DEBUGGING TACTICS",
+          "* Array Indices: Verify loop bounds do not trigger index out of bounds.",
+          "* Null Pointers: Check reference null pointers before invoking attributes.",
+          "* Logical conditions: Match variable comparison expressions.",
+          "",
+          "LEVEL SOLUTIONS (HINTS)",
+          "* Level 1 (Python dict): Correct key mappings syntax.",
+          "* Level 2 (JS arrays): Correct loop checks to prevent double increments.",
+          "* Level 3 (C++ references): Correct pointer addresses."
+        ];
+        break;
+      case 'interview-escape':
+        title = "Assessment Suite: Interview Escape Room Manual";
+        lines = [
+          "GAME MISSION",
+          "Solve progressive coding and architecture interview riddles under lock.",
+          "Traverse SQL databases, memory structures, API networks, and system gates.",
+          "",
+          "SECTOR OUTLINES",
+          "* Room 1 (Entry Gate): Answer basic syntax definitions.",
+          "* Room 2 (Database Locker): Match relational queries and index keys.",
+          "* Room 3 (API Firewall): Fix rate-limiting and authorization headers.",
+          "* Room 4 (System Core): Diagnose replica lags and data pipelines.",
+          "* Room 5 (Placement Board): Answer advanced System Design parameters."
+        ];
+        break;
+      case 'resume-tycoon':
+        title = "Development Center: Resume Builder Tycoon Manual";
+        lines = [
+          "GAME STRATEGY",
+          "Life simulation. Manage weekly hour distributions across semesters.",
+          "Balance sleep, studying DSA, deploying projects, and networking.",
+          "",
+          "CORE METRICS",
+          "* GPA standing: Study in the library to raise academic metrics.",
+          "* SDE stats: Practice coding in the lab to unlock React/Python nodes.",
+          "* Energy level: rest in hostel room to recover health.",
+          "* Project Stars: Complete high-quality hackathons.",
+          "",
+          "PLACEMENT SUCCESS HINTS",
+          "Upgrade laptop configurations in the shop to gain speed boosts.",
+          "Accept recruiter interviews at placement cell in Semester 4.",
+          "Verify company qualifications (Google, Netflix, OpenAI) before applying."
+        ];
+        break;
+      case 'code-snake':
+        title = "Code Snake Arena Player Manual";
+        lines = [
+          "GAME CONCEPT",
+          "Navigate the compiler grid as an AI data stream. Collect syntax",
+          "tokens to complete coding missions while dodging bugs and virus files.",
+          "",
+          "CONTROLS & SHORTCUTS",
+          "* Keyboard: Use Arrow Keys or WASD keys to redirect the snake stream.",
+          "* Mobile: Tap the glassmorphic on-screen d-pad arrow buttons.",
+          "",
+          "LIFELINE POWER-UPS",
+          "* Debug Shield (🛡️): Absorbs one wrong token or self-collision impact.",
+          "* Speed Boost (⚡): Accelerates speed ticks and doubles score ratings.",
+          "* Token Magnet (🧲): Attracts correct syntax tokens toward the head.",
+          "* Time Freeze (❄️): suspends active countdown timers for 8 seconds.",
+          "* Syntax Scanner (🔍): Highlights the next target token in cyan.",
+          "",
+          "CRITICAL TACTICS",
+          "1. Only eat correct tokens (e.g. def, :, return for Python).",
+          "2. Avoid wrong keywords to prevent tail shrinking and combo resets.",
+          "3. Dodge crawling bugs (🐛) and hunting viruses (👾) on grid points."
+        ];
+        break;
+      case 'ai-master':
+        title = "AI Master Challenge Player Manual";
+        lines = [
+          "Futuristic TV game show. Answer AI/ML challenges to rank up",
+          "from AI Beginner to the ultimate title of AI Champion.",
+          "",
+          "SAFETY THRESHOLDS (KBC RULES)",
+          "* Safe Havens: Question 4 and Question 7 are checkpoints.",
+          "* If you fail a later question, your progress drops back to",
+          "  the last safety haven, preserving partial XP and coins.",
+          "",
+          "MODEL LIFELINES",
+          "* 50:50 Scanner: Scan and wipe two incorrect answers from screen.",
+          "* AI Mentor: Generates constructive mathematical ML suggestions.",
+          "* Dataset Preview: Inspect row logs or database features.",
+          "* Compute Time: Inject +30 seconds of compute time to the clock.",
+          "",
+          "ML TOPICS CHEATSHEET",
+          "* Step 1-3: Python dicts, NumPy ravel/ndim, and Pandas dropna.",
+          "* Step 4-6: Precision/Recall ratios, L1/L2 penalties, and CNN striding.",
+          "* Step 7-10: LSTM cell gates, self-attention, and DQN target nets."
         ];
         break;
       default:

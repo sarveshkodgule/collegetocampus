@@ -50,6 +50,22 @@ const ACHIEVEMENTS = [
     icon: Star,
     color: '#00F3FF',
     check: (s) => localStorage.getItem('metropolis_codex_opened') === 'true' || s.xp >= 20
+  },
+  {
+    id: 'code_snake_master',
+    title: 'Syntactic Reptile',
+    desc: 'Completed Level 5 in the Code Snake Arena.',
+    icon: Terminal,
+    color: '#10B981',
+    check: (s) => s.xp >= 150
+  },
+  {
+    id: 'ai_champion_badge',
+    title: 'AI Champion',
+    desc: 'Completed all 10 stages in the AI Master Challenge.',
+    icon: Trophy,
+    color: '#00F3FF',
+    check: (s) => s.xp >= 300
   }
 ];
 
