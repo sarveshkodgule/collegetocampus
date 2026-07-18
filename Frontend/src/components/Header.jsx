@@ -97,7 +97,7 @@ export default function Header() {
             className="game-btn" 
             style={{ ...styles.navBtn, borderColor: '#EF4444', color: '#EF4444' }} 
             onClick={() => {
-              if (window.confirm("Are you sure you want to log out? Your SDE progress is saved in MongoDB.")) {
+              if (window.confirm("Are you sure you want to log out? Your progress will not be lost.")) {
                 resetGame();
               }
             }}
