@@ -74,6 +74,10 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  clan: {
+    type: String,
+    default: ''
+  },
   lastDailyCompletedDate: {
     type: String,
     default: ''
