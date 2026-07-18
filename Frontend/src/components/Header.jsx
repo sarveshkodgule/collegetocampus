@@ -1,6 +1,6 @@
 import React from 'react';
 import { usePlayerStore } from '../store/usePlayerStore';
-import { Heart, Coins, Flame, Trophy, Award, RefreshCw, Home } from 'lucide-react';
+import { Heart, Coins, Flame, Trophy, Award, LogOut, Home } from 'lucide-react';
 
 export default function Header() {
   const { 
@@ -97,14 +97,14 @@ export default function Header() {
             className="game-btn" 
             style={{ ...styles.navBtn, borderColor: '#EF4444', color: '#EF4444' }} 
             onClick={() => {
-              if (window.confirm("Are you sure you want to reset all progress?")) {
+              if (window.confirm("Are you sure you want to log out? Your SDE progress is saved in MongoDB.")) {
                 resetGame();
               }
             }}
-            title="Reset Game"
+            title="Log Out"
           >
-            <RefreshCw size={14} />
-            <span>Reset</span>
+            <LogOut size={14} />
+            <span>Logout</span>
           </button>
         </div>
       </div>

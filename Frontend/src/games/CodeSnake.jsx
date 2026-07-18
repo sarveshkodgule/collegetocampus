@@ -359,6 +359,7 @@ export default function CodeSnake() {
   const enemiesRef = useRef([]);
   const powerUpsRef = useRef([]);
   const particlesRef = useRef([]);
+  const enemyTickRef = useRef(0);
 
   const daySeed = new Date().getDate();
   const activeLevelPool = LEVELS_POOL[levelIdx] || LEVELS_POOL[0];
@@ -602,16 +603,20 @@ export default function CodeSnake() {
     tokensRef.current = tokensRef.current.filter((token) => {
       if (token.x === head.x && token.y === head.y) {
         eaten = true;
-        if (token.isCorrect) {
-          // Collected correct keyword
+        
+        const expectedToken = activeLevel.required[collectedTokens.length];
+        const isCorrectNext = token.value === expectedToken;
+
+        if (isCorrectNext) {
+          // Collected correct keyword in sequence
           if (soundEnabled) snakeAudio.playCollect();
           spawnExplosion(token.x, token.y, '#10B981');
           
           setCollectedTokens((prev) => {
             const nextList = [...prev, token.value];
             
-            // Check if level goals achieved
-            const requiredCollected = activeLevel.required.every(req => nextList.includes(req));
+            // Check if level goals achieved (since we must pick in sequence, nextList length reaching activeLevel.required.length means all are collected in order)
+            const requiredCollected = nextList.length === activeLevel.required.length;
             if (requiredCollected) {
               if (activeLevel.isBoss) {
                 // Damage boss
@@ -637,7 +642,7 @@ export default function CodeSnake() {
           setScore((s) => s + 10 * combo);
           setCombo((c) => Math.min(10, c + 1));
         } else {
-          // Ate wrong keyword
+          // Ate wrong keyword or incorrect next token in sequence!
           if (shieldActive) {
             setShieldActive(false);
             triggerNotification('🛡️ Shield Absorbed', 'Syntax error neutralized!', '⚡');
@@ -703,30 +708,36 @@ export default function CodeSnake() {
       return p;
     }).filter((p) => p.alpha > 0);
 
-    // Update Enemies (Bugs, Viruses crawling)
+    // Update Enemies (Bugs, Viruses crawling) - slowed down to 1/3 speed!
+    enemyTickRef.current += 1;
+    if (enemyTickRef.current % 3 === 0) {
+      enemiesRef.current.forEach((enemy) => {
+        // Random crawler motion
+        if (enemy.type === 'bug') {
+          if (Math.random() > 0.8) {
+            enemy.dx = Math.random() > 0.5 ? 1 : -1;
+            enemy.dy = Math.random() > 0.5 ? 1 : -1;
+          }
+          enemy.x += enemy.dx;
+          enemy.y += enemy.dy;
+        } else {
+          // Virus tracks snake head
+          if (Math.random() > 0.55) {
+            enemy.x += head.x > enemy.x ? 1 : -1;
+            enemy.y += head.y > enemy.y ? 1 : -1;
+          }
+        }
+
+        // Bound check
+        if (enemy.x < 0) enemy.x = gridWidth - 1;
+        else if (enemy.x >= gridWidth) enemy.x = 0;
+        if (enemy.y < 0) enemy.y = gridHeight - 1;
+        else if (enemy.y >= gridHeight) enemy.y = 0;
+      });
+    }
+
+    // Collision check runs every single tick to prevent passing through
     enemiesRef.current.forEach((enemy) => {
-      // Random crawler motion
-      if (enemy.type === 'bug') {
-        if (Math.random() > 0.85) {
-          enemy.dx = Math.random() > 0.5 ? 1 : -1;
-          enemy.dy = Math.random() > 0.5 ? 1 : -1;
-        }
-        enemy.x += enemy.dx;
-        enemy.y += enemy.dy;
-      } else {
-        // Virus tracks snake head slightly
-        if (Math.random() > 0.6) {
-          enemy.x += head.x > enemy.x ? 1 : -1;
-          enemy.y += head.y > enemy.y ? 1 : -1;
-        }
-      }
-
-      // Bound check
-      if (enemy.x < 0) enemy.x = gridWidth - 1;
-      else if (enemy.x >= gridWidth) enemy.x = 0;
-      if (enemy.y < 0) enemy.y = gridHeight - 1;
-      else if (enemy.y >= gridHeight) enemy.y = 0;
-
       // Crash into snake
       if (enemy.x === head.x && enemy.y === head.y) {
         if (shieldActive) {
@@ -796,9 +807,19 @@ export default function CodeSnake() {
 
     // 4. Draw Floating Tokens
     tokensRef.current.forEach((token) => {
-      const isNextTarget = scannerActive && token.isCorrect && !collectedTokens.includes(token.value);
+      const expectedToken = activeLevel.required[collectedTokens.length];
+      const isCurrentTarget = token.value === expectedToken;
+      const isFutureTarget = activeLevel.required.includes(token.value) && !isCurrentTarget && !collectedTokens.includes(token.value);
+      const isNextTarget = scannerActive && isCurrentTarget;
       
-      ctx.fillStyle = token.isCorrect ? '#10B981' : '#EF4444';
+      let tokenColor = '#EF4444'; // Red for wrong syntax / error
+      if (isCurrentTarget) {
+        tokenColor = '#10B981'; // Green for active expected token
+      } else if (isFutureTarget) {
+        tokenColor = '#F59E0B'; // Amber for future required tokens
+      }
+
+      ctx.fillStyle = tokenColor;
       ctx.strokeStyle = isNextTarget ? '#00F3FF' : 'rgba(255,255,255,0.2)';
       ctx.lineWidth = isNextTarget ? 3 : 1;
 
@@ -918,18 +939,33 @@ export default function CodeSnake() {
               <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>PROGRESS:</span>
               <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginTop: '6px' }}>
                 {activeLevel.required.map((req, idx) => {
-                  const isEaten = collectedTokens.includes(req);
+                  const isCollected = idx < collectedTokens.length;
+                  const isActive = idx === collectedTokens.length;
+                  
+                  let badgeStyle = { ...styles.goalBadge };
+                  let statusIcon = '⏳';
+                  
+                  if (isCollected) {
+                    badgeStyle.backgroundColor = 'rgba(16, 185, 129, 0.2)';
+                    badgeStyle.borderColor = 'var(--success-color)';
+                    badgeStyle.color = 'var(--success-color)';
+                    statusIcon = '✅';
+                  } else if (isActive) {
+                    badgeStyle.backgroundColor = 'rgba(0, 243, 255, 0.2)';
+                    badgeStyle.borderColor = 'var(--accent-secondary)';
+                    badgeStyle.color = 'var(--accent-secondary)';
+                    badgeStyle.boxShadow = '0 0 10px rgba(0, 243, 255, 0.4)';
+                    statusIcon = '🎯';
+                  } else {
+                    badgeStyle.backgroundColor = 'rgba(255, 255, 255, 0.02)';
+                    badgeStyle.borderColor = 'rgba(255, 255, 255, 0.05)';
+                    badgeStyle.color = 'rgba(255, 255, 255, 0.2)';
+                    statusIcon = '🔒';
+                  }
+
                   return (
-                    <span 
-                      key={idx} 
-                      style={{
-                        ...styles.goalBadge,
-                        backgroundColor: isEaten ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255,255,255,0.05)',
-                        borderColor: isEaten ? 'var(--success-color)' : 'rgba(255,255,255,0.1)',
-                        color: isEaten ? 'var(--success-color)' : 'var(--text-secondary)'
-                      }}
-                    >
-                      {isEaten ? '✅' : '🔴'} {req}
+                    <span key={idx} style={badgeStyle}>
+                      {statusIcon} {req}
                     </span>
                   );
                 })}
