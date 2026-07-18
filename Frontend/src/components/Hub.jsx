@@ -785,6 +785,7 @@ export default function Hub() {
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(true);
   const [dailyChallenge, setDailyChallenge] = useState(null);
   const [loadingDaily, setLoadingDaily] = useState(true);
+  const [leaderboardExpanded, setLeaderboardExpanded] = useState(false);
 
   useEffect(() => {
     fetch('http://localhost:5000/api/leaderboard')
@@ -856,64 +857,85 @@ export default function Hub() {
 
   return (
     <div style={styles.container} className="grid-overlay">
-      {/* City Title Header */}
-      <div style={styles.welcomeBanner}>
-        <div style={styles.cityBadge}>SYSTEM MAIN HUB</div>
-        <h2 style={styles.cityTitle}>SILICON METROPOLIS</h2>
-        <p style={styles.cityDesc}>Select a sector to begin training, earn points, and level up your placement eligibility.</p>
-        <button 
-          className="game-btn game-btn-primary" 
-          style={{ 
-            marginTop: '0.5rem', 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '8px', 
-            padding: '6px 16px', 
-            fontSize: '0.75rem',
-            background: 'linear-gradient(135deg, var(--accent-secondary) 0%, #0369a1 100%)',
-            boxShadow: 'var(--glow-secondary)',
-            borderColor: 'var(--accent-secondary)'
-          }}
-          onClick={() => {
-            setCodexOpen(true);
-            localStorage.setItem('metropolis_codex_opened', 'true');
-          }}
-        >
-          <Database size={14} /> 📁 DATABANK CODEX TERMINAL
-        </button>
-      </div>
-
-      {/* Top Global Leaderboard Row */}
-      <div style={styles.topLeaderboardBanner} className="game-card">
-        <div style={styles.leaderboardHeader}>
-          <Trophy size={18} color="#EAB308" className="pulse-glow-animation" />
-          <div style={styles.leaderboardTitleGroup}>
-            <span style={styles.leaderboardMainTitle}>METROPOLIS STANDINGS</span>
-            <span style={styles.leaderboardSubtitle}>Top placement contenders (real-time sync)</span>
-          </div>
+      {/* City Header & Leaderboard Row */}
+      <div style={styles.headerLayoutRow}>
+        {/* Left Column: Title & Info */}
+        <div style={styles.welcomeBanner}>
+          <div style={styles.cityBadge}>SYSTEM MAIN HUB</div>
+          <h2 style={styles.cityTitle}>SILICON METROPOLIS</h2>
+          <p style={styles.cityDesc}>Select a sector to begin training, earn points, and level up your placement eligibility.</p>
+          <button 
+            className="game-btn game-btn-primary" 
+            style={{ 
+              marginTop: '0.5rem', 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: '8px', 
+              padding: '6px 16px', 
+              fontSize: '0.75rem',
+              background: 'linear-gradient(135deg, var(--accent-secondary) 0%, #0369a1 100%)',
+              boxShadow: 'var(--glow-secondary)',
+              borderColor: 'var(--accent-secondary)'
+            }}
+            onClick={() => {
+              setCodexOpen(true);
+              localStorage.setItem('metropolis_codex_opened', 'true');
+            }}
+          >
+            <Database size={14} /> 📁 DATABANK CODEX TERMINAL
+          </button>
         </div>
-        
-        <div style={styles.leaderboardRowList}>
-          {loadingLeaderboard ? (
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Loading SDE standings...</div>
-          ) : (
-            leaderboard.slice(0, 4).map((player, idx) => {
-              const playerUsername = player.email ? player.email.split('@')[0] : player.name.toLowerCase().replace(/\s+/g, '');
-              return (
-                <div key={idx} style={styles.leaderboardPill}>
-                  <span style={styles.pillRankBadge}>
-                    {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
-                  </span>
-                  <span style={styles.pillAvatar}>{player.avatar || '🚀'}</span>
-                  <div style={styles.pillInfo}>
-                    <span style={styles.pillName}>{player.name}</span>
-                    <span style={styles.pillRank}>@{playerUsername}</span>
-                  </div>
-                  <span style={styles.pillXp}>{player.xp} XP</span>
-                </div>
-              );
-            })
-          )}
+
+        {/* Right Column: Vertical Metropolis Standings Leaderboard */}
+        <div style={styles.rightLeaderboardCard} className="game-card">
+          <div style={styles.rightLeaderboardHeader}>
+            <Trophy size={14} color="#EAB308" className="pulse-glow-animation" />
+            <span style={styles.rightLeaderboardMainTitle}>METROPOLIS STANDINGS</span>
+          </div>
+          
+          <div style={styles.rightLeaderboardList}>
+            {loadingLeaderboard ? (
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Loading SDE standings...</div>
+            ) : (
+              (() => {
+                const visibleCount = leaderboardExpanded ? leaderboard.length : 3;
+                const visibleList = leaderboard.slice(0, visibleCount);
+                return (
+                  <>
+                    {visibleList.map((player, idx) => {
+                      const playerUsername = player.email ? player.email.split('@')[0] : player.name.toLowerCase().replace(/\s+/g, '');
+                      return (
+                        <div key={idx} style={styles.rightLeaderboardRow}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={styles.rightRankBadge}>
+                              {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
+                            </span>
+                            <span style={styles.rightAvatar}>{player.avatar || '🚀'}</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                              <span style={styles.rightName}>{player.name}</span>
+                              <span style={styles.rightHandle}>@{playerUsername}</span>
+                            </div>
+                          </div>
+                          <span style={styles.rightXp}>{player.xp} XP</span>
+                        </div>
+                      );
+                    })}
+                    
+                    {leaderboard.length > 3 && (
+                      <button 
+                        style={styles.expandBtn}
+                        onClick={() => {
+                          setLeaderboardExpanded(!leaderboardExpanded);
+                        }}
+                      >
+                        {leaderboardExpanded ? 'Show Less ▲' : `Show More (${leaderboard.length - 3} others) ▼`}
+                      </button>
+                    )}
+                  </>
+                );
+              })()
+            )}
+          </div>
         </div>
       </div>
 
@@ -1203,10 +1225,12 @@ const styles = {
     gap: '2.5rem',
   },
   welcomeBanner: {
-    textAlign: 'center',
+    textAlign: 'left',
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    flex: '1',
+    minWidth: '300px',
     gap: '0.5rem',
   },
   cityBadge: {
@@ -1372,47 +1396,94 @@ const styles = {
     color: 'var(--accent-secondary)',
     boxShadow: 'var(--glow-secondary)',
   },
-  topLeaderboardBanner: {
+  headerLayoutRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'start',
+    gap: '2rem',
     width: '100%',
     maxWidth: '1200px',
     margin: '0 auto',
-    padding: '1rem 2rem',
-    backgroundColor: 'rgba(15, 23, 42, 0.45)',
-    backdropFilter: 'blur(10px)',
-    border: '1px solid rgba(0, 243, 255, 0.1)',
-    borderRadius: '16px',
+    flexWrap: 'wrap',
+  },
+  rightLeaderboardCard: {
+    backgroundColor: 'rgba(19, 23, 34, 0.8)',
+    border: '1px solid rgba(0, 243, 255, 0.15)',
+    boxShadow: 'var(--glow-accent-dim)',
+    borderRadius: '12px',
+    padding: '0.85rem 1.1rem',
+    width: '320px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.6rem',
+    backdropFilter: 'blur(8px)',
+  },
+  rightLeaderboardHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+    paddingBottom: '0.4rem',
+  },
+  rightLeaderboardMainTitle: {
+    fontFamily: 'var(--font-title)',
+    fontSize: '0.75rem',
+    fontWeight: '800',
+    letterSpacing: '0.8px',
+    color: 'var(--accent-secondary)',
+  },
+  rightLeaderboardList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
+  },
+  rightLeaderboardRow: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    gap: '2rem',
-    flexWrap: 'wrap',
+    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+    padding: '0.4rem 0.6rem',
+    borderRadius: '6px',
+    border: '1px solid rgba(255, 255, 255, 0.02)',
+    transition: 'all 0.15s ease',
   },
-  leaderboardHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-  },
-  leaderboardTitleGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    textAlign: 'left',
-  },
-  leaderboardMainTitle: {
-    fontSize: '0.85rem',
+  rightRankBadge: {
+    fontSize: '0.7rem',
+    width: '18px',
+    textAlign: 'center',
+    fontFamily: 'var(--font-mono)',
     fontWeight: 'bold',
-    letterSpacing: '1px',
+  },
+  rightAvatar: {
+    fontSize: '0.95rem',
+  },
+  rightName: {
+    fontSize: '0.75rem',
+    fontWeight: '700',
     color: '#FFF',
   },
-  leaderboardSubtitle: {
-    fontSize: '0.65rem',
+  rightHandle: {
+    fontSize: '0.6rem',
     color: 'var(--text-secondary)',
+    marginTop: '1px',
   },
-  leaderboardRowList: {
-    display: 'flex',
-    gap: '1rem',
-    flex: 1,
-    justifyContent: 'flex-end',
-    flexWrap: 'wrap',
+  rightXp: {
+    fontSize: '0.75rem',
+    fontWeight: 'bold',
+    fontFamily: 'var(--font-mono)',
+    color: 'var(--accent-color)',
+  },
+  expandBtn: {
+    background: 'transparent',
+    border: 'none',
+    color: 'var(--accent-secondary)',
+    fontSize: '0.65rem',
+    fontWeight: '700',
+    cursor: 'pointer',
+    padding: '4px 0 0 0',
+    textAlign: 'center',
+    transition: 'color 0.2s ease',
+    outline: 'none',
   },
   leaderboardPill: {
     display: 'flex',
