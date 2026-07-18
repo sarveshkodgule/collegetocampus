@@ -29,7 +29,8 @@ const syncProgressWithBackend = async (state) => {
         classType: state.classType,
         unlockedSkills: state.unlockedSkills,
         heistLevelsCompleted: state.heistLevelsCompleted,
-        aptiHighScore: state.aptiHighScore
+        aptiHighScore: state.aptiHighScore,
+        clan: state.clan
       })
     });
   } catch (error) {
@@ -54,6 +55,7 @@ export const usePlayerStore = create((set, get) => ({
   department: '',
   gradYear: null,
   rollNumber: '',
+  clan: '',
 
   // Skill Tree state
   classType: null, // 'Frontend Mage', 'Backend Guardian', 'AI Alchemist', 'UI/UX Rogue'
@@ -174,6 +176,15 @@ export const usePlayerStore = create((set, get) => ({
     });
   },
 
+  setClan: (clanId) => {
+    const current = get();
+    set({ clan: clanId });
+    syncProgressWithBackend({
+      ...current,
+      clan: clanId
+    });
+  },
+
   completeDailyChallenge: async () => {
     const token = localStorage.getItem('token');
     if (!token) return;
@@ -222,7 +233,8 @@ export const usePlayerStore = create((set, get) => ({
       collegeName: '',
       department: '',
       gradYear: null,
-      rollNumber: ''
+      rollNumber: '',
+      clan: ''
     });
   }
 }));

@@ -150,300 +150,630 @@ export default function Hub() {
   const handleDownloadPDF = (gameId) => {
     const doc = new jsPDF();
     
-    // Add title
-    doc.setFont("Helvetica", "bold");
-    doc.setFontSize(20);
-    doc.setTextColor(30, 58, 138); // Dark blue #1e3a8a
-    
     let title = '';
-    let lines = [];
+    let pages = [];
     
     switch(gameId) {
       case 'career-tower':
         title = "Career Tower: Life Architect Player Manual";
-        lines = [
-          "GAME CONCEPT & LEVELING SYSTEM",
-          "Reimagines a developer's career roadmap as a giant constellation skill tree.",
-          "Players select a Starting Class, complete contracts, earn gold/XP, and",
-          "spend Focus Points to light up skill stars. Upgrading nodes directly improves",
-          "your placement capability stats.",
-          "",
-          "SELECTING YOUR CLASS ARCHE-TYPE",
-          "* Frontend Mage: UI/UX & React wizardry. Starts with +2 Focus Points,",
-          "  +10 Velocity (reduces cooldown times by 15%).",
-          "* Backend Guardian: Database & API wall. Starts with +50 Coins and",
-          "  +10 Complexity Depth (reduces query latency costs by 15%).",
-          "* AI Alchemist: Neural networks & model tuner. Starts with +50 XP and",
-          "  +10 DSA Intelligence (deals 15% extra damage in the DSA Arena).",
-          "* UI/UX Rogue: Styling & Design master. Starts with +50 Reputation and",
-          "  +10 Synergy Charisma (boosts trust gains in visual novel stories by 15%).",
-          "",
-          "THE STRATEGY PLAYBOOK",
-          "1. Contracts Board: Accept freelance gigs from the metropolis lobby. Complete",
-          "   coding tasks under pressure to build currency reserves.",
-          "2. Constellation Nodes: Unlocking nodes awards stat gains. Balance your build",
-          "   between UI, databases, and algorithms to qualify for top-tier jobs.",
-          "3. Risks & Outages: Failing a contract task costs 1 Heart. If hearts hit 0,",
-          "   your system locks out. Spend 50 coins in the profile center to reboot.",
-          "4. Market Swings: Career markets shift dynamically. Node costs and quest rewards",
-          "   fluctuate based on sector demand."
+        pages = [
+          [
+            "SECTION 1: GAME CONCEPT & CAREER ROADMAP",
+            "This simulation reimagines a software engineer's career roadmap as a giant",
+            "constellation skill tree. Instead of standard numeric levels, players navigate",
+            "metropolis placements by lighting up career star nodes. The game is designed to",
+            "develop holistic engineering decision-making.",
+            "",
+            "CORE MECHANICS & PATHWAYS",
+            "1. Focus Points: Earned by completing SDE freelance tasks. Spent on skill trees.",
+            "2. Constellation Stars: Unlocking career stars directly buffs core stats like",
+            "   Velocity, Complexity Depth, DSA Intelligence, and Synergy Charisma.",
+            "3. Sector Market Demands: The job market shifts dynamically. Skill nodes may cost",
+            "   more or less depending on active tech stacks in the metropolis."
+          ],
+          [
+            "SECTION 2: SELECTING YOUR CHARACTER ARCHETYPE",
+            "Each Starting Class provides distinct bonuses that scale differently:",
+            "",
+            "* Frontend Mage: Masters UI/UX & React frameworks. Starts with +2 Focus Points,",
+            "  and +10 Velocity (reduces contract cooldown times by 15%).",
+            "* Backend Guardian: Masters databases & APIs. Starts with +50 Coins and",
+            "  +10 Complexity Depth (reduces database query latency costs by 15%).",
+            "* AI Alchemist: Masters neural models & tensors. Starts with +50 XP and",
+            "  +10 DSA Intelligence (deals 15% extra damage in the DSA Arena).",
+            "* UI/UX Rogue: Masters CSS styling & design. Starts with +50 Reputation and",
+            "  +10 Synergy Charisma (boosts trust gains in visual novel stories by 15%)."
+          ],
+          [
+            "SECTION 3: CONTRACT BOARD & OUTAGE RISKS",
+            "Accept contracts from local tech sectors to earn SDE coins and reputation points.",
+            "",
+            "THE SYSTEM STABILIZATION LAWS",
+            "1. Pressure Timers: Code changes must be compiled within strict timers.",
+            "2. Outage Failures: Failing a task triggers a production outage, costing 1 Heart.",
+            "3. System Reboots: If hearts drop to 0, system locks activate. Rebooting the profile",
+            "   requires spending 50 coins in the developer profile center.",
+            "4. Project Quality: Higher project complexity awards scaling XP bonuses."
+          ],
+          [
+            "SECTION 4: OFFICIAL SOLUTIONS & SYSTEM CHEATS",
+            "OPTIMAL SKILL NODES UNLOCKING RATIOS",
+            "* Junior Stage: Spend first 4 Focus Points on 'Core Logic' and 'Database Basics'.",
+            "* Mid Stage: Unlock 'System Architect' to double maximum SDE contract rewards.",
+            "* Senior Stage: Light up 'Distributed Nodes' to reduce heart cooldowns by 50%.",
+            "",
+            "CLAN REBOOT CODES",
+            "* Clear all local outages: Spend 50 coins at profile tab to buy 'Heart Patch'.",
+            "* Maximize MRR: Accept 'Series A' and 'Series B' contracts first on the board."
+          ]
         ];
         break;
       case 'sql-heist':
         title = "Data Bank: SQL Heist Player Manual";
-        lines = [
-          "MISSION OBJECTIVE",
-          "Hack relational database terminals inside a high-security vault.",
-          "Inspect table schemas, formulate SQL statements, track database",
-          "intruders, and recover security files.",
-          "",
-          "STUDENT SQL CHEAT SHEET",
-          "* SELECT: Speficies target columns to retrieve.",
-          "* WHERE: Filters rows matching criteria (e.g. status = 'OFFLINE').",
-          "* JOIN / ON: Links matching primary keys across tables.",
-          "* GROUP BY: Aggregates records. Use HAVING to filter grouped data.",
-          "* ORDER BY: Sorts records (ASC/DESC). Use LIMIT to restrict rows.",
-          "",
-          "CASE LEVEL SOLVE CODES (HINTS)",
-          "* Case 1 (Security cams): SELECT location FROM security_cameras",
-          "  WHERE status = 'OFFLINE' to find open access spots.",
-          "* Case 2 (Employee clearance): SELECT access_code FROM badge_registry",
-          "  JOIN employees ON badge_registry.emp_id = employees.emp_id",
-          "  WHERE name = 'Sarah Connor'.",
-          "* Case 3 (Intruder traces): SELECT ip_address FROM network_logs",
-          "  WHERE action = 'DENIED' GROUP BY ip_address HAVING count(*) > 1."
+        pages = [
+          [
+            "SECTION 1: MISSION BRIEFING & VAULT SECURITY",
+            "You are tasked with hacking relational database terminals inside the high-security",
+            "Metropolis Data Bank. A database intruder has compromised the vault, leaving",
+            "corrupt security trails. SDE candidates must write syntactically correct queries",
+            "to trace logs and recover data.",
+            "",
+            "RELATIONAL SYSTEM OUTLINES",
+            "* Database terminals consist of tables (cams, employees, network_logs).",
+            "* Terminal connections are isolated under strict sandbox constraints.",
+            "* Bypassing firewalls requires correct SQL syntax and exact filters."
+          ],
+          [
+            "SECTION 2: STUDENT SQL TERMINOLOGY CHEATSHEET",
+            "Understand these fundamental SQL concepts to bypass data bank firewalls:",
+            "",
+            "* SELECT: Specifies the exact columns you want to retrieve.",
+            "* WHERE: Filters rows matching criteria (e.g. status = 'OFFLINE').",
+            "* JOIN / ON: Connects matching primary-foreign key records across tables.",
+            "* GROUP BY: Aggregates records into group summaries.",
+            "* HAVING: Filters aggregated data (cannot use WHERE on GROUP BY metrics).",
+            "* ORDER BY: Sorts values. Use DESC for descending and LIMIT to crop rows."
+          ],
+          [
+            "SECTION 3: CASE TERM INVESTIGATION PROTOCOLS",
+            "To solve heist missions, candidates must inspect schemas and trace connections:",
+            "",
+            "1. Case 1 (Security Cams): Locate all cameras whose status is currently offline.",
+            "2. Case 2 (Clearance Code): Retrieve the access code of Sarah Connor by joining the",
+            "   badge registry with the employee table.",
+            "3. Case 3 (Intruder IP Logs): Identify the malicious IP addresses that have triggered",
+            "   more than 1 access denied log on the database server."
+          ],
+          [
+            "SECTION 4: OFFICIAL TERMINAL CODES & ANSWERS",
+            "The exact SQL scripts required to unlock cases in the Metropolis Data Bank:",
+            "",
+            "* CASE 1 (OFFLINE CAMERAS):",
+            "  SELECT location FROM security_cameras WHERE status = 'OFFLINE';",
+            "",
+            "* CASE 2 (EMPLOYEE ACCESS CODE):",
+            "  SELECT access_code FROM badge_registry",
+            "  JOIN employees ON badge_registry.emp_id = employees.emp_id",
+            "  WHERE name = 'Sarah Connor';",
+            "",
+            "* CASE 3 (MALICIOUS INTRUDER LOGS):",
+            "  SELECT ip_address FROM network_logs WHERE action = 'DENIED'",
+            "  GROUP BY ip_address HAVING count(*) > 1;"
+          ]
         ];
         break;
       case 'algo-arena':
         title = "DSA Arena: Algorithm Arena Player Manual";
-        lines = [
-          "GAME CONCEPT & FIGHTER SCHEME",
-          "Battle data structures monsters inside the computer memory heap.",
-          "Attack beasts by choosing the optimal algorithmic complexity for coding solutions.",
-          "",
-          "MONSTER WEAKNESS MANUAL",
-          "* Array Beast (Level 1): Vulnerable to Indexing & Binary Search.",
-          "  * Strategy: Access arrays in O(1) constant time, binary search in O(log n).",
-          "* String Phantom (Level 2): Vulnerable to Pattern Matching & String manipulations.",
-          "  * Strategy: KMP algorithms search substrings in O(N+M) linear time.",
-          "* Tree Golem (Level 3): Vulnerable to Recursion & Graph traversals.",
-          "  * Strategy: BFS/DFS traversals visit all tree nodes in O(V+E) time.",
-          "",
-          "COMPLEXITY ATTACKS CHEAT SHEET",
-          "* O(1) [Ultimate attack]: Direct index access, HashMap lookups.",
-          "* O(log n) [Strong slash]: Binary search in sorted arrays.",
-          "* O(n) [Linear swipe]: Single loop array traversals.",
-          "* O(n log n) [Dual strike]: Optimal sorting (Merge Sort / Quick Sort).",
-          "* O(n^2) [Weak tackle]: Nested loops (Bubble Sort / Selection Sort)."
+        pages = [
+          [
+            "SECTION 1: GAME CONCEPT & COMPLEXITY SPELLS",
+            "Engage in tactical turn-based combat inside the computer memory heap. Players",
+            "control a spaceship fighter and battle data structure sludges by selecting the",
+            "optimal algorithmic complexity for target coding solutions.",
+            "",
+            "COMPLEXITY ATTACKS CLASSIFICATIONS",
+            "* O(1) [Ultimate Spell]: Direct index lookup or constant time executions.",
+            "* O(log n) [Precision Slice]: Logarithmic search loops (Binary Search).",
+            "* O(n) [Linear Swipe]: Single loop array traversals or linked list scans.",
+            "* O(n log n) [Dual Strike]: Optimal sorting algorithms (Merge / Quick Sort).",
+            "* O(n^2) [Heavy Blunt]: Nested loops (Bubble / Selection Sorts)."
+          ],
+          [
+            "SECTION 2: SPACESHIP SPECS & SHIELDS SYSTEM",
+            "Your spaceship is equipped with visual status metrics and defense modules:",
+            "",
+            "* Spaceship Shields: Start with 3 shield charges. Incorrect answers invite direct",
+            "  monster meteor counter-attacks, depleting 1 shield.",
+            "* Continuous Battle Loop: If you run out of questions but shields are still",
+            "  active, the question deck loops back to the start. The fight only concludes in",
+            "  defeat when shields drop to 0.",
+            "* Weakness Exploit: Exploiting a monster weakness deals double damage."
+          ],
+          [
+            "SECTION 3: MONSTER BEAST ENCYCLOPEDIA",
+            "Study these memory beasts to exploit their algorithmic weaknesses:",
+            "",
+            "* Array Beast (Level 1): Vulnerable to indexing and sorting questions.",
+            "* String Phantom (Level 2): Vulnerable to pattern matching queries.",
+            "* Stack & Queue Sentinel (Level 3): Vulnerable to push/pop operations.",
+            "* Hash Goblin (Level 4): Vulnerable to open addressing & collision questions.",
+            "* Tree Guardian (Level 5): Vulnerable to BST traversals and heights."
+          ],
+          [
+            "SECTION 4: OFFICIAL DSA SOLUTIONS & ANSWERS",
+            "The exact answers to defeat the DSA Arena beasts:",
+            "",
+            "* ARRAY BEAST (LEVEL 1):",
+            "  * Q1: Time complexity to access array element by index? Answer: O(1).",
+            "  * Q2: Guaranteed O(n log n) stable sorting algorithm? Answer: Merge Sort.",
+            "",
+            "* STRING PHANTOM (LEVEL 2):",
+            "  * Q1: Worst-case string comparison time? Answer: O(min(M, N)).",
+            "  * Q2: O(N+M) prefix table search algorithm? Answer: KMP.",
+            "",
+            "* STACK & QUEUE SENTINEL (LEVEL 3):",
+            "  * Q1: LIFO access pattern structure? Answer: Stack.",
+            "  * Q2: Enqueue and dequeue complexity? Answer: O(1).",
+            "  * Q3: Pushing [10, 20, 30] output? Answer: [30, 20, 10]."
+          ]
         ];
         break;
       case 'apti-rush':
         title = "Aptitude District: Apti Rush Player Manual";
-        lines = [
-          "GAME CONCEPT & RUNNER SPEEDRUN",
-          "A high-speed mathematical runner. Solve reasoning and verbal puzzles",
-          "in under 10 seconds to dodge sector obstacles and maintain multipliers.",
-          "",
-          "PUZZLE SOLVER SHORTCUTS",
-          "* Combined Work rates: Time taken by A & B together = (X × Y) / (X + Y).",
-          "* Speed Conversion: Convert km/h to m/s by multiplying by 5/18.",
-          "* Percentage Splits: Calculate 15% as 10% + half of 10%.",
-          "* Profit & Loss: Selling Price = Cost Price × (100 + Profit%) / 100.",
-          "",
-          "STREAK & SCORE SYSTEMS",
-          "1. Correct answers increase your streak counter.",
-          "2. Streak milestones (5, 10, 20) double your combo score multiplier.",
-          "3. High combo multiplier grants extra coins and placement credits."
+        pages = [
+          [
+            "SECTION 1: SPEEDRUN PHYSICS & OBSTACLES",
+            "A fast-paced runner game challenging mathematical and logical speed under a",
+            "strict countdown timer. Solvers switch highway lanes to collect currency coins",
+            "and dodge firewall barriers by answering aptitude questions.",
+            "",
+            "FIREWALL COLLISION LAWS",
+            "1. Physical Collisions: Running into a neon firewall barrier before solving costs",
+            "   1 security shield (life).",
+            "2. Time Reductions: Collision impacts reduce your remaining timer by 4 seconds.",
+            "3. Game Over: Exhausting all 3 shields terminates the speedrun."
+          ],
+          [
+            "SECTION 2: COMBINED WORK & SPEED FORMULAS",
+            "Memorize these short mathematical shortcuts to solve questions in under 10 seconds:",
+            "",
+            "* Combined Work Rates: If A does work in X days and B does it in Y days,",
+            "  together they take: (X × Y) / (X + Y) days.",
+            "* Speed Conversion Ratio: Multiply km/h by 5/18 to convert to m/s.",
+            "* Train Length Physics: Length of train = speed of train (in m/s) × time taken to",
+            "  cross a static signal pole (in seconds)."
+          ],
+          [
+            "SECTION 3: STREAKS & COMBO SCORE SYSTEMS",
+            "Maximize your score and coin multipliers through continuous correct streaks:",
+            "",
+            "1. Streak increments with every correct choice, increasing the combo multiplier.",
+            "2. Scoring incorrect options or timing out resets the combo multiplier to 1.",
+            "3. High combo multiplier triples final XP rewards and increases cash payouts."
+          ],
+          [
+            "SECTION 4: OFFICIAL SOLUTIONS & CALCULATION KEYS",
+            "Answers and worked solutions for common Apti-Rush problems:",
+            "",
+            "* WORK RATES PROBLEM (A in 12 days, B in 24 days):",
+            "  * Together time = (12 × 24) / (12 + 24) = 288 / 36 = 8 days.",
+            "",
+            "* TRAIN PASSING PROBLEM (90 km/h speed, 12 seconds crossing time):",
+            "  * Speed = 90 × (5/18) = 25 m/s. Length = 25 × 12 = 300 meters.",
+            "",
+            "* ALGEBRA EQUATION (Solve: 3x + 5 = 20):",
+            "  * Isolate: 3x = 20 - 5 = 15. Divide: x = 15 / 3 = 5.",
+            "",
+            "* PROFIT & LOSS (₹400 cost, sold at 20% profit):",
+            "  * Profit = 400 × 0.20 = ₹80. Selling Price = 400 + 80 = ₹480."
+          ]
         ];
         break;
       case 'startup-garage':
         title = "Startup Garage Tycoon Player Manual";
-        lines = [
-          "GAME CONCEPT & METRICS PANEL",
-          "Tycoon simulation where you grow a SaaS company from a small garage.",
-          "Allocate development sprints and build a tech giant.",
-          "",
-          "CORE STATS METERS",
-          "* Cash Flow: Salaries + servers consume money. Bankruptcy hits if cash is 0.",
-          "* Hype Index: Attracts users and raises company valuation.",
-          "* Code Quality: Prevents server bugs. Low code quality halts user growth.",
-          "* Monthly Recurring Revenue (MRR): Direct income generated from users.",
-          "",
-          "DEVELOPMENT SPRINTS GUIDE",
-          "* Feature Sprints: Raise product tier and boost MRR cashflow.",
-          "* QA Sprints: squash server bugs and clean server logs.",
-          "* Marketing Sprints: Build public hype and accelerate user onboarding.",
-          "* Server Upgrades: Reduce latency to maximize onboarding speed."
+        pages = [
+          [
+            "SECTION 1: TYCOON ECONOMICS & RUN RATE",
+            "Take command of a SaaS tech company from a small garage and scale it to a",
+            "corporate skyscraper. Manage your weekly sprints, financials, code quality,",
+            "headcount, server scaling, and venture capital rounds.",
+            "",
+            "CORE BANKRUPTCY LAWS",
+            "* Operating cash depletes every week due to server charges and developer salaries.",
+            "* SDE developer salaries are high. Cash reaching $0 results in bankruptcy."
+          ],
+          [
+            "SECTION 2: DEV AGILITY & SERVER METRICS",
+            "Manage your workspace variables to sustain monthly recurring revenue (MRR):",
+            "",
+            "* Active Users: Drives your MRR growth rates.",
+            "* Server Stress: High stress degrades user experience, causing user churn.",
+            "* Server Latency: Can be reduced by buying memory and hardware upgrades.",
+            "* Code Bugs: High bug counts decrease user acquisition rates. Click desks manually",
+            "  or run QA sprints to squash bugs (+1 XP per manual bug squashed)."
+          ],
+          [
+            "SECTION 3: PRODUCTIVITY SPRINTS SHEET",
+            "Allocate company focus blocks across four active areas:",
+            "",
+            "1. Feature Sprint: Elevates product functionality, boosting MRR.",
+            "2. QA Sprint: Squashes software bugs and cleans system logs.",
+            "3. Marketing Sprint: Builds public hype to accelerate user growth.",
+            "4. Infrastructure Upgrades: Upgrading coffee makers increases employee speed, and",
+            "   server upgrades increase user capacity bounds."
+          ],
+          [
+            "SECTION 4: OFFICIAL VC PITCH SOLUTIONS & CHEATS",
+            "The exact pitches to secure maximum venture capital funding:",
+            "",
+            "* SYSTEM LATENCY PITCH (Seed Stage):",
+            "  * Q: How do we optimize database queries? Answer: Add database indexes.",
+            "",
+            "* TRANSACTION FLOOD PITCH (Series A Stage):",
+            "  * Q: How do we neutralize checkout spams? Answer: Implement a Token Bucket Rate Limiter.",
+            "",
+            "* CLAN FUNDING STRATEGY:",
+            "  * Ensure active users are > 300 before scheduling the Series A review.",
+            "  * Set pitch equity between 12% and 18% to maximize valuation ratios."
+          ]
         ];
         break;
       case 'internship-detective':
         title = "Internship Detective Visual Novel Player Manual";
-        lines = [
-          "GAME CONCEPT & INVESTIGATION STEPS",
-          "Survive SDE incident outages and git conflict reviews.",
-          "Connect clues on the pinboard corkboard, manage relationship meters,",
-          "and pitch system fixes to the Tech Lead.",
-          "",
-          "DIPLOMATIC SCORE METER",
-          "* Rohan (Senior Dev): Skeptical backend wizard. Trust rises by checking SOP runbooks.",
-          "* Neha (Tech Lead): Diplomatic planner. Alignment rises by prioritizing clients.",
-          "",
-          "CASE FILE WALKTHROUGHS",
-          "* Level 1 (DB Outage): Connect Server logs + Replica lag metrics.",
-          "  * Fix: Redirect analytical reads to secondary replica.",
-          "* Level 2 (Git Conflict): Connect Git commits + Code diff reports.",
-          "  * Fix: Revert buggy commit, resolve locally, push test suites.",
-          "* Level 3 (API Gateway): Connect Traffic spams + Firewall settings.",
-          "  * Fix: Deploy Nginx token-bucket IP Rate limiter reverse proxies."
+        pages = [
+          [
+            "SECTION 1: SYSTEM INCIDENTS & CLUE BOARDS",
+            "Investigate production outages as a newly hired developer detective. Read visual",
+            "novel dialogues, examine server environments, collect log files, and pin clues",
+            "on the corkboard to formulate the correct system fix.",
+            "",
+            "CLUE PINBOARD PRINCIPLES",
+            "* Outages contain clues (CPU charts, pull requests, network logs).",
+            "* Pinboard matching connects symptom clues directly to root causes.",
+            "* Making incorrect connections depletes your reputation points."
+          ],
+          [
+            "SECTION 2: RELATIONSHIP METER SPECS",
+            "Navigate conversations carefully. SDE colleagues have different personalities:",
+            "",
+            "* Rohan (Senior SDE): Skeptical backend lead. Demands rigorous log inspections and",
+            "  strict database procedures.",
+            "* Neha (Tech Lead): Strategic architect. Values clean client communications and",
+            "  organized deployment plans.",
+            "* Trust Multipliers: High relationship meters unlock hidden clues and reduce",
+            "  diplomatic penalties by 20%."
+          ],
+          [
+            "SECTION 3: CASE FILE DIALOGUE TREES",
+            "Select the correct responses during technical debriefs to verify status:",
+            "",
+            "1. Level 1: Database bottleneck outage.",
+            "2. Level 2: Merged Git branch merge conflicts.",
+            "3. Level 3: API Gateway latency outages.",
+            "",
+            "Always consult SOP guidelines before committing code fixes."
+          ],
+          [
+            "SECTION 4: OFFICIAL INCIDENT FIXES & ANSWERS",
+            "Solutions to solve the three internship detective cases:",
+            "",
+            "* CASE 1 (DATABASE BOTTLENECK):",
+            "  * Connected Clues: CPU Spike Logs + Slow Analytical Queries.",
+            "  * Tech Lead Pitch: Redirect read queries to secondary replica nodes.",
+            "",
+            "* CASE 2 (GIT CONFLICT OUTAGE):",
+            "  * Connected Clues: Commit History Conflict + Broken Master Build.",
+            "  * Tech Lead Pitch: Revert corrupt merge commit, fix locally, run unit tests.",
+            "",
+            "* CASE 3 (API GATEWAY CRASH):",
+            "  * Connected Clues: Traffic Spike Logs + Token Errors.",
+            "  * Tech Lead Pitch: Implement Token Bucket rate limiter in gateway."
+          ]
         ];
         break;
       case 'code-inspector':
         title = "Code Inspector: Code Decryptor Manual";
-        lines = [
-          "GAME CONCEPT & AUDITING",
-          "Identify and patch compilation and logical bugs in modern codebase files.",
-          "Read code line snippets, spot error locations, and fix them under lock.",
-          "",
-          "DEBUGGING TACTICS",
-          "* Array Indices: Verify loop bounds do not trigger index out of bounds.",
-          "* Null Pointers: Check reference null pointers before invoking attributes.",
-          "* Logical conditions: Match variable comparison expressions.",
-          "",
-          "LEVEL SOLUTIONS (HINTS)",
-          "* Level 1 (Python dict): Correct key mappings syntax.",
-          "* Level 2 (JS arrays): Correct loop checks to prevent double increments.",
-          "* Level 3 (C++ references): Correct pointer addresses."
+        pages = [
+          [
+            "SECTION 1: ABSTRACT PARSING & COMPILATION",
+            "Audit syntax corruptions and bugs in active metropolis repositories. Players",
+            "act as SDE compilers, scanning codebases, identifying incorrect lines, and",
+            "deploying syntax corrections under a countdown timer.",
+            "",
+            "DECRYPTOR PROCEDURES",
+            "* Repositories contain active files (Python, Javascript, C++).",
+            "* Compile errors trigger a Compiler Crash toast.",
+            "* Players start with 3 security shields. Shield depletion results in system lockout."
+          ],
+          [
+            "SECTION 2: COMMON COMPILATION CORRUPTIONS",
+            "Keep an eye out for these common bugs when inspecting code lines:",
+            "",
+            "* Off-By-One Loop Bounds: Iterating up to index length (e.g. i <= length).",
+            "* Null Reference Pointer Dereferences: Accessing values without null verification.",
+            "* Incorrect Operator Comparison Bounds: Using assignment instead of compare.",
+            "* Memory Leaks: Pointers created inside loop bodies without garbage collection."
+          ],
+          [
+            "SECTION 3: COMPILE STEPS & SHORTCUT KEYS",
+            "1. Inspect active file lines on the IDE terminal screen.",
+            "2. Select a buggy line to open the editor shell.",
+            "3. Write the exact correction and click compiler build.",
+            "4. Correcting code lines rewards you with +5 XP per line."
+          ],
+          [
+            "SECTION 4: OFFICIAL COMPILER FIXES & ANSWERS",
+            "The exact line edits required to compile the decryptor files:",
+            "",
+            "* MISSION 1 (PYTHON INDEX BUGS):",
+            "  * Bug Line: `for i in range(0, len(arr) + 1):`",
+            "  * Correct Fix: `for i in range(0, len(arr)):`",
+            "",
+            "* MISSION 2 (JAVASCRIPT NULL DEREFERENCE):",
+            "  * Bug Line: `console.log(user.profile.avatar);`",
+            "  * Correct Fix: `console.log(user && user.profile && user.profile.avatar);`",
+            "",
+            "* MISSION 3 (C++ REFERENCE LINK):",
+            "  * Bug Line: `Node* temp = head; temp = temp.next;`",
+            "  * Correct Fix: `Node* temp = head; temp = temp->next;`"
+          ]
         ];
         break;
       case 'interview-escape':
         title = "Assessment Suite: Interview Escape Room Manual";
-        lines = [
-          "GAME MISSION",
-          "Solve progressive coding and architecture interview riddles under lock.",
-          "Traverse SQL databases, memory structures, API networks, and system gates.",
-          "",
-          "SECTOR OUTLINES",
-          "* Room 1 (Entry Gate): Answer basic syntax definitions.",
-          "* Room 2 (Database Locker): Match relational queries and index keys.",
-          "* Room 3 (API Firewall): Fix rate-limiting and authorization headers.",
-          "* Room 4 (System Core): Diagnose replica lags and data pipelines.",
-          "* Room 5 (Placement Board): Answer advanced System Design parameters."
+        pages = [
+          [
+            "SECTION 1: ESCAPE SUITE CHAMBER ARCHITECTURE",
+            "Locked in a virtual SDE interview escape room. Solvers must pass a series of",
+            "relational database queries, complexity tests, rate-limiting gate locks, and",
+            "behavioral HR checkpoints to unlock the exit door.",
+            "",
+            "ESCAPE SUITE CHAMBERS",
+            "* Gate 1: Relational Query terminals.",
+            "* Gate 2: Algorithm chasm bridges.",
+            "* Gate 3: Compiler robot debug cells.",
+            "* Gate 4: Tech Lead HR review gates."
+          ],
+          [
+            "SECTION 2: CHAMBER LEVEL SPECIFICATIONS",
+            "Each gate requires specific engineering domain knowledge to unlock:",
+            "",
+            "* Database Lockers: Relational SQL joins and index keys.",
+            "* DSA Bridges: Algorithm performance structures (e.g. Bubble Sort speed limits).",
+            "* Debug Cells: Spotting logical loops and syntax errors.",
+            "* Behavioral Gates: Selecting high-synergy, empathetic answers."
+          ],
+          [
+            "SECTION 3: OUTAGE LAWS & WARNING SYSTEMS",
+            "1. Error Warnings: Providing incorrect inputs triggers security warnings.",
+            "2. Door Closures: Triggering 3 errors locks the chamber gates.",
+            "3. System Resets: Accessing help files consumes SDE coins."
+          ],
+          [
+            "SECTION 4: OFFICIAL ESCAPE ANSWERS & CODES",
+            "The exact keys and responses to escape the interview chambers:",
+            "",
+            "* CHAMBER 1 (DATABASE TERMINAL):",
+            "  * SQL Query: SELECT name FROM users WHERE role = 'ADMIN';",
+            "",
+            "* CHAMBER 2 (DSA BRIDGE BUILDER):",
+            "  * Correct Algorithm choice: Choose 'Merge Sort' (Bubble Sort collapses bridge).",
+            "",
+            "* CHAMBER 3 (ROBOT DEBUG CORE):",
+            "  * Correct Fix: Change `for (let i = 0; i <= arr.length; i++)` to `for (let i = 0; i < arr.length; i++)`",
+            "",
+            "* CHAMBER 4 (HR BEHAVIORAL GATE):",
+            "  * Selected Response: 'I will collaborate with the team to identify dependencies first.'"
+          ]
         ];
         break;
       case 'resume-tycoon':
         title = "Development Center: Resume Builder Tycoon Manual";
-        lines = [
-          "GAME STRATEGY",
-          "Life simulation. Manage weekly hour distributions across semesters.",
-          "Balance sleep, studying DSA, deploying projects, and networking.",
-          "",
-          "CORE METRICS",
-          "* GPA standing: Study in the library to raise academic metrics.",
-          "* SDE stats: Practice coding in the lab to unlock React/Python nodes.",
-          "* Energy level: rest in hostel room to recover health.",
-          "* Project Stars: Complete high-quality hackathons.",
-          "",
-          "PLACEMENT SUCCESS HINTS",
-          "Upgrade laptop configurations in the shop to gain speed boosts.",
-          "Accept recruiter interviews at placement cell in Semester 4.",
-          "Verify company qualifications (Google, Netflix, OpenAI) before applying."
+        pages = [
+          [
+            "SECTION 1: TIME DISTRIBUTION LAWS",
+            "Manage your weekly hour balances across four academic semesters. Divide your",
+            "time between Study hours, Coding practice, Project development, and Hostel rest",
+            "to build a high-caliber placement resume.",
+            "",
+            "CORE STAT CORRELATIONS",
+            "* Study hours: Increases GPA. High GPA unlocks Tier 1 company applications.",
+            "* Coding hours: Unlocks skill tree nodes. Boosts DSA Arena stats.",
+            "* Project hours: Earns Project Stars. Required for startup VC reviews."
+          ],
+          [
+            "SECTION 2: ENERGY RECOVERY RULES",
+            "Balancing study and coding fatigue is critical to prevent burnout:",
+            "",
+            "* Energy drops by 15 points per semester block of continuous work.",
+            "* Low energy limits coding output and increases error rates by 35%.",
+            "* Sleep hours: Recovers 40 energy points per session.",
+            "* Hostel upgrades: Upgrading your dorm bed increases energy recovery rates."
+          ],
+          [
+            "SECTION 3: SEMESTER SCHEDULE BLOCKS",
+            "1. Semester 1: Focus on building basic GPA and learning DSA fundamentals.",
+            "2. Semester 2: Shift to project development to earn project stars.",
+            "3. Semester 3: Maximize coding hours to unlock advanced React/Python nodes.",
+            "4. Semester 4: Pitch resumes to corporate tech recruiters at the hub."
+          ],
+          [
+            "SECTION 4: OFFICIAL STRATEGY SOLUTIONS & CHEATS",
+            "The optimal weekly hour allocation schedules to secure placement:",
+            "",
+            "* SEMESTER 1 (GPA BASICS):",
+            "  * Study: 30 hours, Coding: 15 hours, Projects: 5 hours, Sleep: 34 hours.",
+            "",
+            "* SEMESTER 2 (PROJECT STARS):",
+            "  * Study: 15 hours, Coding: 20 hours, Projects: 20 hours, Sleep: 29 hours.",
+            "",
+            "* SEMESTER 3 (ADVANCED CODING):",
+            "  * Study: 10 hours, Coding: 40 hours, Projects: 10 hours, Sleep: 24 hours.",
+            "",
+            "* SEMESTER 4 (PLACEMENT INTERVIEW CHEAT):",
+            "  * Ensure GPA is > 8.0, project stars are >= 4, and Python/JS nodes are unlocked."
+          ]
         ];
         break;
       case 'code-snake':
         title = "Code Snake Arena Player Manual";
-        lines = [
-          "GAME CONCEPT",
-          "Navigate the compiler grid as an AI data stream. Collect syntax",
-          "tokens to complete coding missions while dodging bugs and virus files.",
-          "",
-          "CONTROLS & SHORTCUTS",
-          "* Keyboard: Use Arrow Keys or WASD keys to redirect the snake stream.",
-          "* Mobile: Tap the glassmorphic on-screen d-pad arrow buttons.",
-          "",
-          "LIFELINE POWER-UPS",
-          "* Debug Shield (🛡️): Absorbs one wrong token or self-collision impact.",
-          "* Speed Boost (⚡): Accelerates speed ticks and doubles score ratings.",
-          "* Token Magnet (🧲): Attracts correct syntax tokens toward the head.",
-          "* Time Freeze (❄️): suspends active countdown timers for 8 seconds.",
-          "* Syntax Scanner (🔍): Highlights the next target token in cyan.",
-          "",
-          "CRITICAL TACTICS",
-          "1. Only eat correct tokens (e.g. def, :, return for Python).",
-          "2. Avoid wrong keywords to prevent tail shrinking and combo resets.",
-          "3. Dodge crawling bugs (🐛) and hunting viruses (👾) on grid points."
+        pages = [
+          [
+            "SECTION 1: GAME CONCEPT & GRID SYSTEMS",
+            "Navigate the compiler grid as an AI data stream. Collect correct syntax",
+            "tokens to complete coding compiler goals while dodging bugs and virus files.",
+            "",
+            "MOVEMENT SCHEMES",
+            "* Desktop: Use Arrow Keys or WASD keys to redirect the snake stream.",
+            "* Mobile/Tablet: Tap the glassmorphic on-screen d-pad arrow buttons.",
+            "* Wrap Around: Directing snake offscreen wraps it to the opposite wall."
+          ],
+          [
+            "SECTION 2: COMPILER POWER-UPS MANUAL",
+            "Collect neon power-up capsules on grid coordinates to gain temporal bonuses:",
+            "",
+            "* Debug Shield (🛡️): Absorbs one wrong token or self-collision impact.",
+            "* Speed Boost (⚡): Accelerates speed ticks and doubles score ratings.",
+            "* Token Magnet (🧲): Attracts correct syntax tokens toward the head.",
+            "* Time Freeze (❄️): Suspends active countdown timers for 8 seconds.",
+            "* Syntax Scanner (🔍): Highlights the next target token in a cyan glow."
+          ],
+          [
+            "SECTION 3: SEQUENTIAL TOKEN COLLECTION RULES",
+            "To prevent compile crashes, tokens must be collected in exact sequence:",
+            "",
+            "1. Active target tokens are colored green (🎯) with a cyan scanner highlight.",
+            "2. Future required tokens are colored amber/orange (⏳). Avoid eating them out of order.",
+            "3. Incorrect syntax tokens are colored red (🔴). Eating them shrinks the snake.",
+            "4. Throttled Enemies: Bugs and viruses move at 1/3 speed, making them easier to dodge."
+          ],
+          [
+            "SECTION 4: OFFICIAL SYNTAX SOLUTIONS & ANSWERS",
+            "The exact sequential token sequences required for levels:",
+            "",
+            "* LEVEL 1 (PYTHON FUNCTION DEFINITION):",
+            "  * Required Sequence: `def`, `(`, `)`, `:`, `return`",
+            "",
+            "* LEVEL 2 (JAVASCRIPT LOOP STATEMENT):",
+            "  * Required Sequence: `for`, `(`, `let`, `i`, `++`, `)`",
+            "",
+            "* LEVEL 3 (SQL DATABASE QUERY):",
+            "  * Required Sequence: `SELECT`, `FROM`, `WHERE`, `ORDER`, `BY`",
+            "",
+            "* LEVEL 4 (C++ POINTER INSTANTIATION):",
+            "  * Required Sequence: `int`, `*`, `ptr`, `=`, `&`, `val`"
+          ]
         ];
         break;
       case 'ai-master':
         title = "AI Master Challenge Player Manual";
-        lines = [
-          "Futuristic TV game show. Answer AI/ML challenges to rank up",
-          "from AI Beginner to the ultimate title of AI Champion.",
-          "",
-          "SAFETY THRESHOLDS (KBC RULES)",
-          "* Safe Havens: Question 4 and Question 7 are checkpoints.",
-          "* If you fail a later question, your progress drops back to",
-          "  the last safety haven, preserving partial XP and coins.",
-          "",
-          "MODEL LIFELINES",
-          "* 50:50 Scanner: Scan and wipe two incorrect answers from screen.",
-          "* AI Mentor: Generates constructive mathematical ML suggestions.",
-          "* Dataset Preview: Inspect row logs or database features.",
-          "* Compute Time: Inject +30 seconds of compute time to the clock.",
-          "",
-          "ML TOPICS CHEATSHEET",
-          "* Step 1-3: Python dicts, NumPy ravel/ndim, and Pandas dropna.",
-          "* Step 4-6: Precision/Recall ratios, L1/L2 penalties, and CNN striding.",
-          "* Step 7-10: LSTM cell gates, self-attention, and DQN target nets."
+        pages = [
+          [
+            "SECTION 1: AI SHOW RULES & CHECKPOINTS",
+            "Answer progressive artificial intelligence and machine learning questions to",
+            "rank up from AI Beginner to the ultimate title of AI Champion.",
+            "",
+            "CHECKPOINT HAVENS (SAFETY NETS)",
+            "1. Question 4 Milestone: Safely locks in your progress. You cannot drop below this tier.",
+            "2. Question 7 Milestone: Second safety checkpoint. Locks in senior ML rewards.",
+            "3. Incorrect Answers: Drop your tier back to the last safety checkpoint."
+          ],
+          [
+            "SECTION 2: LIFELINE HELPER MODULES",
+            "Utilize these compute tools when answering complex questions:",
+            "",
+            "* 50:50 Scanner: Erases two incorrect options from the question panel.",
+            "* AI Mentor: Generates mathematical hints on loss functions and CNN layers.",
+            "* Dataset Preview: Inspects row logs or database features.",
+            "* Compute Time: Adds 30 seconds of compute time to the countdown timer."
+          ],
+          [
+            "SECTION 3: MACHINE LEARNING SYLLABUS",
+            "Core ML concepts tested across the 10 TV stages:",
+            "",
+            "* Stages 1-3: NumPy array manipulation and Pandas data cleanup.",
+            "* Stages 4-6: Convolutional dimensions, model metrics, and loss functions.",
+            "* Stages 7-10: Transformer self-attention, LSTM gates, and DQN target networks."
+          ],
+          [
+            "SECTION 4: OFFICIAL AI SOLUTIONS & ANSWERS",
+            "The exact correct options for the AI Master Challenge questions:",
+            "",
+            "* STAGES 1-3 (DATA MANIPULATION):",
+            "  * Q: Pandas method to drop missing rows? Answer: `dropna()`.",
+            "  * Q: NumPy function to flatten arrays? Answer: `ravel()`.",
+            "",
+            "* STAGES 4-6 (MODEL OPTIMIZATION):",
+            "  * Q: Metric prioritizing false positives? Answer: Precision.",
+            "  * Q: Loss function for multi-class classifiers? Answer: Cross-Entropy.",
+            "",
+            "* STAGES 7-10 (DEEP LEARNING & RL):",
+            "  * Q: Gate in LSTM controlling memory update? Answer: Input Gate.",
+            "  * Q: Core mechanism of Transformers? Answer: Self-Attention."
+          ]
         ];
         break;
       default:
         title = "Silicon Metropolis Placement Manual";
-        lines = [
-          "Choose a training sector card to solve placement challenges, earn coins,",
-          "gain reputation, and build your placement eligibility rating."
+        pages = [
+          [
+            "Choose a training sector card to solve placement challenges, earn coins,",
+            "gain reputation, and build your placement eligibility rating."
+          ]
         ];
     }
     
-    // Draw Title
-    doc.text(title, 20, 20);
-    
-    // Subtitle / Header bar
-    doc.setDrawColor(59, 130, 246);
-    doc.setLineWidth(1);
-    doc.line(20, 25, 190, 25);
-    
-    // Draw Body text
-    doc.setFont("Helvetica", "normal");
-    doc.setFontSize(11);
-    doc.setTextColor(51, 65, 85); // Slate gray #334155
-    
-    let y = 35;
-    lines.forEach((line) => {
-      // If line is empty, skip and add vertical spacing
-      if (line === "") {
-        y += 6;
-        return;
-      }
-      
-      // If line is a header section (all caps, no bullet)
-      if (line === line.toUpperCase() && !line.startsWith("*") && !line.startsWith("1")) {
-        doc.setFont("Helvetica", "bold");
-        doc.setTextColor(37, 99, 235); // Blue #2563eb
-        y += 4;
-        doc.text(line, 20, y);
-        doc.setFont("Helvetica", "normal");
-        doc.setTextColor(51, 65, 85);
-        y += 6;
-      } else {
-        doc.text(line, 20, y);
-        y += 6;
-      }
-      
-      // Handle page overflow if needed
-      if (y > 280) {
+    // Generate multi-page PDF documents
+    pages.forEach((pageLines, pageIdx) => {
+      if (pageIdx > 0) {
         doc.addPage();
-        y = 20;
       }
+      
+      // Draw Page Header
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(15);
+      doc.setTextColor(30, 58, 138); // Dark blue #1e3a8a
+      doc.text(title, 20, 15);
+      
+      // Draw Page Number / Footer
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(148, 163, 184); // Slate 400
+      doc.text(`Page ${pageIdx + 1} of ${pages.length}`, 105, 288, { align: "center" });
+      
+      // Draw thin header separator line
+      doc.setDrawColor(59, 130, 246);
+      doc.setLineWidth(0.5);
+      doc.line(20, 19, 190, 19);
+      
+      // Draw Body
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(51, 65, 85); // Slate gray #334155
+      
+      let y = 28;
+      pageLines.forEach((line) => {
+        if (line === "") {
+          y += 5;
+          return;
+        }
+        
+        // Check if line is a header (starts with SECTION or is all caps and not a list bullet)
+        const isHeader = (line.startsWith("SECTION") || line.startsWith("OPTIMAL") || line.startsWith("CLAN") || line.startsWith("CORE") || line.startsWith("THE") || line.startsWith("DEVELOPMENT") || line.startsWith("RELATIONAL") || line.startsWith("STUDENT") || line.startsWith("CASE") || line.startsWith("COMPLEXITY") || line.startsWith("SPACESHIP") || line.startsWith("MONSTER") || line.startsWith("FIREWALL") || line.startsWith("VELOCITY") || line.startsWith("STREAKS") || line.startsWith("QA") || line.startsWith("PRODUCTIVITY") || line.startsWith("DIPLOMATIC") || line.startsWith("COMMON") || line.startsWith("COMPILE") || line.startsWith("CHAMBER") || line.startsWith("TIME") || line.startsWith("SEMESTER") || line.startsWith("MOVEMENT") || line.startsWith("LIFELINE") || line.startsWith("CRITICAL") || line.startsWith("SAFETY") || line.startsWith("MODEL") || line.startsWith("ML") || line.startsWith("ARRAY") || line.startsWith("STRING") || line.startsWith("STACK") || line.startsWith("WORK") || line.startsWith("TRAIN") || line.startsWith("ALGEBRA") || line.startsWith("PROFIT") || line.startsWith("SEED") || line.startsWith("SERIES") || line.startsWith("LEVEL"));
+        
+        if (isHeader) {
+          doc.setFont("Helvetica", "bold");
+          doc.setTextColor(37, 99, 235); // Blue #2563eb
+          y += 3;
+          doc.text(line, 20, y);
+          doc.setFont("Helvetica", "normal");
+          doc.setTextColor(51, 65, 85);
+          y += 5;
+        } else {
+          doc.text(line, 20, y);
+          y += 5;
+        }
+      });
     });
     
     // Save/Download PDF

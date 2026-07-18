@@ -328,7 +328,7 @@ const SKINS = [
 ];
 
 export default function CodeInspector() {
-  const { addCoins, addXP, setGame, rank, completeDailyChallenge } = usePlayerStore();
+  const { addCoins, addXP, setGame, rank, completeDailyChallenge, triggerNotification } = usePlayerStore();
 
   // Screen State
   const [activeScreen, setActiveScreen] = useState('briefing'); // 'briefing', 'ide', 'victory', 'failed'
@@ -527,7 +527,7 @@ export default function CodeInspector() {
         }
         return nextShield;
       });
-      alert("🚨 COMPILER CRASH: You compiled modifications on a healthy, functional code line!");
+      triggerNotification('🚨 COMPILER CRASH', 'You compiled modifications on a healthy, functional code line!', '❌');
       return;
     }
 
@@ -589,7 +589,7 @@ export default function CodeInspector() {
         }
         return nextShield;
       });
-      alert("🚨 COMPILATION ERROR: The compiler rejects your syntax fix. The bug is still active!");
+      triggerNotification('🚨 COMPILATION ERROR', 'The compiler rejects your syntax fix. The bug is still active!', '❌');
     }
   };
 

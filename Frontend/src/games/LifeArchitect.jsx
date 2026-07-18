@@ -601,55 +601,101 @@ export default function LifeArchitect() {
 
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
-    doc.setFont("Helvetica", "bold");
-    doc.setFontSize(20);
-    doc.setTextColor(30, 58, 138);
-    
-    doc.text("Career Tower: Life Architect Guide", 20, 20);
-    doc.setDrawColor(59, 130, 246);
-    doc.line(20, 25, 190, 25);
-    
-    const lines = [
-      "GAME CONCEPT & MECHANICS",
-      "Reimagines a developer's career roadmap as a giant Path of Exile-style constellation skill tree.",
-      "",
-      "SELECTING YOUR CLASS ARCHE-TYPE",
-      "* Frontend Mage: UI/UX & React. +2 starting Focus Points & +10 Velocity.",
-      "* Backend Guardian: DBs & APIs. +50 starting Coins & +10 Complexity Depth.",
-      "* AI Alchemist: Models & Numpy. +50 starting XP & +10 DSA Intelligence.",
-      "* UI/UX Rogue: Styling & Design. +50 starting Rep & +10 Synergy Charisma.",
-      "",
-      "GAMEPLAY LOOP",
-      "1. Complete contracts to earn Coins and XP.",
-      "2. Spend Focus Points and Coins to unlock constellation nodes.",
-      "3. Node upgrades directly boost your developer attributes.",
-      "4. Risk: Failing a contract simulation deducts 1 Heart and 20 XP.",
-      "5. Lockout: If hearts reach 0, spend 50 Coins to reboot your systems.",
-      "6. Job Market: Market shifts change node costs and quest rewards dynamically."
+    const title = "Career Tower: Life Architect Player Manual";
+    const pages = [
+      [
+        "SECTION 1: GAME CONCEPT & CAREER ROADMAP",
+        "This simulation reimagines a software engineer's career roadmap as a giant",
+        "constellation skill tree. Instead of standard numeric levels, players navigate",
+        "metropolis placements by lighting up career star nodes. The game is designed to",
+        "develop holistic engineering decision-making.",
+        "",
+        "CORE MECHANICS & PATHWAYS",
+        "1. Focus Points: Earned by completing SDE freelance tasks. Spent on skill trees.",
+        "2. Constellation Stars: Unlocking career stars directly buffs core stats like",
+        "   Velocity, Complexity Depth, DSA Intelligence, and Synergy Charisma.",
+        "3. Sector Market Demands: The job market shifts dynamically. Skill nodes may cost",
+        "   more or less depending on active tech stacks in the metropolis."
+      ],
+      [
+        "SECTION 2: SELECTING YOUR CHARACTER ARCHETYPE",
+        "Each Starting Class provides distinct bonuses that scale differently:",
+        "",
+        "* Frontend Mage: Masters UI/UX & React frameworks. Starts with +2 Focus Points,",
+        "  and +10 Velocity (reduces contract cooldown times by 15%).",
+        "* Backend Guardian: Masters databases & APIs. Starts with +50 Coins and",
+        "  +10 Complexity Depth (reduces database query latency costs by 15%).",
+        "* AI Alchemist: Masters neural models & tensors. Starts with +50 XP and",
+        "  +10 DSA Intelligence (deals 15% extra damage in the DSA Arena).",
+        "* UI/UX Rogue: Masters CSS styling & design. Starts with +50 Reputation and",
+        "  +10 Synergy Charisma (boosts trust gains in visual novel stories by 15%)."
+      ],
+      [
+        "SECTION 3: CONTRACT BOARD & OUTAGE RISKS",
+        "Accept contracts from local tech sectors to earn SDE coins and reputation points.",
+        "",
+        "THE SYSTEM STABILIZATION LAWS",
+        "1. Pressure Timers: Code changes must be compiled within strict timers.",
+        "2. Outage Failures: Failing a task triggers a production outage, costing 1 Heart.",
+        "3. System Reboots: If hearts drop to 0, system locks activate. Rebooting the profile",
+        "   requires spending 50 coins in the developer profile center.",
+        "4. Project Quality: Higher project complexity awards scaling XP bonuses."
+      ],
+      [
+        "SECTION 4: OFFICIAL SOLUTIONS & SYSTEM CHEATS",
+        "OPTIMAL SKILL NODES UNLOCKING RATIOS",
+        "* Junior Stage: Spend first 4 Focus Points on 'Core Logic' and 'Database Basics'.",
+        "* Mid Stage: Unlock 'System Architect' to double maximum SDE contract rewards.",
+        "* Senior Stage: Light up 'Distributed Nodes' to reduce heart cooldowns by 50%.",
+        "",
+        "CLAN REBOOT CODES",
+        "* Clear all local outages: Spend 50 coins at profile tab to buy 'Heart Patch'.",
+        "* Maximize MRR: Accept 'Series A' and 'Series B' contracts first on the board."
+      ]
     ];
-    
-    doc.setFont("Helvetica", "normal");
-    doc.setFontSize(11);
-    doc.setTextColor(51, 65, 85);
-    
-    let y = 35;
-    lines.forEach((line) => {
-      if (line === "") {
-        y += 6;
-        return;
+
+    pages.forEach((pageLines, pageIdx) => {
+      if (pageIdx > 0) {
+        doc.addPage();
       }
-      if (line === line.toUpperCase() && !line.startsWith("*") && !line.startsWith("1")) {
-        doc.setFont("Helvetica", "bold");
-        doc.setTextColor(37, 99, 235);
-        y += 4;
-        doc.text(line, 20, y);
-        doc.setFont("Helvetica", "normal");
-        doc.setTextColor(51, 65, 85);
-        y += 6;
-      } else {
-        doc.text(line, 20, y);
-        y += 6;
-      }
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(15);
+      doc.setTextColor(30, 58, 138); // Dark Blue theme color
+      doc.text(title, 20, 15);
+      
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(148, 163, 184);
+      doc.text(`Page ${pageIdx + 1} of ${pages.length}`, 105, 288, { align: "center" });
+      
+      doc.setDrawColor(59, 130, 246);
+      doc.setLineWidth(0.5);
+      doc.line(20, 19, 190, 19);
+      
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(51, 65, 85);
+      
+      let y = 28;
+      pageLines.forEach((line) => {
+        if (line === "") {
+          y += 5;
+          return;
+        }
+        const isHeader = line.startsWith("SECTION") || line.startsWith("CLUE") || line.startsWith("THE") || line.startsWith("RELATIONSHIP") || line.startsWith("CASE") || line.startsWith("OFFICIAL") || line.startsWith("OPTIMAL");
+        if (isHeader) {
+          doc.setFont("Helvetica", "bold");
+          doc.setTextColor(37, 99, 235);
+          y += 3;
+          doc.text(line, 20, y);
+          doc.setFont("Helvetica", "normal");
+          doc.setTextColor(51, 65, 85);
+          y += 5;
+        } else {
+          doc.text(line, 20, y);
+          y += 5;
+        }
+      });
     });
     
     doc.save("life_architect_placement_guide.pdf");

@@ -69,12 +69,46 @@ const ACHIEVEMENTS = [
   }
 ];
 
+const CLANS = [
+  {
+    id: 'algo_overlords',
+    name: 'Algorithm Overlords',
+    emoji: '⚔️',
+    desc: 'Mastering dynamic programming and graph structures.',
+    members: [
+      { name: 'Rohan (Lead)', rank: 'CTO Legend', xp: 4200, avatar: '👨‍💻' },
+      { name: 'Nisha', rank: 'Engineer', xp: 950, avatar: '👩‍💻' },
+      { name: 'Vikram', rank: 'Associate', xp: 700, avatar: '🧑‍💻' }
+    ]
+  },
+  {
+    id: 'bytecode_buccaneers',
+    name: 'Bytecode Buccaneers',
+    emoji: '🏴‍☠️',
+    desc: 'Database heist specialists and SQL injection bypassers.',
+    members: [
+      { name: 'Aman', rank: 'Architect', xp: 2450, avatar: '🧑‍💻' },
+      { name: 'Priya', rank: 'Senior Engineer', xp: 1400, avatar: '👩‍💻' }
+    ]
+  },
+  {
+    id: 'recursion_rangers',
+    name: 'Recursion Rangers',
+    emoji: '🌀',
+    desc: 'Functional programming, clean code, and recursion loops.',
+    members: [
+      { name: 'Neha', rank: 'Architect', xp: 3800, avatar: '👩‍💼' },
+      { name: 'Thomas Neo', rank: 'Senior SDE', xp: 2100, avatar: '🕶️' }
+    ]
+  }
+];
+
 export default function ProfilePage() {
   const store = usePlayerStore();
   const { 
     name, avatar, rank, xp, coins, streak, classType, unlockedSkills, 
     heistLevelsCompleted, aptiHighScore, setGame,
-    collegeName, department, gradYear, rollNumber, email
+    collegeName, department, gradYear, rollNumber, email, clan, setClan
   } = store;
 
   const level = Math.floor(xp / 100) + 1;
@@ -229,14 +263,59 @@ export default function ProfilePage() {
             )}
           </div>
 
-          {/* Academic Profile */}
-          <div style={{ ...styles.specBox, marginTop: '1rem' }}>
-            <span style={styles.specLabel}>🎓 ACADEMIC STANDING</span>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', width: '100%', fontSize: '0.75rem', marginTop: '0.5rem', textAlign: 'left' }}>
-              <div><strong style={{ color: 'var(--accent-secondary)' }}>University:</strong> <span style={{ color: '#FFF' }}>{collegeName || 'N/A'}</span></div>
-              <div><strong style={{ color: 'var(--accent-secondary)' }}>Branch:</strong> <span style={{ color: '#FFF' }}>{department || 'N/A'}</span></div>
-              <div><strong style={{ color: 'var(--accent-secondary)' }}>Student ID:</strong> <span style={{ color: '#FFF' }}>{rollNumber || 'N/A'}</span></div>
-              <div><strong style={{ color: 'var(--accent-secondary)' }}>Year Standing:</strong> <span style={{ color: 'var(--accent-color)', fontWeight: 'bold' }}>{getAcademicYear(gradYear)}</span></div>
+          {/* Academic Profile (Futuristic ID Card Style) */}
+          <div style={styles.idCardContainer}>
+            <div style={styles.idCardHeader}>
+              <span style={styles.idCardLogo}>🎓 METROPOLIS STUDENT ID</span>
+              <span style={styles.idCardVerified}>VERIFIED</span>
+            </div>
+            
+            <div style={styles.idCardBody}>
+              <div style={styles.idCardInfo}>
+                <div style={styles.idCardField}>
+                  <span style={styles.idCardLabel}>STUDENT NAME</span>
+                  <span style={styles.idCardValue}>{name}</span>
+                </div>
+                <div style={styles.idCardField}>
+                  <span style={styles.idCardLabel}>EMAIL ADDRESS</span>
+                  <span style={{ ...styles.idCardValue, color: 'var(--accent-secondary)' }}>{email || 'N/A'}</span>
+                </div>
+                <div style={styles.idCardField}>
+                  <span style={styles.idCardLabel}>COLLEGE / UNIVERSITY</span>
+                  <span style={styles.idCardValue}>{collegeName || 'N/A'}</span>
+                </div>
+                <div style={styles.idCardField}>
+                  <span style={styles.idCardLabel}>ACADEMIC DEPT / BRANCH</span>
+                  <span style={styles.idCardValue}>{department || 'N/A'}</span>
+                </div>
+                <div style={styles.idCardRow}>
+                  <div style={styles.idCardField}>
+                    <span style={styles.idCardLabel}>ROLL NUMBER / STUDENT ID</span>
+                    <span style={{ ...styles.idCardValue, fontFamily: 'var(--font-mono)' }}>{rollNumber || 'N/A'}</span>
+                  </div>
+                  <div style={styles.idCardField}>
+                    <span style={styles.idCardLabel}>GRAD YEAR</span>
+                    <span style={{ ...styles.idCardValue, color: 'var(--accent-color)' }}>{getAcademicYear(gradYear)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Sci-fi Barcode / Systems Badge */}
+            <div style={styles.idCardFooter}>
+              <div style={styles.barcode}>
+                <div style={{ width: '2px', height: '14px', backgroundColor: 'var(--accent-secondary)' }}></div>
+                <div style={{ width: '4px', height: '14px', backgroundColor: 'var(--accent-secondary)' }}></div>
+                <div style={{ width: '1px', height: '14px', backgroundColor: 'var(--accent-secondary)' }}></div>
+                <div style={{ width: '3px', height: '14px', backgroundColor: 'var(--accent-secondary)' }}></div>
+                <div style={{ width: '2px', height: '14px', backgroundColor: 'var(--accent-secondary)' }}></div>
+                <div style={{ width: '1px', height: '14px', backgroundColor: 'var(--accent-secondary)' }}></div>
+                <div style={{ width: '5px', height: '14px', backgroundColor: 'var(--accent-secondary)' }}></div>
+                <div style={{ width: '2px', height: '14px', backgroundColor: 'var(--accent-secondary)' }}></div>
+                <div style={{ width: '3px', height: '14px', backgroundColor: 'var(--accent-secondary)' }}></div>
+                <div style={{ width: '1px', height: '14px', backgroundColor: 'var(--accent-secondary)' }}></div>
+              </div>
+              <span style={styles.barcodeText}>SYSTEMS ID: {rollNumber || '000000'}</span>
             </div>
           </div>
         </div>
@@ -298,23 +377,113 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Third Column: Global Leaderboard */}
-        <div className="game-card" style={styles.leaderboardCard}>
-          <h3 style={styles.panelTitle}>🏆 CAMPUS LEADERBOARD</h3>
-          <div style={styles.leaderboardList}>
-            {leaderboard.map((player, idx) => (
-              <div key={idx} style={styles.leaderboardRow} onMouseEnter={playHoverSound}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <span style={styles.rankNum}>{idx + 1}</span>
-                  <span style={{ fontSize: '1.25rem' }}>{player.avatar || '🚀'}</span>
-                  <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-                    <span style={styles.leaderName}>{player.name}</span>
-                    <span style={styles.leaderSub}>{player.classType || 'SDE Recruit'}</span>
+        {/* Third Column: Global Leaderboard & Clans */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          {/* Leaderboard Card */}
+          <div className="game-card" style={styles.leaderboardCard}>
+            <h3 style={styles.panelTitle}>🏆 CAMPUS LEADERBOARD</h3>
+            <div style={styles.leaderboardList}>
+              {leaderboard.map((player, idx) => (
+                <div key={idx} style={styles.leaderboardRow} onMouseEnter={playHoverSound}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={styles.rankNum}>{idx + 1}</span>
+                    <span style={{ fontSize: '1.25rem' }}>{player.avatar || '🚀'}</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                      <span style={styles.leaderName}>{player.name}</span>
+                      <span style={styles.leaderSub}>{player.classType || 'SDE Recruit'}</span>
+                    </div>
                   </div>
+                  <span style={styles.leaderXp}>{player.xp} XP</span>
                 </div>
-                <span style={styles.leaderXp}>{player.xp} XP</span>
+              ))}
+            </div>
+          </div>
+
+          {/* Clans / Developer Guilds Card */}
+          <div className="game-card" style={styles.clanCard}>
+            <h3 style={styles.panelTitle}>🌐 DEVELOPER CLANS</h3>
+            
+            {!clan ? (
+              // List available clans
+              <div style={styles.clanList}>
+                <p style={styles.clanSub}>Join a developer clan to compete in collective XP rankings and team up!</p>
+                {CLANS.map((clanItem) => (
+                  <div key={clanItem.id} style={styles.clanRow} onMouseEnter={playHoverSound}>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                      <span style={{ fontSize: '1.5rem' }}>{clanItem.emoji}</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                        <span style={styles.clanName}>{clanItem.name}</span>
+                        <span style={styles.clanDesc}>{clanItem.desc}</span>
+                        <span style={styles.clanMeta}>👥 {clanItem.members.length + 1} members • ⚡ Collective XP: {clanItem.members.reduce((acc, m) => acc + m.xp, 0) + xp}</span>
+                      </div>
+                    </div>
+                    <button 
+                      className="game-btn game-btn-primary" 
+                      style={styles.joinClanBtn}
+                      onClick={() => {
+                        setClan(clanItem.id);
+                        playHoverSound();
+                      }}
+                    >
+                      Join
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
+            ) : (() => {
+              const activeClan = CLANS.find(c => c.id === clan) || CLANS[0];
+              const displayMembers = [...activeClan.members];
+              if (!displayMembers.some(m => m.name === name || m.name === `${name} (You)`)) {
+                displayMembers.push({ name: `${name} (You)`, rank: rank, xp: xp, avatar: avatar });
+              }
+              displayMembers.sort((a, b) => b.xp - a.xp);
+
+              return (
+                <div style={styles.activeClanContainer}>
+                  <div style={styles.activeClanHeader}>
+                    <span style={{ fontSize: '1.5rem' }}>{activeClan.emoji}</span>
+                    <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', flex: 1, marginLeft: '10px' }}>
+                      <span style={styles.activeClanName}>{activeClan.name}</span>
+                      <span style={styles.activeClanDesc}>{activeClan.desc}</span>
+                    </div>
+                  </div>
+                  
+                  <div style={styles.memberSectionTitle}>CLAN ROSTER</div>
+                  <div style={styles.clanRoster}>
+                    {displayMembers.map((member, idx) => (
+                      <div key={idx} style={{ 
+                        ...styles.rosterRow, 
+                        borderLeft: member.name.includes('(You)') ? '3px solid var(--accent-color)' : '1px solid rgba(255,255,255,0.03)' 
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={styles.rosterRankNum}>{idx + 1}</span>
+                          <span style={{ fontSize: '1rem' }}>{member.avatar}</span>
+                          <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                            <span style={{ 
+                              ...styles.rosterName, 
+                              color: member.name.includes('(You)') ? 'var(--accent-color)' : '#FFF' 
+                            }}>{member.name}</span>
+                            <span style={styles.rosterSub}>{member.rank}</span>
+                          </div>
+                        </div>
+                        <span style={styles.rosterXp}>{member.xp} XP</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button 
+                    className="game-btn" 
+                    style={styles.leaveClanBtn}
+                    onClick={() => {
+                      setClan('');
+                      playHoverSound();
+                    }}
+                  >
+                    Leave Clan
+                  </button>
+                </div>
+              );
+            })()}
           </div>
         </div>
       </div>
@@ -588,5 +757,231 @@ const styles = {
     fontWeight: '800',
     fontFamily: 'var(--font-mono)',
     color: 'var(--accent-secondary)'
+  },
+  idCardContainer: {
+    marginTop: '1.25rem',
+    width: '100%',
+    backgroundColor: 'rgba(12, 16, 26, 0.65)',
+    border: '1px solid rgba(0, 243, 255, 0.25)',
+    borderRadius: '12px',
+    padding: '0.75rem 1rem',
+    boxShadow: '0 0 15px rgba(0, 243, 255, 0.08), inset 0 0 10px rgba(0, 243, 255, 0.05)',
+    backdropFilter: 'blur(10px)',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  idCardHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottom: '1px dashed rgba(0, 243, 255, 0.2)',
+    paddingBottom: '0.5rem',
+    marginBottom: '0.6rem',
+  },
+  idCardLogo: {
+    fontSize: '0.65rem',
+    fontWeight: '800',
+    color: 'var(--accent-secondary)',
+    letterSpacing: '0.5px',
+    fontFamily: 'var(--font-title)',
+  },
+  idCardVerified: {
+    fontSize: '0.55rem',
+    fontWeight: 'bold',
+    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+    color: 'var(--success-color)',
+    padding: '2px 6px',
+    borderRadius: '4px',
+    border: '1px solid rgba(16, 185, 129, 0.3)',
+    letterSpacing: '0.5px',
+  },
+  idCardBody: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+    gap: '0.5rem',
+  },
+  idCardInfo: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
+  },
+  idCardField: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    width: '100%',
+  },
+  idCardLabel: {
+    fontSize: '0.55rem',
+    color: 'var(--text-secondary)',
+    fontWeight: '700',
+    letterSpacing: '0.3px',
+  },
+  idCardValue: {
+    fontSize: '0.75rem',
+    color: '#FFF',
+    fontWeight: '600',
+    marginTop: '1px',
+    textAlign: 'left',
+  },
+  idCardRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    width: '100%',
+    gap: '1rem',
+  },
+  idCardFooter: {
+    borderTop: '1px dashed rgba(255,255,255,0.06)',
+    marginTop: '0.75rem',
+    paddingTop: '0.5rem',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  barcode: {
+    display: 'flex',
+    gap: '1px',
+  },
+  barcodeText: {
+    fontSize: '0.55rem',
+    fontFamily: 'var(--font-mono)',
+    color: 'var(--text-secondary)',
+    letterSpacing: '0.5px',
+  },
+  clanCard: {
+    backgroundColor: 'rgba(19, 23, 34, 0.75)',
+    padding: '1.5rem',
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '280px',
+    borderRadius: '12px',
+    border: '1px solid rgba(255,255,255,0.05)',
+  },
+  clanList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+    marginTop: '0.5rem',
+  },
+  clanSub: {
+    fontSize: '0.7rem',
+    color: 'var(--text-secondary)',
+    lineHeight: '1.4',
+    textAlign: 'left',
+    marginBottom: '0.25rem',
+  },
+  clanRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.15)',
+    padding: '0.6rem 0.75rem',
+    borderRadius: '8px',
+    border: '1px solid rgba(255,255,255,0.02)',
+    transition: 'all 0.2s ease',
+  },
+  clanName: {
+    fontSize: '0.8rem',
+    fontWeight: '800',
+    color: '#FFF',
+  },
+  clanDesc: {
+    fontSize: '0.65rem',
+    color: 'var(--text-secondary)',
+    marginTop: '1px',
+  },
+  clanMeta: {
+    fontSize: '0.6rem',
+    color: 'var(--accent-secondary)',
+    marginTop: '3px',
+    fontWeight: '600',
+  },
+  joinClanBtn: {
+    padding: '4px 12px',
+    fontSize: '0.7rem',
+    backgroundColor: 'rgba(0, 243, 255, 0.1)',
+    color: 'var(--accent-color)',
+    borderColor: 'rgba(0, 243, 255, 0.3)',
+  },
+  activeClanContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.75rem',
+    marginTop: '0.5rem',
+  },
+  activeClanHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 243, 255, 0.03)',
+    border: '1px solid rgba(0, 243, 255, 0.15)',
+    padding: '0.6rem 0.8rem',
+    borderRadius: '10px',
+  },
+  activeClanName: {
+    fontSize: '0.95rem',
+    fontWeight: '800',
+    color: 'var(--accent-color)',
+    textShadow: '0 0 5px rgba(0,243,255,0.3)',
+  },
+  activeClanDesc: {
+    fontSize: '0.65rem',
+    color: 'var(--text-secondary)',
+    marginTop: '2px',
+  },
+  memberSectionTitle: {
+    fontSize: '0.65rem',
+    fontWeight: 'bold',
+    color: 'var(--text-secondary)',
+    textAlign: 'left',
+    letterSpacing: '0.5px',
+    marginTop: '0.25rem',
+  },
+  clanRoster: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '6px',
+    maxHeight: '180px',
+    overflowY: 'auto',
+    paddingRight: '4px',
+  },
+  rosterRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.15)',
+    padding: '0.4rem 0.6rem',
+    borderRadius: '6px',
+    transition: 'all 0.15s ease',
+  },
+  rosterRankNum: {
+    fontSize: '0.7rem',
+    fontWeight: 'bold',
+    fontFamily: 'var(--font-mono)',
+    color: 'var(--text-secondary)',
+    width: '14px',
+  },
+  rosterName: {
+    fontSize: '0.75rem',
+    fontWeight: '700',
+  },
+  rosterSub: {
+    fontSize: '0.6rem',
+    color: 'var(--text-secondary)',
+  },
+  rosterXp: {
+    fontSize: '0.75rem',
+    fontWeight: 'bold',
+    fontFamily: 'var(--font-mono)',
+    color: 'var(--accent-secondary)',
+  },
+  leaveClanBtn: {
+    padding: '5px 0',
+    fontSize: '0.7rem',
+    backgroundColor: 'transparent',
+    color: 'var(--danger-color)',
+    borderColor: 'rgba(239, 68, 68, 0.3)',
+    marginTop: '0.5rem',
+    width: '100%',
   }
 };

@@ -430,60 +430,100 @@ export default function InternshipDetective() {
   // Direct PDF Guide download using jsPDF
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
-    doc.setFont("Helvetica", "bold");
-    doc.setFontSize(20);
-    doc.setTextColor(99, 102, 241); // Indigo theme
-    
-    doc.text("Internship Detective Guide", 20, 20);
-    doc.setDrawColor(99, 102, 241);
-    doc.line(20, 25, 190, 25);
-    
-    const lines = [
-      "GAME CONCEPT & MECHANICS",
-      "Survive corporate SDE incidents by linking server log clues on the",
-      "corkboard pinboard, maintaining trust metrics, and solving failures.",
-      "",
-      "LEVEL CASE RESOLUTION SCHEMES",
-      "* Case 1: Relational DB Lag. Connect Server logs with Replica metrics.",
-      "  Solution: Re-route analytical queries to read-replica.",
-      "* Case 2: Broken Git master. Connect Git commits and code diff files.",
-      "  Solution: Revert buggy commit locally and push clean tests.",
-      "* Case 3: API Gateway Outage. Connect Traffic volume & Firewall policy.",
-      "  Solution: Deploy token-bucket IP Rate limiter reverse proxies.",
-      "",
-      "OFFICE DIPLOMACY METERS",
-      "* Rohan Trust Score: Raised by checking runbooks and selecting correct code fixes.",
-      "* Neha Alignment Score: Raised by keeping client happy and resolving conflicts.",
-      "",
-      "GAMEPLAY STRATEGY LOOP",
-      "1. Choose case file from the main lobby menu board.",
-      "2. Read dialog scenes with typewriter animations.",
-      "3. Go to the Corkboard Pinboard. Select 2 related clues and click Diagnose.",
-      "4. Solve the final tech board diagnosis to complete cases and earn gold."
+    const title = "Internship Detective Visual Novel Player Manual";
+    const pages = [
+      [
+        "SECTION 1: SYSTEM INCIDENTS & CLUE BOARDS",
+        "Investigate production outages as a newly hired developer detective. Read visual",
+        "novel dialogues, examine server environments, collect log files, and pin clues",
+        "on the corkboard to formulate the correct system fix.",
+        "",
+        "CLUE PINBOARD PRINCIPLES",
+        "* Outages contain clues (CPU charts, pull requests, network logs).",
+        "* Pinboard matching connects symptom clues directly to root causes.",
+        "* Making incorrect connections depletes your reputation points."
+      ],
+      [
+        "SECTION 2: RELATIONSHIP METER SPECS",
+        "Navigate conversations carefully. SDE colleagues have different personalities:",
+        "",
+        "* Rohan (Senior SDE): Skeptical backend lead. Demands rigorous log inspections and",
+        "  strict database procedures.",
+        "* Neha (Tech Lead): Strategic architect. Values clean client communications and",
+        "  organized deployment plans.",
+        "* Trust Multipliers: High relationship meters unlock hidden clues and reduce",
+        "  diplomatic penalties by 20%."
+      ],
+      [
+        "SECTION 3: CASE FILE DIALOGUE TREES",
+        "Select the correct responses during technical debriefs to verify status:",
+        "",
+        "1. Level 1: Database bottleneck outage.",
+        "2. Level 2: Merged Git branch merge conflicts.",
+        "3. Level 3: API Gateway latency outages.",
+        "",
+        "Always consult SOP guidelines before committing code fixes."
+      ],
+      [
+        "SECTION 4: OFFICIAL INCIDENT FIXES & ANSWERS",
+        "Solutions to solve the three internship detective cases:",
+        "",
+        "* CASE 1 (DATABASE BOTTLENECK):",
+        "  * Connected Clues: CPU Spike Logs + Slow Analytical Queries.",
+        "  * Tech Lead Pitch: Redirect read queries to secondary replica nodes.",
+        "",
+        "* CASE 2 (GIT CONFLICT OUTAGE):",
+        "  * Connected Clues: Commit History Conflict + Broken Master Build.",
+        "  * Tech Lead Pitch: Revert corrupt merge commit, fix locally, run unit tests.",
+        "",
+        "* CASE 3 (API GATEWAY CRASH):",
+        "  * Connected Clues: Traffic Spike Logs + Token Errors.",
+        "  * Tech Lead Pitch: Implement Token Bucket rate limiter in gateway."
+      ]
     ];
-    
-    doc.setFont("Helvetica", "normal");
-    doc.setFontSize(11);
-    doc.setTextColor(51, 65, 85);
-    
-    let y = 35;
-    lines.forEach((line) => {
-      if (line === "") {
-        y += 6;
-        return;
+
+    pages.forEach((pageLines, pageIdx) => {
+      if (pageIdx > 0) {
+        doc.addPage();
       }
-      if (line === line.toUpperCase() && !line.startsWith("*") && !line.startsWith("1")) {
-        doc.setFont("Helvetica", "bold");
-        doc.setTextColor(99, 102, 241);
-        y += 4;
-        doc.text(line, 20, y);
-        doc.setFont("Helvetica", "normal");
-        doc.setTextColor(51, 65, 85);
-        y += 6;
-      } else {
-        doc.text(line, 20, y);
-        y += 6;
-      }
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(15);
+      doc.setTextColor(99, 102, 241); // Indigo theme color
+      doc.text(title, 20, 15);
+      
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(148, 163, 184);
+      doc.text(`Page ${pageIdx + 1} of ${pages.length}`, 105, 288, { align: "center" });
+      
+      doc.setDrawColor(99, 102, 241);
+      doc.setLineWidth(0.5);
+      doc.line(20, 19, 190, 19);
+      
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(51, 65, 85);
+      
+      let y = 28;
+      pageLines.forEach((line) => {
+        if (line === "") {
+          y += 5;
+          return;
+        }
+        const isHeader = line.startsWith("SECTION") || line.startsWith("CLUE") || line.startsWith("THE") || line.startsWith("RELATIONSHIP") || line.startsWith("CASE") || line.startsWith("OFFICIAL") || line.startsWith("OPTIMAL");
+        if (isHeader) {
+          doc.setFont("Helvetica", "bold");
+          doc.setTextColor(79, 70, 229);
+          y += 3;
+          doc.text(line, 20, y);
+          doc.setFont("Helvetica", "normal");
+          doc.setTextColor(51, 65, 85);
+          y += 5;
+        } else {
+          doc.text(line, 20, y);
+          y += 5;
+        }
+      });
     });
     
     doc.save("internship_detective_placement_guide.pdf");

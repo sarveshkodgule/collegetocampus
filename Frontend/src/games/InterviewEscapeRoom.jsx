@@ -326,7 +326,7 @@ const ESCAPE_LEVELS = [
 ];
 
 export default function InterviewEscapeRoom() {
-  const { addCoins, addXP, setGame, completeDailyChallenge } = usePlayerStore();
+  const { addCoins, addXP, setGame, completeDailyChallenge, triggerNotification } = usePlayerStore();
 
   // Campaign level selector states
   const [currentLevelIdx, setCurrentLevelIdx] = useState(0);
@@ -469,7 +469,7 @@ export default function InterviewEscapeRoom() {
       setShakeActive(true);
       setTimeout(() => setShakeActive(false), 500);
       if (soundEnabled) escapeAudio.playBeep(180, 0.3, 'sawtooth');
-      alert("🚨 DATABASE REJECT: Query compilation failed. Security lockout active!");
+      triggerNotification('🚨 DATABASE REJECT', 'Query compilation failed. Security lockout active!', '❌');
     }
   };
 
@@ -484,7 +484,7 @@ export default function InterviewEscapeRoom() {
       setTimeout(() => setShakeActive(false), 500);
       setBridgeAnimationState('collapsed');
       if (soundEnabled) escapeAudio.playBridgeCollapse();
-      alert("💥 BRIDGE COLLAPSED: Bubble Sort was too slow! Your spaceship fell into the chasm.");
+      triggerNotification('💥 BRIDGE COLLAPSED', 'Bubble Sort was too slow! Your spaceship fell into the chasm.', '❌');
     }
   };
 
@@ -509,13 +509,13 @@ export default function InterviewEscapeRoom() {
         setShakeActive(true);
         setTimeout(() => setShakeActive(false), 500);
         if (soundEnabled) escapeAudio.playBeep(180, 0.3, 'triangle');
-        alert("🚨 SYNTAX ERROR: The robot logic rejected your patch code!");
+        triggerNotification('🚨 SYNTAX ERROR', 'The robot logic rejected your patch code!', '❌');
       }
     } else {
       setShakeActive(true);
       setTimeout(() => setShakeActive(false), 500);
       if (soundEnabled) escapeAudio.playBeep(180, 0.3, 'triangle');
-      alert("🚨 COMPILER OUTAGE: You edited a fully healthy system line!");
+      triggerNotification('🚨 COMPILER OUTAGE', 'You edited a fully healthy system line!', '❌');
       setEditingLine(null);
     }
   };

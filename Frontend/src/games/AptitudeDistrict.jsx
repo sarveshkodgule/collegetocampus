@@ -490,6 +490,7 @@ export default function AptitudeDistrict() {
   const { coins, addCoins, addXP, setAptiHighScore, aptiHighScore, setGame, completeDailyChallenge } = usePlayerStore();
   
   const submitAnswerRef = useRef(null);
+  const triggerCrashRef = useRef(null);
   
   // Game states: 'lobby' | 'playing' | 'feedback' | 'gameover' | 'skins' | 'leaderboard'
   const [gameState, setGameState] = useState('lobby');
@@ -681,6 +682,7 @@ export default function AptitudeDistrict() {
       canvasGameEngine.current.triggerCrash();
     }
   };
+  triggerCrashRef.current = triggerCrash;
 
   // Handle Timeout (counts as crash)
   const handleTimeout = () => {
@@ -1319,6 +1321,13 @@ export default function AptitudeDistrict() {
                 // Crash!
                 obs.cleared = true;
                 hasBarrier = false;
+                
+                if (gameState === 'playing') {
+                  if (triggerCrashRef.current) {
+                    triggerCrashRef.current('Firewall Collision');
+                  }
+                  setTimeLeft(t => Math.max(1, t - 4));
+                }
               }
             }
           }

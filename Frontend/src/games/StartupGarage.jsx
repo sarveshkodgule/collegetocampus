@@ -256,7 +256,7 @@ const VC_ROUNDS = [
 ];
 
 export default function StartupGarage() {
-  const { addCoins, addXP, setGame } = usePlayerStore();
+  const { addCoins, addXP, setGame, triggerNotification } = usePlayerStore();
 
   // Navigation / Tab state
   const [gameState, setGameState] = useState('lobby'); // 'lobby', 'office', 'pitch', 'victory', 'bankruptcy'
@@ -563,7 +563,7 @@ export default function StartupGarage() {
   // Recruit candidate SDE
   const handleRecruitTalent = (candidate) => {
     if (money < candidate.salary * 1.5) {
-      alert("⚠️ Insufficient cash reserves to onboard this engineer!");
+      triggerNotification('⚠️ ACCESS DENIED', 'Insufficient cash reserves to onboard this engineer!', '❌');
       return;
     }
     setMoney(prev => prev - Math.floor(candidate.salary * 0.8)); // recruitment fee
@@ -587,7 +587,7 @@ export default function StartupGarage() {
 
   const handleLaunchFeature = (feature) => {
     if (activeFeature) {
-      alert("⚠️ Wait for active compiler deployment!");
+      triggerNotification('⚠️ COMPILER BUSY', 'Wait for active compiler deployment!', '⏳');
       return;
     }
     startupAudio.playClick();
@@ -599,7 +599,7 @@ export default function StartupGarage() {
   const handleUpgradeServer = () => {
     const cost = serverLevel * 250;
     if (money < cost) {
-      alert("⚠️ Insufficient cash to upgrade servers!");
+      triggerNotification('⚠️ UPGRADE BLOCKED', 'Insufficient cash to upgrade servers!', '❌');
       return;
     }
     setMoney(m => m - cost);
@@ -610,7 +610,7 @@ export default function StartupGarage() {
   const handleUpgradeCoffee = () => {
     const cost = coffeeLevel * 150;
     if (money < cost) {
-      alert("⚠️ Insufficient cash to upgrade coffee maker!");
+      triggerNotification('⚠️ UPGRADE BLOCKED', 'Insufficient cash to upgrade coffee maker!', '❌');
       return;
     }
     setMoney(m => m - cost);
@@ -621,7 +621,7 @@ export default function StartupGarage() {
   // Boardroom CTO Interview Mini-Game
   const handleStartPitch = (vc) => {
     if (users < vc.reqUsers) {
-      alert(`⚠️ Infrastructure test failed! Requires at least ${vc.reqUsers} Active Users to schedule a review.`);
+      triggerNotification('⚠️ TEST FAILED', `Infrastructure test failed! Requires at least ${vc.reqUsers} Active Users to schedule a review.`, '❌');
       return;
     }
     startupAudio.playClick();
@@ -650,7 +650,7 @@ export default function StartupGarage() {
     const cashInjected = Math.floor(finalVal * (pitchEquity / 100));
 
     if (cashInjected > activeVC.maxCash) {
-      alert(`⚠️ CTO rejects deal. Request exceeds the maximum round credit ceiling of $${activeVC.maxCash}`);
+      triggerNotification('⚠️ DEAL REJECTED', `CTO rejects deal. Request exceeds the maximum round credit ceiling of $${activeVC.maxCash}`, '❌');
       return;
     }
 
@@ -731,59 +731,96 @@ export default function StartupGarage() {
 
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
-    doc.setFont("Helvetica", "bold");
-    doc.setFontSize(20);
-    doc.setTextColor(249, 115, 22);
-    
-    doc.text("SDE System Design Tycoon Guide", 20, 20);
-    doc.setDrawColor(249, 115, 22);
-    doc.line(20, 25, 190, 25);
-    
-    const lines = [
-      "GAME CONCEPT & MECHANICS",
-      "Manage resources, recruit SDEs, deploy roadmaps, and solve SDE outages",
-      "to scale your tech stack to Series A and secure placements.",
-      "",
-      "SYSTEM DEPLOYMENT MECHANICS",
-      "* Postgres DB: Relational index replicas. Adds MRR, generates code bugs.",
-      "* Redis Cache: In-memory queries. Minimizes query latency and database load.",
-      "* Nginx Load Balancers: Balances checkout traffic, reducing server stress.",
-      "* Kafka Queues: Asynchronous decoupled transaction pipelines.",
-      "",
-      "BOARDROOM CTO INTERVIEW ROUNDS",
-      "1. Technical Directors test your caching and rate limiting choices.",
-      "2. Select the correct SDE choice to raise CTO interest and valuation credits.",
-      "3. Slide Valuation & Equity: Negotiate cash funding checks.",
-      "",
-      "GAMEPLAY STRATEGY LOOP",
-      "1. Hire developer from the recruitment panel. Deploy Postgres from Roadmap.",
-      "2. Developer types code while generating bugs. Desk shows code floats.",
-      "3. Hire QA tester to automate bug squashes. Click the desk manually for +1 XP.",
-      "4. Upgrades: Upgrade Server racks to damp bugs, upgrade Coffee to speed coders."
+    const title = "Startup Garage Tycoon Player Manual";
+    const pages = [
+      [
+        "SECTION 1: TYCOON ECONOMICS & RUN RATE",
+        "Take command of a SaaS tech company from a small garage and scale it to a",
+        "corporate skyscraper. Manage your weekly sprints, financials, code quality,",
+        "headcount, server scaling, and venture capital rounds.",
+        "",
+        "CORE BANKRUPTCY LAWS",
+        "* Operating cash depletes every week due to server charges and developer salaries.",
+        "* SDE developer salaries are high. Cash reaching $0 results in bankruptcy."
+      ],
+      [
+        "SECTION 2: DEV AGILITY & SERVER METRICS",
+        "Manage your workspace variables to sustain monthly recurring revenue (MRR):",
+        "",
+        "* Active Users: Drives your MRR growth rates.",
+        "* Server Stress: High stress degrades user experience, causing user churn.",
+        "* Server Latency: Can be reduced by buying memory and hardware upgrades.",
+        "* Code Bugs: High bug counts decrease user acquisition rates. Click desks manually",
+        "  or run QA sprints to squash bugs (+1 XP per manual bug squashed)."
+      ],
+      [
+        "SECTION 3: PRODUCTIVITY SPRINTS SHEET",
+        "Allocate company focus blocks across four active areas:",
+        "",
+        "1. Feature Sprint: Elevates product functionality, boosting MRR.",
+        "2. QA Sprint: Squashes software bugs and cleans system logs.",
+        "3. Marketing Sprint: Builds public hype to accelerate user growth.",
+        "4. Infrastructure Upgrades: Upgrading coffee makers increases employee speed, and",
+        "   server upgrades increase user capacity bounds."
+      ],
+      [
+        "SECTION 4: OFFICIAL VC PITCH SOLUTIONS & CHEATS",
+        "The exact pitches to secure maximum venture capital funding:",
+        "",
+        "* SYSTEM LATENCY PITCH (Seed Stage):",
+        "  * Q: How do we optimize database queries? Answer: Add database indexes.",
+        "",
+        "* TRANSACTION FLOOD PITCH (Series A Stage):",
+        "  * Q: How do we neutralize checkout spams? Answer: Implement a Token Bucket Rate Limiter.",
+        "",
+        "* CLAN FUNDING STRATEGY:",
+        "  * Ensure active users are > 300 before scheduling the Series A review.",
+        "  * Set pitch equity between 12% and 18% to maximize valuation ratios."
+      ]
     ];
-    
-    doc.setFont("Helvetica", "normal");
-    doc.setFontSize(11);
-    doc.setTextColor(51, 65, 85);
-    
-    let y = 35;
-    lines.forEach((line) => {
-      if (line === "") {
-        y += 6;
-        return;
+
+    pages.forEach((pageLines, pageIdx) => {
+      if (pageIdx > 0) {
+        doc.addPage();
       }
-      if (line === line.toUpperCase() && !line.startsWith("*") && !line.startsWith("1")) {
-        doc.setFont("Helvetica", "bold");
-        doc.setTextColor(249, 115, 22);
-        y += 4;
-        doc.text(line, 20, y);
-        doc.setFont("Helvetica", "normal");
-        doc.setTextColor(51, 65, 85);
-        y += 6;
-      } else {
-        doc.text(line, 20, y);
-        y += 6;
-      }
+      doc.setFont("Helvetica", "bold");
+      doc.setFontSize(15);
+      doc.setTextColor(249, 115, 22); // Orange theme color
+      doc.text(title, 20, 15);
+      
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(148, 163, 184);
+      doc.text(`Page ${pageIdx + 1} of ${pages.length}`, 105, 288, { align: "center" });
+      
+      doc.setDrawColor(249, 115, 22);
+      doc.setLineWidth(0.5);
+      doc.line(20, 19, 190, 19);
+      
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(10);
+      doc.setTextColor(51, 65, 85);
+      
+      let y = 28;
+      pageLines.forEach((line) => {
+        if (line === "") {
+          y += 5;
+          return;
+        }
+        const isHeader = line.startsWith("SECTION") || line.startsWith("CLUE") || line.startsWith("THE") || line.startsWith("RELATIONSHIP") || line.startsWith("CASE") || line.startsWith("OFFICIAL") || line.startsWith("OPTIMAL") || line.startsWith("CORE") || line.startsWith("SYSTEM");
+        if (isHeader) {
+          doc.setFont("Helvetica", "bold");
+          doc.setTextColor(234, 88, 12);
+          y += 3;
+          doc.text(line, 20, y);
+          doc.setFont("Helvetica", "normal");
+          doc.setTextColor(51, 65, 85);
+          y += 5;
+        } else {
+          doc.text(line, 20, y);
+          y += 5;
+        }
+      });
     });
     
     doc.save("sde_system_design_tycoon_guide.pdf");
