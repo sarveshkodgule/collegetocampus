@@ -791,26 +791,12 @@ export default function Hub() {
     fetch('http://localhost:5000/api/leaderboard')
       .then(res => res.json())
       .then(data => {
-        const fallbackMocks = [
-          { name: 'Linus Torvalds', avatar: '🐧', rank: 'Architect', xp: 2400, email: 'linus@torvalds.org' },
-          { name: 'Thomas Anderson', avatar: '🕶️', rank: 'Tech Lead', xp: 1800, email: 'neo@matrix.io' },
-          { name: 'Sarah Connor', avatar: '🦾', rank: 'Developer', xp: 1200, email: 'sconnor@cyberdyne.com' }
-        ];
-
         let dbLeaderboard = [];
         if (data.success && data.leaderboard && data.leaderboard.length > 0) {
           dbLeaderboard = data.leaderboard;
         }
-
-        // Merge & deduplicate
-        const displayList = [...dbLeaderboard];
-        fallbackMocks.forEach(mock => {
-          if (!displayList.some(p => p.name === mock.name || p.email === mock.email)) {
-            displayList.push(mock);
-          }
-        });
-        displayList.sort((a, b) => b.xp - a.xp);
-        setLeaderboard(displayList);
+        dbLeaderboard.sort((a, b) => b.xp - a.xp);
+        setLeaderboard(dbLeaderboard);
         setLoadingLeaderboard(false);
       })
       .catch(() => {

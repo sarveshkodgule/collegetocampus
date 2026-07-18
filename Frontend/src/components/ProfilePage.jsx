@@ -131,34 +131,15 @@ export default function ProfilePage() {
     fetch('http://localhost:5000/api/leaderboard')
       .then(res => res.json())
       .then(data => {
-        const fallbackMocks = [
-          { name: 'Rohan (Lead)', avatar: '👨‍💻', rank: 'Lead SDE', xp: 4200, classType: 'Backend Guardian', email: 'rohan@silicon.io' },
-          { name: 'Neha (Architect)', avatar: '👩‍💼', rank: 'Architect', xp: 3800, classType: 'UI/UX Rogue', email: 'neha@silicon.io' },
-          { name: 'Thomas Neo', avatar: '🕶️', rank: 'Senior SDE', xp: 2100, classType: 'AI Alchemist', email: 'neo@silicon.io' }
-        ];
-
         let dbLeaderboard = [];
         if (data.success && data.leaderboard && data.leaderboard.length > 0) {
           dbLeaderboard = data.leaderboard;
         }
-
-        // Merge & deduplicate
-        const displayList = [...dbLeaderboard];
-        fallbackMocks.forEach(mock => {
-          if (!displayList.some(p => p.name === mock.name || p.email === mock.email)) {
-            displayList.push(mock);
-          }
-        });
-        displayList.sort((a, b) => b.xp - a.xp);
-        setLeaderboard(displayList);
+        dbLeaderboard.sort((a, b) => b.xp - a.xp);
+        setLeaderboard(dbLeaderboard);
       })
       .catch(() => {
-        // Fallback mock players
-        setLeaderboard([
-          { name: 'Rohan (Lead)', avatar: '👨‍💻', rank: 'Lead SDE', xp: 4200, classType: 'Backend Guardian' },
-          { name: 'Neha (Architect)', avatar: '👩‍💼', rank: 'Architect', xp: 3800, classType: 'UI/UX Rogue' },
-          { name: 'Thomas Neo', avatar: '🕶️', rank: 'Senior SDE', xp: 2100, classType: 'AI Alchemist' }
-        ]);
+        setLeaderboard([]);
       });
   }, []);
 
