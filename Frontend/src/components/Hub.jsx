@@ -525,137 +525,36 @@ export default function Hub() {
   }, []);
 
   return (
-    <div style={{ ...styles.container, display: 'flex', flexDirection: 'row', alignItems: 'flex-start', flexWrap: 'wrap-reverse', gap: '2.5rem' }} className="grid-overlay hub-layout-wrapper">
-      {/* Left Column: Welcome, Grid of Sectors, Daily Mission */}
-      <div style={{ flex: 1, minWidth: '320px', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-        {/* City Title Header */}
-        <div style={styles.welcomeBanner}>
-          <div style={styles.cityBadge}>SYSTEM MAIN HUB</div>
-          <h2 style={styles.cityTitle}>SILICON METROPOLIS</h2>
-          <p style={styles.cityDesc}>Select a sector to begin training, earn points, and level up your placement eligibility.</p>
-          <button 
-            className="game-btn game-btn-primary" 
-            style={{ 
-              marginTop: '0.5rem', 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '8px', 
-              padding: '6px 16px', 
-              fontSize: '0.75rem',
-              background: 'linear-gradient(135deg, var(--accent-secondary) 0%, #0369a1 100%)',
-              boxShadow: 'var(--glow-secondary)',
-              borderColor: 'var(--accent-secondary)'
-            }}
-            onClick={() => {
-              setCodexOpen(true);
-              localStorage.setItem('metropolis_codex_opened', 'true');
-            }}
-          >
-            <Database size={14} /> 📁 DATABANK CODEX TERMINAL
-          </button>
-        </div>
-
-        {/* Grid of Buildings */}
-        <div style={styles.grid} className="hub-grid">
-          {BUILDINGS.map((b) => {
-            const IconComponent = b.icon;
-            return (
-              <div 
-                key={b.id} 
-                className="game-card" 
-                style={{ ...styles.card, '--accent-color': b.color }}
-                onClick={() => setGame(b.id)}
-                onMouseEnter={playCardHover}
-              >
-                {/* Card Header */}
-                <div style={styles.cardHeader}>
-                  <div style={{ ...styles.iconWrapper, backgroundColor: `rgba(${hexToRgb(b.color)}, 0.1)`, borderColor: b.color }}>
-                    <IconComponent size={28} color={b.color} />
-                  </div>
-                  <div style={styles.difficultyBadge}>{b.difficulty}</div>
-                </div>
-
-                {/* Card Body */}
-                <div style={styles.cardBody}>
-                  <h3 style={styles.cardTitle}>{b.title}</h3>
-                  <h4 style={{ ...styles.cardSubtitle, color: b.color }}>{b.subtitle}</h4>
-                  <p style={styles.cardDesc}>{b.description}</p>
-                </div>
-
-                {/* Card Footer / Rewards */}
-                <div style={styles.cardFooter}>
-                  <div style={styles.rewardBadge}>
-                    <Star size={12} fill="#EAB308" color="#EAB308" />
-                    <span>{b.reputationReward}</span>
-                  </div>
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                    <button 
-                      className="game-btn" 
-                      style={{ padding: '0.4rem 0.8rem', fontSize: '0.7rem', borderColor: b.color, color: b.color, backgroundColor: 'transparent' }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDownloadPDF(b.id);
-                      }}
-                    >
-                      📄 Guide PDF
-                    </button>
-                    <span className="game-btn game-btn-primary" style={styles.enterBtn}>
-                      ENTER SECTOR
-                    </span>
-                  </div>
-                </div>
-
-                {/* Glowing Background Accent */}
-                <div style={{ ...styles.glowBacklight, backgroundColor: b.color }}></div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Daily Challenge Board Footer */}
-        <div style={styles.dailyBoard}>
-          <div style={styles.dailyHeader}>
-            <Clock size={16} color="var(--accent-secondary)" />
-            <h3 style={styles.dailyTitle}>ACTIVE DAILY MISSION</h3>
-          </div>
-          <div style={styles.dailyMission}>
-            {loadingDaily ? (
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Syncing rotation matrix...</div>
-            ) : dailyChallenge ? (
-              <>
-                <p style={styles.dailyMissionText}>
-                  🔥 <strong>Featured Challenge:</strong> {dailyChallenge.game.desc} (Reward: <span style={{ color: '#F59E0B', fontWeight: 'bold' }}>+{dailyChallenge.coinsReward} Coins</span>, <span style={{ color: '#00F3FF', fontWeight: 'bold' }}>+{dailyChallenge.xpReward} XP</span>)
-                </p>
-                {dailyChallenge.completed ? (
-                  <button 
-                    className="game-btn" 
-                    style={{ ...styles.dailyBtn, borderColor: 'var(--success-color)', color: 'var(--success-color)', cursor: 'default', backgroundColor: 'transparent' }}
-                    disabled
-                  >
-                    ✅ Completed Today
-                  </button>
-                ) : (
-                  <button 
-                    className="game-btn game-btn-primary" 
-                    style={styles.dailyBtn}
-                    onClick={() => {
-                      localStorage.setItem('active_daily_challenge_game', dailyChallenge.game.id);
-                      setGame(dailyChallenge.game.id);
-                    }}
-                  >
-                    Launch {dailyChallenge.game.name}
-                  </button>
-                )}
-              </>
-            ) : (
-              <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>System offline. Check connection.</div>
-            )}
-          </div>
-        </div>
+    <div style={styles.container} className="grid-overlay">
+      {/* City Title Header */}
+      <div style={styles.welcomeBanner}>
+        <div style={styles.cityBadge}>SYSTEM MAIN HUB</div>
+        <h2 style={styles.cityTitle}>SILICON METROPOLIS</h2>
+        <p style={styles.cityDesc}>Select a sector to begin training, earn points, and level up your placement eligibility.</p>
+        <button 
+          className="game-btn game-btn-primary" 
+          style={{ 
+            marginTop: '0.5rem', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '8px', 
+            padding: '6px 16px', 
+            fontSize: '0.75rem',
+            background: 'linear-gradient(135deg, var(--accent-secondary) 0%, #0369a1 100%)',
+            boxShadow: 'var(--glow-secondary)',
+            borderColor: 'var(--accent-secondary)'
+          }}
+          onClick={() => {
+            setCodexOpen(true);
+            localStorage.setItem('metropolis_codex_opened', 'true');
+          }}
+        >
+          <Database size={14} /> 📁 DATABANK CODEX TERMINAL
+        </button>
       </div>
 
-      {/* Right Column: Live Global Leaderboard (Vertical standings in top corner) */}
-      <div style={styles.topLeaderboardBanner} className="game-card vertical-leaderboard-sidebar">
+      {/* Top Global Leaderboard Row */}
+      <div style={styles.topLeaderboardBanner} className="game-card">
         <div style={styles.leaderboardHeader}>
           <Trophy size={18} color="#EAB308" className="pulse-glow-animation" />
           <div style={styles.leaderboardTitleGroup}>
@@ -668,7 +567,7 @@ export default function Hub() {
           {loadingLeaderboard ? (
             <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Loading SDE standings...</div>
           ) : (
-            leaderboard.slice(0, 5).map((player, idx) => {
+            leaderboard.slice(0, 4).map((player, idx) => {
               const playerUsername = player.email ? player.email.split('@')[0] : player.name.toLowerCase().replace(/\s+/g, '');
               return (
                 <div key={idx} style={styles.leaderboardPill}>
@@ -684,6 +583,104 @@ export default function Hub() {
                 </div>
               );
             })
+          )}
+        </div>
+      </div>
+
+      {/* Grid of Buildings */}
+      <div style={styles.grid} className="hub-grid">
+        {BUILDINGS.map((b) => {
+          const IconComponent = b.icon;
+          return (
+            <div 
+              key={b.id} 
+              className="game-card" 
+              style={{ ...styles.card, '--accent-color': b.color }}
+              onClick={() => setGame(b.id)}
+              onMouseEnter={playCardHover}
+            >
+              {/* Card Header */}
+              <div style={styles.cardHeader}>
+                <div style={{ ...styles.iconWrapper, backgroundColor: `rgba(${hexToRgb(b.color)}, 0.1)`, borderColor: b.color }}>
+                  <IconComponent size={28} color={b.color} />
+                </div>
+                <div style={styles.difficultyBadge}>{b.difficulty}</div>
+              </div>
+
+              {/* Card Body */}
+              <div style={styles.cardBody}>
+                <h3 style={styles.cardTitle}>{b.title}</h3>
+                <h4 style={{ ...styles.cardSubtitle, color: b.color }}>{b.subtitle}</h4>
+                <p style={styles.cardDesc}>{b.description}</p>
+              </div>
+
+              {/* Card Footer / Rewards */}
+              <div style={styles.cardFooter}>
+                <div style={styles.rewardBadge}>
+                  <Star size={12} fill="#EAB308" color="#EAB308" />
+                  <span>{b.reputationReward}</span>
+                </div>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <button 
+                    className="game-btn" 
+                    style={{ padding: '0.4rem 0.8rem', fontSize: '0.7rem', borderColor: b.color, color: b.color, backgroundColor: 'transparent' }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDownloadPDF(b.id);
+                    }}
+                  >
+                    📄 Guide PDF
+                  </button>
+                  <span className="game-btn game-btn-primary" style={styles.enterBtn}>
+                    ENTER SECTOR
+                  </span>
+                </div>
+              </div>
+
+              {/* Glowing Background Accent */}
+              <div style={{ ...styles.glowBacklight, backgroundColor: b.color }}></div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Daily Challenge Board Footer */}
+      <div style={styles.dailyBoard}>
+        <div style={styles.dailyHeader}>
+          <Clock size={16} color="var(--accent-secondary)" />
+          <h3 style={styles.dailyTitle}>ACTIVE DAILY MISSION</h3>
+        </div>
+        <div style={styles.dailyMission}>
+          {loadingDaily ? (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Syncing rotation matrix...</div>
+          ) : dailyChallenge ? (
+            <>
+              <p style={styles.dailyMissionText}>
+                🔥 <strong>Featured Challenge:</strong> {dailyChallenge.game.desc} (Reward: <span style={{ color: '#F59E0B', fontWeight: 'bold' }}>+{dailyChallenge.coinsReward} Coins</span>, <span style={{ color: '#00F3FF', fontWeight: 'bold' }}>+{dailyChallenge.xpReward} XP</span>)
+              </p>
+              {dailyChallenge.completed ? (
+                <button 
+                  className="game-btn" 
+                  style={{ ...styles.dailyBtn, borderColor: 'var(--success-color)', color: 'var(--success-color)', cursor: 'default', backgroundColor: 'transparent' }}
+                  disabled
+                >
+                  ✅ Completed Today
+                </button>
+              ) : (
+                <button 
+                  className="game-btn game-btn-primary" 
+                  style={styles.dailyBtn}
+                  onClick={() => {
+                    localStorage.setItem('active_daily_challenge_game', dailyChallenge.game.id);
+                    setGame(dailyChallenge.game.id);
+                  }}
+                >
+                  Launch {dailyChallenge.game.name}
+                </button>
+              )}
+            </>
+          ) : (
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>System offline. Check connection.</div>
           )}
         </div>
       </div>
@@ -908,7 +905,7 @@ const styles = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
+    gridTemplateColumns: 'repeat(3, 1fr)',
     gap: '2rem',
     width: '100%',
     maxWidth: '1200px',
@@ -1046,27 +1043,24 @@ const styles = {
     boxShadow: 'var(--glow-secondary)',
   },
   topLeaderboardBanner: {
-    width: '320px',
-    padding: '1.5rem',
+    width: '100%',
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '1rem 2rem',
     backgroundColor: 'rgba(15, 23, 42, 0.45)',
     backdropFilter: 'blur(10px)',
     border: '1px solid rgba(0, 243, 255, 0.1)',
     borderRadius: '16px',
     display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    gap: '1.5rem',
-    alignSelf: 'stretch',
-    maxHeight: 'calc(100vh - 120px)',
-    overflowY: 'auto',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: '2rem',
+    flexWrap: 'wrap',
   },
   leaderboardHeader: {
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
-    width: '100%',
-    borderBottom: '1px solid rgba(255,255,255,0.05)',
-    paddingBottom: '0.75rem',
   },
   leaderboardTitleGroup: {
     display: 'flex',
@@ -1085,9 +1079,10 @@ const styles = {
   },
   leaderboardRowList: {
     display: 'flex',
-    flexDirection: 'column',
-    gap: '0.8rem',
-    width: '100%',
+    gap: '1rem',
+    flex: 1,
+    justifyContent: 'flex-end',
+    flexWrap: 'wrap',
   },
   leaderboardPill: {
     display: 'flex',
@@ -1095,11 +1090,10 @@ const styles = {
     gap: '10px',
     backgroundColor: 'rgba(0, 0, 0, 0.2)',
     border: '1px solid rgba(255, 255, 255, 0.03)',
-    padding: '8px 12px',
-    borderRadius: '12px',
+    padding: '6px 14px',
+    borderRadius: '9999px',
     fontSize: '0.75rem',
-    width: '100%',
-    justifyContent: 'space-between',
+    minWidth: '180px',
   },
   pillRankBadge: {
     fontWeight: 'bold',

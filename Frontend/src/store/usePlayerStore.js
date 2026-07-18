@@ -81,33 +81,43 @@ export const usePlayerStore = create((set, get) => ({
   },
   
   setClass: (classType) => {
+    const current = get();
     set({ classType });
-    syncProgressWithBackend(get());
+    syncProgressWithBackend({
+      ...current,
+      classType
+    });
   },
   
   addXP: (amount) => {
-    set((state) => {
-      const newXP = state.xp + amount;
-      // Calculate new rank
-      let currentRank = 'Fresher';
-      for (let i = RANKS.length - 1; i >= 0; i--) {
-        if (newXP >= RANKS[i].xpNeeded) {
-          currentRank = RANKS[i].name;
-          break;
-        }
+    const current = get();
+    const newXP = current.xp + amount;
+    
+    let currentRank = 'Fresher';
+    for (let i = RANKS.length - 1; i >= 0; i--) {
+      if (newXP >= RANKS[i].xpNeeded) {
+        currentRank = RANKS[i].name;
+        break;
       }
-      
-      return { 
-        xp: newXP, 
-        rank: currentRank 
-      };
+    }
+    
+    set({ xp: newXP, rank: currentRank });
+    
+    syncProgressWithBackend({
+      ...current,
+      xp: newXP,
+      rank: currentRank
     });
-    syncProgressWithBackend(get());
   },
 
   addCoins: (amount) => {
-    set((state) => ({ coins: state.coins + amount }));
-    syncProgressWithBackend(get());
+    const current = get();
+    const newCoins = current.coins + amount;
+    set({ coins: newCoins });
+    syncProgressWithBackend({
+      ...current,
+      coins: newCoins
+    });
   },
   
   loseHeart: () => set((state) => {
@@ -122,32 +132,46 @@ export const usePlayerStore = create((set, get) => ({
   restoreHearts: () => set((state) => ({ hearts: state.maxHearts })),
 
   unlockSkill: (skillId) => {
-    set((state) => {
-      if (state.unlockedSkills.includes(skillId)) return {};
-      return { unlockedSkills: [...state.unlockedSkills, skillId] };
+    const current = get();
+    if (current.unlockedSkills.includes(skillId)) return;
+    const newSkills = [...current.unlockedSkills, skillId];
+    set({ unlockedSkills: newSkills });
+    syncProgressWithBackend({
+      ...current,
+      unlockedSkills: newSkills
     });
-    syncProgressWithBackend(get());
   },
 
   incrementStreak: () => {
-    set((state) => ({ streak: state.streak + 1 }));
-    syncProgressWithBackend(get());
+    const current = get();
+    const newStreak = current.streak + 1;
+    set({ streak: newStreak });
+    syncProgressWithBackend({
+      ...current,
+      streak: newStreak
+    });
   },
   
   completeHeistLevel: () => {
-    set((state) => ({ 
-      heistLevelsCompleted: state.heistLevelsCompleted + 1 
-    }));
-    syncProgressWithBackend(get());
+    const current = get();
+    const newHeist = current.heistLevelsCompleted + 1;
+    set({ heistLevelsCompleted: newHeist });
+    syncProgressWithBackend({
+      ...current,
+      heistLevelsCompleted: newHeist
+    });
   },
   
   setArenaLevel: (level) => set({ arenaLevel: level }),
   
   setAptiHighScore: (score) => {
-    set((state) => ({ 
-      aptiHighScore: Math.max(state.aptiHighScore, score) 
-    }));
-    syncProgressWithBackend(get());
+    const current = get();
+    const newApti = Math.max(current.aptiHighScore, score);
+    set({ aptiHighScore: newApti });
+    syncProgressWithBackend({
+      ...current,
+      aptiHighScore: newApti
+    });
   },
 
   completeDailyChallenge: async () => {
@@ -178,6 +202,7 @@ export const usePlayerStore = create((set, get) => ({
   },
 
   resetGame: () => {
+    localStorage.removeItem('token');
     set({
       rank: 'Fresher',
       xp: 0,
@@ -185,7 +210,7 @@ export const usePlayerStore = create((set, get) => ({
       reputation: 0,
       hearts: 5,
       streak: 3,
-      activeGame: null,
+      activeGame: 'landing',
       classType: null,
       unlockedSkills: [],
       heistLevelsCompleted: 0,
@@ -199,6 +224,5 @@ export const usePlayerStore = create((set, get) => ({
       gradYear: null,
       rollNumber: ''
     });
-    syncProgressWithBackend(get());
   }
 }));

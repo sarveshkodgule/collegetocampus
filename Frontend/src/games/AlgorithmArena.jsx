@@ -1030,9 +1030,9 @@ export default function AlgorithmArena() {
         }
         setBattleState('loot');
       } else if (nextQ >= activeMonster.questions.length) {
-        // Out of questions but Boss is still alive! Game Over!
-        if (!isMuted) playDefeatSound();
-        setBattleState('gameover');
+        // Out of questions but boss still alive: loop questions!
+        setQIndex(0);
+        loadQuestion(0);
       } else {
         setQIndex(nextQ);
         loadQuestion(nextQ);
@@ -1055,15 +1055,9 @@ export default function AlgorithmArena() {
       } else {
         const nextQ = qIndex + 1;
         if (nextQ >= activeMonster.questions.length) {
-          // Out of questions. Only win if the boss was defeated!
-          if (monsterHpRef.current <= 0) {
-            if (!isMuted) playVictorySound();
-            setBattleState('loot');
-          } else {
-            // Boss is still alive! Game Over!
-            if (!isMuted) playDefeatSound();
-            setBattleState('gameover');
-          }
+          // Out of questions but user still has shields: loop questions!
+          setQIndex(0);
+          loadQuestion(0);
         } else {
           setQIndex(nextQ);
           loadQuestion(nextQ);

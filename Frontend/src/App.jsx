@@ -50,6 +50,13 @@ export default function App() {
     }
   }, [notification]);
 
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token && activeGame !== 'landing') {
+      usePlayerStore.setState({ activeGame: 'landing' });
+    }
+  }, [activeGame]);
+
   // Dynamic Theme Class mapping to CSS variables in index.css
   const getThemeClass = () => {
     switch (activeGame) {
@@ -149,7 +156,7 @@ const styles = {
   },
   mainContent: {
     flex: 1,
-    overflow: 'hidden',
+    overflowY: 'auto',
     position: 'relative',
   },
   toastContainer: {
