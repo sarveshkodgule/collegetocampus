@@ -23,7 +23,7 @@ Placement Quest is a gamified, full-stack software developer engineering (SDE) t
 
 ---
 
-## 🎮 The 9 Interactive Training Sectors
+## 🎮 The 11 Interactive Training Sectors
 
 1.  **Career Tower (Life Architect):** Interactive class constellations skill tree (Frontend, Backend, Fullstack, DSA) to allocate focus points.
 2.  **Data Bank (SQL Heist):** DB schema map explorer where players type raw SQL `SELECT` and `JOIN` commands to hack vault logs.
@@ -34,6 +34,8 @@ Placement Quest is a gamified, full-stack software developer engineering (SDE) t
 7.  **PR Review (Code Inspector):** An IDE debugger where players inspect codebases, write input patch modifications, and compile fixes.
 8.  **Assessment Suite (Interview Escape Room):** Zooming 3D-feeling map chamber requiring vault query hacks and Canvas bridge matches.
 9.  **Development Center (Resume Builder Tycoon):** Engineering student life tycoon spending hours on DSA, project typing mini-games, and placement cell applications.
+10. **Code Snake Arena (Syntax Collector):** Cyberpunk snake arena collecting code keywords in strict sequence while evading throttled insect crawlers.
+11. **AI Master Challenge (Millionaire-Style ML Quiz):** A 10-tier machine learning & deep learning quiz featuring KBC-style lifelines (50:50, AI Mentor, Dataset Preview, Extra Time) and safe-haven checkpoints.
 
 ---
 
