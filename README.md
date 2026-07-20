@@ -1,85 +1,83 @@
-# 🎮 Placement Quest — Silicon Metropolis
+# Placement Quest: Silicon Metropolis
 
-**Placement Quest** is an immersive, full-stack edtech platform designed to transform engineering placement preparation into a gamified virtual reality experience. Set inside **Silicon Metropolis**, students explore themed training sectors, fight DSA data behemoths, hack SQL databases, build SaaS startups, and compete on global real-time leaderboards.
-
----
-
-## ✨ Key Platform Features
-
-* **🏙️ Central World — Silicon Metropolis Hub:** A cyberpunk hub connecting 11 specialized technical mini-games and career preparation sectors.
-* **🌐 Google OAuth & ID Verification:** One-click Google Sign-In, Student ID / Roll Number verification gates, and instant password recovery.
-* **⚔️ 11 Technical Mini-Game Sectors:** Covering Data Structures & Algorithms, SQL Querying, System Design, Aptitude Quants, PR Code Debugging, ML/AI, and Workplace Visual Novels.
-* **🛡️ MongoDB-Synced Developer Clans:** Join SDE Guilds (Backend Guardians, AI Alchemists, UI/UX Rogues) and compete on clan rankings.
-* **🪪 Futuristic Digital Student ID Card:** Glassmorphic campus credential card with barcode graphics, department status, and institutional standings.
-* **📄 Detailed 4-Page PDF Guidebooks:** Exportable 4-page PDF sector manuals generated via jsPDF, complete with solution cheats and answer keys.
-* **🏆 Real-Time Live Standings:** 3-second live polling synchronization updating global player ranks dynamically.
-
----
-
-## 🎮 The 11 Interactive Training Sectors
-
-1. **🏰 Career Tower (Life Architect):** Class constellation skill tree to unlock developer specialties (Frontend Mage, Backend Guardian, AI Alchemist, UI/UX Rogue) and allocate mastery points.
-2. **💾 Data Bank (SQL Heist):** Interactive database schema explorer where players write raw SQL `SELECT` and `JOIN` queries to bypass security vaults and extract audit logs.
-3. **👾 DSA Arena (Algorithm Arena):** A 10-boss space combat simulator where players analyze algorithmic time/space complexities to fire laser cannons at array monsters.
-4. **🏃 Aptitude District (Apti Rush):** A procedural 3D-perspective quants runner featuring randomized math logic, firewall obstacles, shield powerups, and time penalties.
-5. **🕵️ Office Complex (Internship Detective):** A visual novel workplace simulator exploring Git merge conflicts, code review friction, standups, and corporate soft-skills.
-6. **🏎️ Startup Garage (Startup Tycoon):** A tech-startup simulator managing a weekly 40-hour runway, server infrastructure loads, social media marketing, and venture capital pitches.
-7. **🔍 PR Review (Code Inspector):** An IDE debugger where players inspect buggy code snippets, select optimal syntax patches, and submit clean pull requests.
-8. **🔐 Assessment Suite (Interview Escape Room):** A timed room escape challenge requiring database vault hacks, logic node matching, and system design puzzles.
-9. **📜 Development Center (Resume Builder Tycoon):** Student life simulator balancing study hours, project typing mini-games, portfolio building, and placement applications.
-10. **🐍 Code Snake Arena (Syntax Collector):** Cyberpunk snake arena collecting code keywords in strict sequence while evading throttled insect crawlers.
-11. **🧠 AI Master Challenge (Millionaire-Style ML Quiz):** A 10-tier machine learning & deep learning quiz featuring KBC-style lifelines (50:50, AI Mentor, Dataset Preview, Extra Time) and safe-haven checkpoints.
+Placement Quest is a gamified, full-stack software developer engineering (SDE) training and placement preparation platform. Set inside Silicon Metropolis, the platform wraps core technical benchmarks—such as database queries, algorithmic complexity, coding syntaxes, and behavioral interviews—into interactive cyberpunk mini-games connected to a cloud MongoDB Atlas cluster.
 
 ---
 
 ## 🚀 Tech Stack
 
-### Frontend (Client)
-* **Framework:** React 18 (Vite)
-* **State Management:** Zustand (Global Player Store)
-* **Styling:** Glassmorphic Cyberpunk Dark UI (CSS Variables & Glow Utilities)
-* **Icons:** Lucide React
-* **Graphics & Audio:** HTML5 Canvas API & Web Audio API Synthesizers
-* **Document Generator:** jsPDF
+### Frontend (Client-side)
+*   **Framework:** React 18 (Vite Bundler)
+*   **State Management:** Zustand (Zustand Player Store)
+*   **Visual Style:** Glassmorphic Dark UI (Custom Neon CSS Theme classes)
+*   **Icons:** Lucide React
+*   **Vector Canvas:** HTML5 Canvas API (DSA Bridge & Space Combat rendering)
+*   **PDF Exporter:** jsPDF (automated placement guide downloads)
 
-### Backend (Server)
-* **Runtime:** Node.js & Express.js
-* **Database:** MongoDB Atlas (Cloud Database Cluster)
-* **Authentication:** JWT (JSON Web Tokens), Bcrypt.js, and Google Identity Services API
-* **Security & Reliability:** Helmet HTTP headers, Express Rate Limiting, CORS origin handling
+### Backend (Server-side)
+*   **Runtime Environment:** Node.js
+*   **Framework:** Express.js
+*   **Database:** MongoDB Atlas (Cloud Cluster)
+*   **Security:** Helmet (HTTP headers protection), Express Rate Limit (DDoS protection), CORS middleware.
+*   **Authentication:** JWT (JSON Web Tokens) & Bcrypt (password hashing)
+
+---
+
+## 🎮 The 9 Interactive Training Sectors
+
+1.  **Career Tower (Life Architect):** Interactive class constellations skill tree (Frontend, Backend, Fullstack, DSA) to allocate focus points.
+2.  **Data Bank (SQL Heist):** DB schema map explorer where players type raw SQL `SELECT` and `JOIN` commands to hack vault logs.
+3.  **Dsa Arena (Algorithm Arena):** A 10-boss combat flight simulator where users answer algorithmic complexity queries to shoot space lasers.
+4.  **Aptitude District (Apti Rush):** A procedural, real-time quants math builder using mathematical randomized variables.
+5.  **Office Complex (Internship Detective):** A visual SDE novel simulator exploring Git conflicts, QA friction, and standups.
+6.  **Startup Garage (Startup Tycoon):** Tycoon simulator managing server load, budget hours, and venture capital pitches.
+7.  **PR Review (Code Inspector):** An IDE debugger where players inspect codebases, write input patch modifications, and compile fixes.
+8.  **Assessment Suite (Interview Escape Room):** Zooming 3D-feeling map chamber requiring vault query hacks and Canvas bridge matches.
+9.  **Development Center (Resume Builder Tycoon):** Engineering student life tycoon spending hours on DSA, project typing mini-games, and placement cell applications.
 
 ---
 
 ## 🛠️ Local Setup Instructions
 
 ### Prerequisites
-* Node.js (v18 or higher recommended)
-* Running MongoDB Atlas cluster (or local MongoDB instance)
+*   Node.js installed (v16+ recommended).
+*   A running MongoDB Atlas database cluster.
 
-### 1. Configure Environment Variables
-Create a `.env` file inside the `Backend/` directory:
+### 1. Clone & Set Up Environment
+Navigate to the project root and create a backend configuration file at `Backend/.env`:
 
 ```env
 PORT=5000
-MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/collegetocampus
-JWT_SECRET=your_jwt_secret_token_here
+MONGODB_URI=mongodb+srv://<username>:<password_encoded>@<cluster>.mongodb.net/collegetocampus
+JWT_SECRET=your_placement_jwt_secret_token
 ```
 
 ### 2. Run the Backend Server
 ```bash
-cd Backend
+# Install dependencies
 npm install
+
+# Seed the database & start server
 npm start
 ```
-*The backend server will automatically connect to MongoDB and seed initial questions if the database is fresh.*
+
+```
+🚀 SDE Server running in production on port 5000
+📡 Cloud MongoDB Connected: ...
+🌱 Seeding initial database questions...
+✅ Initial database questions seeded successfully!
+```
 
 ### 3. Run the Frontend Client
 ```bash
-cd Frontend
+# Install dependencies
 npm install
+
+# Start Vite dev server
 npm run dev
 ```
-Open `http://localhost:5173/` in your browser to enter **Placement Quest**!
+
+Open `http://localhost:5173/` in your browser to begin SDE training!
 
 ---
 
@@ -88,12 +86,8 @@ Open `http://localhost:5173/` in your browser to enter **Placement Quest**!
 | Route | Method | Description | Access |
 | :--- | :--- | :--- | :--- |
 | `/api/auth/register` | `POST` | Register a new student profile | Public |
-| `/api/auth/login` | `POST` | Authenticate student credentials (with ID verification check) | Public |
-| `/api/auth/verify-id` | `POST` | Verify Student ID / Roll Number to issue JWT session | Public |
-| `/api/auth/forgot-password` | `POST` | Reset password validated via Student ID / Roll Number | Public |
-| `/api/auth/google` | `POST` | Sign-in or register using Google OAuth ID Token | Public |
-| `/api/auth/me` | `GET` | Re-hydrate student profile data | Protected (JWT) |
-| `/api/auth/progress` | `PUT` | Synchronize XP, coins, streak, and clan progress | Protected (JWT) |
+| `/api/auth/login` | `POST` | Authenticate student credentials & get token | Public |
+| `/api/auth/me` | `GET` | Retrieve student profile (Header state load) | Protected (JWT) |
+| `/api/questions` | `GET` | Query randomized questions matching category | Public |
+| `/api/questions/seed` | `POST` | Wipe database collection and reload seedData.json | Public |
 | `/api/leaderboard` | `GET` | Fetch top SDE profiles sorted by XP descending | Public |
-| `/api/questions` | `GET` | Fetch questions filtered by game sector | Public |
-| `/api/daily-challenge` | `GET` / `POST` | Retrieve or complete daily rotational challenges | Public / Protected |
