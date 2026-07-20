@@ -598,5 +598,153 @@
       "threat": "LOW",
       "enemy": { "name": "🐛 Divide By Zero", "icon": "🐛", "hp": 85 }
     }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "easy",
+    "question": "What is the worst-case time complexity of inserting an element into a Stack implemented using a linked list?",
+    "options": ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+    "correctAnswer": 0,
+    "tip": "Pushing onto a stack implemented via linked list adds a node to the head in O(1) constant time.",
+    "extraDetails": { "subCategory": "stack" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "What is the worst-case time complexity of searching for an element in a binary search tree (BST) that is skewed (unbalanced)?",
+    "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+    "correctAnswer": 2,
+    "tip": "An unbalanced or skewed BST degrades to a linked list, making search operations O(n) in the worst case.",
+    "extraDetails": { "subCategory": "tree" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "Which algorithmic paradigm does Floyd-Warshall all-pairs shortest path algorithm utilize?",
+    "options": ["Greedy Approach", "Divide and Conquer", "Dynamic Programming", "Backtracking"],
+    "correctAnswer": 2,
+    "tip": "Floyd-Warshall builds shortest distance matrices by using dynamic programming over intermediate vertices.",
+    "extraDetails": { "subCategory": "graph" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "What is the auxiliary space complexity of Depth-First Search (DFS) on a graph with V vertices and maximum path depth D?",
+    "options": ["O(1)", "O(D)", "O(V + E)", "O(V * E)"],
+    "correctAnswer": 1,
+    "tip": "DFS uses call stack memory proportional to the maximum recursion depth D.",
+    "extraDetails": { "subCategory": "graph" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "easy",
+    "question": "In a Min-Heap of size N, where is the minimum element always located?",
+    "options": ["At the leaf node", "At index N-1", "At the root node (index 0)", "At the middle element"],
+    "correctAnswer": 2,
+    "tip": "In a Min-Heap, the root node (index 0) is guaranteed to hold the minimum value.",
+    "extraDetails": { "subCategory": "heap" }
+  },
+  {
+    "category": "sql-heist",
+    "difficulty": "medium",
+    "question": "SELECT department, COUNT(*) FROM employees GROUP BY department HAVING COUNT(*) > 5;",
+    "options": [
+      "SELECT department FROM employees WHERE COUNT(*) > 5",
+      "SELECT department, COUNT(*) FROM employees GROUP BY department HAVING COUNT(*) > 5;",
+      "SELECT COUNT(*) FROM employees WHERE department = 5;",
+      "SELECT department FROM employees GROUP BY count;"
+    ],
+    "correctAnswer": 1,
+    "tip": "HAVING filters aggregate result sets after GROUP BY execution.",
+    "extraDetails": {
+      "title": "High Density Departments",
+      "targetTable": "employees",
+      "desc": "Identify high-security operational wings with more than 5 registered employees using group aggregation.",
+      "instructions": "Group `employees` by `department` and return those with `COUNT(*)` greater than 5.",
+      "clue": "High density units identified in Cyber-Security and Core Infrastructure wings."
+    }
+  },
+  {
+    "category": "sql-heist",
+    "difficulty": "hard",
+    "question": "SELECT E.name, D.dept_name FROM employees E LEFT JOIN departments D ON E.dept_id = D.id WHERE D.id IS NULL;",
+    "options": [
+      "SELECT name FROM employees WHERE dept_id IS NULL",
+      "SELECT E.name, D.dept_name FROM employees E LEFT JOIN departments D ON E.dept_id = D.id WHERE D.id IS NULL;",
+      "SELECT name FROM employees JOIN departments ON E.dept_id = D.id;",
+      "SELECT * FROM departments WHERE name IS NULL;"
+    ],
+    "correctAnswer": 1,
+    "tip": "A LEFT JOIN combined with WHERE D.id IS NULL extracts unassigned unmapped records.",
+    "extraDetails": {
+      "title": "Unassigned Rogue Agents",
+      "targetTable": "employees",
+      "desc": "Find orphaned employee records that do not belong to any valid department in the enterprise schema.",
+      "instructions": "Perform a LEFT JOIN between `employees` and `departments` on `dept_id` and filter where `departments.id IS NULL`.",
+      "clue": "Found 3 unregistered rogue agent accounts in the legacy index."
+    }
+  },
+  {
+    "category": "ai-master",
+    "difficulty": "easy",
+    "question": "Which loss function is standard for binary classification neural network models?",
+    "options": [
+      "A: Mean Squared Error (MSE)",
+      "B: Binary Cross-Entropy (Log Loss)",
+      "C: Categorical Cross-Entropy",
+      "D: Huber Loss"
+    ],
+    "correctAnswer": 1,
+    "tip": "Binary Cross-Entropy measures probability divergence for binary (0 or 1) target outputs.",
+    "extraDetails": { "subCategory": "loss" }
+  },
+  {
+    "category": "ai-master",
+    "difficulty": "medium",
+    "question": "What is the primary function of the Activation Function in a neural network?",
+    "options": [
+      "A: To normalize input features between 0 and 1",
+      "B: To introduce non-linearity enabling complex feature learning",
+      "C: To decrease learning rate during training",
+      "D: To prevent GPU memory overflow"
+    ],
+    "correctAnswer": 1,
+    "tip": "Without non-linear activations (like ReLU or Sigmoid), deep neural nets reduce to simple linear regression.",
+    "extraDetails": { "subCategory": "architecture" }
+  },
+  {
+    "category": "ai-master",
+    "difficulty": "hard",
+    "question": "In Transformer models, what operation computes Attention weights between Query (Q) and Key (K) matrices?",
+    "options": [
+      "A: Softmax( (Q * K^T) / sqrt(d_k) )",
+      "B: Sigmoid( Q + K )",
+      "C: ReLU( Q * K )",
+      "D: Cosine( Q, K )"
+    ],
+    "correctAnswer": 0,
+    "tip": "Scaled Dot-Product Attention multiplies Q by K transposed, scales by sqrt(d_k), and applies Softmax.",
+    "extraDetails": { "subCategory": "transformers" }
+  },
+  {
+    "category": "code-inspector",
+    "difficulty": "hard",
+    "question": "Python Unhandled Resource Leak",
+    "options": [
+      "# Log sensor telemetry file",
+      "def save_log(data):",
+      "  f = open('telemetry.log', 'w')",
+      "  # BUG: If write fails, file is never closed!",
+      "  f.write(data)",
+      "  f.close()"
+    ],
+    "correctAnswer": 2,
+    "tip": "Using bare file open operations can leak file descriptors on exceptions. Use a 'with' context manager instead.",
+    "extraDetails": {
+      "file": "logger.py",
+      "dept": "📜 System Diagnostics",
+      "threat": "HIGH",
+      "enemy": { "name": "🔒 Memory Leak", "icon": "🔒", "hp": 150 }
+    }
   }
 ]

@@ -7,17 +7,34 @@ const Question = require('../models/Question');
 // @access  Public
 router.get('/', async (req, res) => {
   try {
-    const { category, difficulty, limit = 10 } = req.query;
+    const { category, difficulty, limit = 10, excludeIds } = req.query;
     const match = {};
 
     if (category) match.category = category;
     if (difficulty) match.difficulty = difficulty;
 
+    if (excludeIds) {
+      const idsArray = excludeIds.split(',').filter(id => id && id.length === 24);
+      if (idsArray.length > 0) {
+        const mongoose = require('mongoose');
+        match._id = { $nin: idsArray.map(id => new mongoose.Types.ObjectId(id)) };
+      }
+    }
+
     // Use $sample pipeline to retrieve a randomized, shuffled subset of questions
-    const questions = await Question.aggregate([
+    let questions = await Question.aggregate([
       { $match: match },
       { $sample: { size: parseInt(limit) } }
     ]);
+
+    // Fallback: If exclude filter resulted in zero questions (pool exhausted), retry without exclude filter
+    if (questions.length === 0 && excludeIds) {
+      delete match._id;
+      questions = await Question.aggregate([
+        { $match: match },
+        { $sample: { size: parseInt(limit) } }
+      ]);
+    }
 
     res.json({ success: true, questions });
   } catch (error) {
