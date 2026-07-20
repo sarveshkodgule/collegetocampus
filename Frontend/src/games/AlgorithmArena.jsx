@@ -343,6 +343,19 @@ export default function AlgorithmArena() {
   const [shakeActive, setShakeActive] = useState(false);
   const [confettiActive, setConfettiActive] = useState(false);
 
+// Helper to dynamically shuffle options and update correct answer index
+function shuffleQuestionObj(qObj) {
+  if (!qObj || !qObj.opts) return qObj;
+  const originalCorrectText = qObj.opts[qObj.correct];
+  const shuffledOpts = [...qObj.opts].sort(() => Math.random() - 0.5);
+  const newCorrectIndex = shuffledOpts.indexOf(originalCorrectText);
+  return {
+    ...qObj,
+    opts: shuffledOpts,
+    correct: newCorrectIndex
+  };
+}
+
   // Shuffled Dynamic questions from MongoDB
   const [monsters, setMonsters] = useState(MONSTERS);
 
@@ -352,17 +365,19 @@ export default function AlgorithmArena() {
       .then(data => {
         if (data.success && data.questions && data.questions.length > 0) {
           const mappedMonsters = MONSTERS.map(monster => {
-            const dbQuestions = data.questions
+            let dbQuestions = data.questions
               .filter(q => q.extraDetails && q.extraDetails.subCategory === monster.type)
-              .map(q => ({
+              .map(q => shuffleQuestionObj({
                 q: q.question,
                 opts: q.options,
                 correct: q.correctAnswer,
                 tip: q.tip
-              }));
+              }))
+              .sort(() => Math.random() - 0.5);
+
             return {
               ...monster,
-              questions: dbQuestions.length > 0 ? dbQuestions : monster.questions
+              questions: dbQuestions.length > 0 ? dbQuestions : monster.questions.map(shuffleQuestionObj).sort(() => Math.random() - 0.5)
             };
           });
           setMonsters(mappedMonsters);

@@ -293,7 +293,7 @@ export default function SqlHeist() {
             instructions: q.extraDetails?.instructions || q.question,
             hint: q.tip,
             clue: q.extraDetails?.clue || 'Evidence scrubbed.'
-          }));
+          })).sort(() => Math.random() - 0.5);
           setCasesList(mappedCases);
         }
       })

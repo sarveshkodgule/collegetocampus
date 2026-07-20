@@ -493,9 +493,31 @@ export default function AiMasterChallenge() {
   const [mentorHint, setMentorHint] = useState(null);
   const [datasetClue, setDatasetClue] = useState(null);
 
-  const daySeed = new Date().getDate();
-  const activeQuestionPool = QUESTIONS_POOL[currentIdx] || QUESTIONS_POOL[0];
-  const activeQuestion = activeQuestionPool[daySeed % activeQuestionPool.length];
+// Helper to dynamically shuffle options and update correct answer index
+function shuffleQuestionObj(qObj) {
+  if (!qObj || !qObj.opts) return qObj;
+  const originalCorrectText = qObj.opts[qObj.correct];
+  const shuffledOpts = [...qObj.opts].sort(() => Math.random() - 0.5);
+  const newCorrectIndex = shuffledOpts.indexOf(originalCorrectText);
+  return {
+    ...qObj,
+    opts: shuffledOpts,
+    correct: newCorrectIndex
+  };
+}
+
+  const [shuffledDeck, setShuffledDeck] = useState([]);
+
+  useEffect(() => {
+    // Generate a fresh randomized deck for all 10 stages
+    const newDeck = QUESTIONS_POOL.map(stagePool => {
+      const randomQ = stagePool[Math.floor(Math.random() * stagePool.length)];
+      return shuffleQuestionObj(randomQ);
+    });
+    setShuffledDeck(newDeck);
+  }, [gameState === 'menu']);
+
+  const activeQuestion = shuffledDeck[currentIdx] || shuffleQuestionObj((QUESTIONS_POOL[currentIdx] || QUESTIONS_POOL[0])[0]);
   const timerIntervalRef = useRef(null);
   const hostCanvasRef = useRef(null);
   const animationFrameRef = useRef(null);

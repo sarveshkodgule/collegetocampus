@@ -358,7 +358,7 @@ export default function CodeInspector() {
             code: q.options,
             bugLine: q.correctAnswer,
             reward: q.difficulty === 'critical' ? { coins: 200, xp: 90 } : q.difficulty === 'medium' ? { coins: 150, xp: 60 } : { coins: 80, xp: 40 }
-          }));
+          })).sort(() => Math.random() - 0.5);
           setMissions(mapped);
           setSelectedMission(mapped[0]);
         }
