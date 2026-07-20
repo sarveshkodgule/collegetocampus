@@ -74,6 +74,14 @@ router.post('/login', async (req, res) => {
 
     const student = await Student.findOne({ email }).select('+password');
     if (student && (await student.matchPassword(password))) {
+      if (student.rollNumber) {
+        return res.json({
+          success: true,
+          verificationRequired: true,
+          email: student.email
+        });
+      }
+
       res.json({
         success: true,
         token: generateToken(student._id),
@@ -155,6 +163,137 @@ router.put('/progress', protect, async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// @route   POST /api/auth/forgot-password
+// @desc    Reset password using Student ID / Roll Number verification
+// @access  Public
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email, rollNumber, newPassword } = req.body;
+
+    const student = await Student.findOne({ email }).select('+password');
+    if (!student) {
+      return res.status(404).json({ success: false, message: 'Student email not found' });
+    }
+
+    if (!student.rollNumber || student.rollNumber.trim().toLowerCase() !== rollNumber.trim().toLowerCase()) {
+      return res.status(400).json({ success: false, message: 'Invalid Roll Number / Student ID verification' });
+    }
+
+    student.password = newPassword;
+    await student.save();
+
+    res.json({ success: true, message: 'Password reset successful!' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// @route   POST /api/auth/verify-id
+// @desc    Verify Student Roll Number / ID to complete login
+// @access  Public
+router.post('/verify-id', async (req, res) => {
+  try {
+    const { email, rollNumber } = req.body;
+
+    const student = await Student.findOne({ email });
+    if (!student) {
+      return res.status(404).json({ success: false, message: 'Student not found' });
+    }
+
+    if (!student.rollNumber || student.rollNumber.trim().toLowerCase() !== rollNumber.trim().toLowerCase()) {
+      return res.status(400).json({ success: false, message: 'Student ID / Roll Number verification failed' });
+    }
+
+    res.json({
+      success: true,
+      token: generateToken(student._id),
+      student: {
+        id: student._id,
+        name: student.name,
+        email: student.email,
+        avatar: student.avatar,
+        rank: student.rank,
+        xp: student.xp,
+        coins: student.coins,
+        streak: student.streak,
+        classType: student.classType,
+        unlockedSkills: student.unlockedSkills,
+        heistLevelsCompleted: student.heistLevelsCompleted,
+        aptiHighScore: student.aptiHighScore,
+        collegeName: student.collegeName,
+        department: student.department,
+        gradYear: student.gradYear,
+        rollNumber: student.rollNumber
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// @route   POST /api/auth/google
+// @desc    Google Sign-In / Register
+// @access  Public
+router.post('/google', async (req, res) => {
+  try {
+    const { credential } = req.body;
+    if (!credential) {
+      return res.status(400).json({ success: false, message: 'Google Credential token is required' });
+    }
+
+    // Call Google's tokeninfo API to verify JWT signature
+    const googleRes = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${credential}`);
+    const payload = await googleRes.json();
+
+    if (payload.error || !payload.email) {
+      return res.status(400).json({ success: false, message: 'Google authentication failed / invalid token' });
+    }
+
+    let student = await Student.findOne({ email: payload.email });
+
+    if (!student) {
+      // Auto-register new Google user
+      const randomPassword = Math.random().toString(36).slice(-10) + 'Google1!';
+      
+      student = await Student.create({
+        name: payload.name || payload.email.split('@')[0],
+        email: payload.email,
+        password: randomPassword,
+        avatar: payload.picture || '🧙',
+        collegeName: 'Google Verified User',
+        department: 'SDE Recruit',
+        gradYear: new Date().getFullYear(),
+        rollNumber: 'G-' + Math.random().toString(36).substring(2, 7).toUpperCase()
+      });
+    }
+
+    res.json({
+      success: true,
+      token: generateToken(student._id),
+      student: {
+        id: student._id,
+        name: student.name,
+        email: student.email,
+        avatar: student.avatar,
+        rank: student.rank,
+        xp: student.xp,
+        coins: student.coins,
+        streak: student.streak,
+        classType: student.classType,
+        unlockedSkills: student.unlockedSkills,
+        heistLevelsCompleted: student.heistLevelsCompleted,
+        aptiHighScore: student.aptiHighScore,
+        collegeName: student.collegeName,
+        department: student.department,
+        gradYear: student.gradYear,
+        rollNumber: student.rollNumber
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
