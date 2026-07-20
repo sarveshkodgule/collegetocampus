@@ -2,6 +2,13 @@ import React from 'react';
 import { usePlayerStore } from '../store/usePlayerStore';
 import { Heart, Coins, Flame, Trophy, Award, LogOut, Home } from 'lucide-react';
 
+function renderAvatar(val) {
+  if (!val || (typeof val === 'string' && (val.startsWith('http://') || val.startsWith('https://')))) {
+    return '🧙';
+  }
+  return val;
+}
+
 export default function Header() {
   const { 
     name, 
@@ -65,7 +72,7 @@ export default function Header() {
 
         {/* Player Level & XP */}
         <div style={styles.profileSection} onClick={() => setGame('profile')}>
-          <div style={styles.avatar}>{avatar}</div>
+          <div style={styles.avatar}>{renderAvatar(avatar, '32px')}</div>
           <div style={styles.profileInfo}>
             <div style={styles.profileName}>
               {name} <span style={styles.levelBadge}>LVL {level}</span>

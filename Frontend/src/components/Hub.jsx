@@ -18,6 +18,13 @@ import {
 import { jsPDF } from 'jspdf';
 import { playHubBgm, stopHubBgm, playCardHover } from '../games/utils/audio';
 
+function renderAvatar(val) {
+  if (!val || (typeof val === 'string' && (val.startsWith('http://') || val.startsWith('https://')))) {
+    return '🧙';
+  }
+  return val;
+}
+
 const BUILDINGS = [
   {
     id: 'career-tower',
@@ -895,16 +902,17 @@ export default function Hub() {
                 return (
                   <>
                     {visibleList.map((player, idx) => {
-                      const playerUsername = player.email ? player.email.split('@')[0] : player.name.toLowerCase().replace(/\s+/g, '');
+                      const displayName = (player.name && player.name.startsWith('http')) ? 'SDE Candidate' : (player.name || 'SDE Candidate');
+                      const playerUsername = player.email ? player.email.split('@')[0] : displayName.toLowerCase().replace(/\s+/g, '');
                       return (
                         <div key={idx} style={styles.rightLeaderboardRow}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={styles.rightRankBadge}>
                               {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
                             </span>
-                            <span style={styles.rightAvatar}>{player.avatar || '🚀'}</span>
+                            <span style={styles.rightAvatar}>{renderAvatar(player.avatar, '22px')}</span>
                             <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-                              <span style={styles.rightName}>{player.name}</span>
+                              <span style={styles.rightName}>{displayName}</span>
                               <span style={styles.rightHandle}>@{playerUsername}</span>
                             </div>
                           </div>

@@ -232,80 +232,6 @@ export default function LandingPage() {
     }
   };
 
-  // Handle Google authentication response token
-  React.useEffect(() => {
-    window.handleGoogleCredentialResponse = async (response) => {
-      try {
-        const res = await fetch('http://localhost:5000/api/auth/google', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ credential: response.credential })
-        });
-        const data = await res.json();
-        
-        if (data.success) {
-          localStorage.setItem('token', data.token);
-          usePlayerStore.setState({ 
-            name: data.student.name, 
-            avatar: data.student.avatar,
-            rank: data.student.rank,
-            xp: data.student.xp,
-            coins: data.student.coins,
-            streak: data.student.streak,
-            classType: data.student.classType,
-            unlockedSkills: data.student.unlockedSkills,
-            heistLevelsCompleted: data.student.heistLevelsCompleted,
-            aptiHighScore: data.student.aptiHighScore,
-            email: data.student.email,
-            collegeName: data.student.collegeName,
-            department: data.student.department,
-            gradYear: data.student.gradYear,
-            rollNumber: data.student.rollNumber,
-            clan: data.student.clan || '',
-            activeGame: null // Enter the Hub
-          });
-          setModalActive(false);
-        } else {
-          alert(`⚠️ Google Login Failed: ${data.message}`);
-        }
-      } catch (error) {
-        alert("🚨 Google login connection failed!");
-      }
-    };
-
-    const script = document.createElement('script');
-    script.src = 'https://accounts.google.com/gsi/client';
-    script.async = true;
-    script.defer = true;
-    document.body.appendChild(script);
-
-    return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-      delete window.handleGoogleCredentialResponse;
-    };
-  }, []);
-
-  // Initialize and render Google One-Tap/Login buttons
-  React.useEffect(() => {
-    if (modalActive && signupStep === 1 && !showForgotPassword && !verificationRequired && window.google) {
-      setTimeout(() => {
-        const btnDiv = document.getElementById('google-signin-button');
-        if (btnDiv) {
-          window.google.accounts.id.initialize({
-            client_id: '1081699929821-mockclientid.apps.googleusercontent.com',
-            callback: window.handleGoogleCredentialResponse
-          });
-          window.google.accounts.id.renderButton(
-            btnDiv,
-            { theme: 'outline', size: 'large', width: 280 }
-          );
-        }
-      }, 80);
-    }
-  }, [modalActive, signupStep, authMode, showForgotPassword, verificationRequired]);
-
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
     if (el) {
@@ -410,7 +336,7 @@ export default function LandingPage() {
           </div>
           <div style={styles.aboutVisualContainer}>
             <div style={styles.aboutStatCard}>
-              <span style={styles.aStatNum}>6+</span>
+              <span style={styles.aStatNum}>10+</span>
               <span style={styles.aStatLabel}>Themed Sectors</span>
             </div>
             <div style={styles.aboutStatCard}>
@@ -576,66 +502,69 @@ export default function LandingPage() {
                   </button>
                 </div>
 
-                <form onSubmit={handleCredentialsSubmit} style={styles.form}>
-                  <div style={styles.inputGroup}>
-                    <label style={styles.label}>EMAIL ADDRESS</label>
-                    <div style={styles.inputWrapper}>
-                      <Mail size={16} color="var(--text-secondary)" />
-                      <input 
-                        type="email" 
-                        placeholder="e.g. developer@quest.com"
-                        value={emailInput}
-                        onChange={(e) => setEmailInput(e.target.value)}
-                        style={styles.input}
-                        required
-                      />
+                {/* Step 1: Basic Email & Password */}
+                {signupStep === 1 && (
+                  <form onSubmit={handleCredentialsSubmit} style={styles.form}>
+                    <div style={styles.inputGroup}>
+                      <label style={styles.label}>EMAIL ADDRESS</label>
+                      <div style={styles.inputWrapper}>
+                        <Mail size={16} color="var(--text-secondary)" />
+                        <input 
+                          type="email" 
+                          placeholder="e.g. developer@quest.com"
+                          value={emailInput}
+                          onChange={(e) => setEmailInput(e.target.value)}
+                          style={styles.input}
+                          required
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <div style={styles.inputGroup}>
-                    <label style={styles.label}>PASSWORD</label>
-                    <div style={styles.inputWrapper}>
-                      <Lock size={16} color="var(--text-secondary)" />
-                      <input 
-                        type="password" 
-                        placeholder="••••••••"
-                        value={passInput}
-                        onChange={(e) => setPassInput(e.target.value)}
-                        style={styles.input}
-                        required
-                      />
+                    <div style={styles.inputGroup}>
+                      <label style={styles.label}>PASSWORD</label>
+                      <div style={styles.inputWrapper}>
+                        <Lock size={16} color="var(--text-secondary)" />
+                        <input 
+                          type="password" 
+                          placeholder="••••••••"
+                          value={passInput}
+                          onChange={(e) => setPassInput(e.target.value)}
+                          style={styles.input}
+                          required
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  {authMode === 'signin' && (
-                    <div style={{ textAlign: 'right', marginTop: '-0.5rem', marginBottom: '1rem' }}>
+                    {authMode === 'signin' && (
+                      <div style={{ textAlign: 'right', marginTop: '-0.5rem', marginBottom: '1rem' }}>
+                        <button 
+                          type="button" 
+                          style={{ background: 'none', border: 'none', color: 'var(--accent-secondary)', fontSize: '0.75rem', cursor: 'pointer', outline: 'none' }}
+                          onClick={() => {
+                            setShowForgotPassword(true);
+                            setResetEmail(emailInput);
+                          }}
+                        >
+                          Forgot Password?
+                        </button>
+                      </div>
+                    )}
+
+                    <button type="submit" className="game-btn game-btn-primary" style={styles.submitBtn}>
+                      {authMode === 'signup' ? 'Continue Setup' : 'Log In'}
+                    </button>
+
+                    <div style={{ textAlign: 'center', marginTop: '1rem' }}>
                       <button 
                         type="button" 
-                        style={{ background: 'none', border: 'none', color: 'var(--accent-secondary)', fontSize: '0.7rem', cursor: 'pointer', outline: 'none' }}
-                        onClick={() => {
-                          setShowForgotPassword(true);
-                          setResetEmail(emailInput);
-                        }}
+                        style={{ background: 'none', border: 'none', color: 'var(--accent-color)', fontSize: '0.8rem', cursor: 'pointer', outline: 'none' }}
+                        onClick={() => setAuthMode(authMode === 'signup' ? 'signin' : 'signup')}
                       >
-                        Forgot Password?
+                        {authMode === 'signup' ? 'Already have an account? Sign In' : "Don't have an account? Register"}
                       </button>
                     </div>
-                  )}
-
-                  <button type="submit" className="game-btn game-btn-primary" style={styles.submitBtn}>
-                    {authMode === 'signup' ? 'Continue Setup' : 'Log In'}
-                  </button>
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '1.25rem 0' }}>
-                    <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(255,255,255,0.08)' }}></div>
-                    <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', letterSpacing: '1px' }}>OR CONNECT VIA</span>
-                    <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(255,255,255,0.08)' }}></div>
-                  </div>
-
-                  <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginBottom: '0.5rem' }}>
-                    <div id="google-signin-button"></div>
-                  </div>
-                </form>
+                  </form>
+                )}
               </div>
             )}
 

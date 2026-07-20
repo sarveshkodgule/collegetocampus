@@ -2,6 +2,13 @@ import React from 'react';
 import { usePlayerStore } from '../store/usePlayerStore';
 import { Award, Trophy, ShieldAlert, Star, Terminal, Coins, Flame, Cpu, ShieldCheck } from 'lucide-react';
 
+function renderAvatar(val) {
+  if (!val || (typeof val === 'string' && (val.startsWith('http://') || val.startsWith('https://')))) {
+    return '🧙';
+  }
+  return val;
+}
+
 const ACHIEVEMENTS = [
   {
     id: 'sql_master',
@@ -184,7 +191,7 @@ export default function ProfilePage() {
         {/* Left Card: Player Details */}
         <div className="game-card" style={styles.detailsCard}>
           <div style={styles.avatarWrapper} className="float-animation">
-            <span style={styles.avatar}>{avatar}</span>
+            <span style={styles.avatar}>{renderAvatar(avatar, '48px')}</span>
           </div>
 
           <button 
@@ -444,7 +451,7 @@ export default function ProfilePage() {
                       }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <span style={styles.rosterRankNum}>{idx + 1}</span>
-                          <span style={{ fontSize: '1rem' }}>{member.avatar}</span>
+                          <span style={{ fontSize: '1rem' }}>{renderAvatar(member.avatar, '20px')}</span>
                           <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
                             <span style={{ 
                               ...styles.rosterName, 
@@ -487,19 +494,21 @@ function hexToRgb(hex) {
 
 const styles = {
   container: {
-    padding: '2.5rem',
+    padding: '2rem 1.5rem',
     minHeight: 'calc(100vh - 70px)',
-    width: '100vw',
-    overflowY: 'auto',
+    width: '100%',
+    maxWidth: '1280px',
+    margin: '0 auto',
+    boxSizing: 'border-box',
+    overflowX: 'hidden'
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: '1.4fr 2fr 1.4fr',
-    gap: '2rem',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    gap: '1.5rem',
     width: '100%',
-    maxWidth: '1200px',
     margin: '0 auto',
-    alignItems: 'start',
+    alignItems: 'start'
   },
   detailsCard: {
     backgroundColor: 'rgba(19, 23, 34, 0.75)',
