@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { usePlayerStore } from '../store/usePlayerStore';
-import { Terminal, Cpu, ShieldAlert, Sparkles, LogIn, Lock, Mail, User, ShieldCheck, Info, BookOpen, Compass, GraduationCap, Building2 } from 'lucide-react';
+import { Terminal, Cpu, ShieldAlert, Sparkles, LogIn, Lock, Mail, User, ShieldCheck, Info, BookOpen, Compass, GraduationCap, Building2, FileText } from 'lucide-react';
 
 const AVATAR_GROUPS = [
   { category: '🤖 AI & Tech', list: ['🤖', '🦾', '🧠', '👾', '📡'] },
@@ -30,6 +30,14 @@ export default function LandingPage() {
   const [gradYearInput, setGradYearInput] = useState('');
   const [rollNumberInput, setRollNumberInput] = useState('');
 
+  // ID Verification & Forgot Password State
+  const [verificationRequired, setVerificationRequired] = useState(false);
+  const [verifyRollNumberInput, setVerifyRollNumberInput] = useState('');
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetRollNumber, setResetRollNumber] = useState('');
+  const [resetNewPassword, setResetNewPassword] = useState('');
+
   const handleCredentialsSubmit = async (e) => {
     e.preventDefault();
     if (!emailInput.trim() || !passInput.trim()) {
@@ -50,6 +58,10 @@ export default function LandingPage() {
         const data = await response.json();
         
         if (data.success) {
+          if (data.verificationRequired) {
+            setVerificationRequired(true);
+            return;
+          }
           localStorage.setItem('token', data.token);
           usePlayerStore.setState({ 
             name: data.student.name, 
@@ -142,7 +154,157 @@ export default function LandingPage() {
     }
   };
 
+  // Handle secondary ID Verification
+  const handleVerifyIdSubmit = async (e) => {
+    e.preventDefault();
+    if (!verifyRollNumberInput.trim()) {
+      alert("⚠️ Roll Number is required!");
+      return;
+    }
 
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/verify-id', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailInput, rollNumber: verifyRollNumberInput })
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        localStorage.setItem('token', data.token);
+        usePlayerStore.setState({ 
+          name: data.student.name, 
+          avatar: data.student.avatar,
+          rank: data.student.rank,
+          xp: data.student.xp,
+          coins: data.student.coins,
+          streak: data.student.streak,
+          classType: data.student.classType,
+          unlockedSkills: data.student.unlockedSkills,
+          heistLevelsCompleted: data.student.heistLevelsCompleted,
+          aptiHighScore: data.student.aptiHighScore,
+          email: data.student.email,
+          collegeName: data.student.collegeName,
+          department: data.student.department,
+          gradYear: data.student.gradYear,
+          rollNumber: data.student.rollNumber,
+          clan: data.student.clan || '',
+          activeGame: null // Enter the Hub
+        });
+        setVerificationRequired(false);
+        setVerifyRollNumberInput('');
+        setModalActive(false);
+      } else {
+        alert(`⚠️ Verification Failed: ${data.message}`);
+      }
+    } catch (error) {
+      alert("🚨 Connection failed! Please make sure your Node.js backend is running on port 5000.");
+    }
+  };
+
+  // Handle password reset request
+  const handleForgotPasswordSubmit = async (e) => {
+    e.preventDefault();
+    if (!resetEmail.trim() || !resetRollNumber.trim() || !resetNewPassword.trim()) {
+      alert("⚠️ All fields are required!");
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: resetEmail, rollNumber: resetRollNumber, newPassword: resetNewPassword })
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        alert("✅ Credentials reset successful! You can now log in with your new password.");
+        setShowForgotPassword(false);
+        setResetEmail('');
+        setResetRollNumber('');
+        setResetNewPassword('');
+      } else {
+        alert(`⚠️ Reset Failed: ${data.message}`);
+      }
+    } catch (error) {
+      alert("🚨 Connection failed! Please make sure your Node.js backend is running on port 5000.");
+    }
+  };
+
+  // Handle Google authentication response token
+  React.useEffect(() => {
+    window.handleGoogleCredentialResponse = async (response) => {
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ credential: response.credential })
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          localStorage.setItem('token', data.token);
+          usePlayerStore.setState({ 
+            name: data.student.name, 
+            avatar: data.student.avatar,
+            rank: data.student.rank,
+            xp: data.student.xp,
+            coins: data.student.coins,
+            streak: data.student.streak,
+            classType: data.student.classType,
+            unlockedSkills: data.student.unlockedSkills,
+            heistLevelsCompleted: data.student.heistLevelsCompleted,
+            aptiHighScore: data.student.aptiHighScore,
+            email: data.student.email,
+            collegeName: data.student.collegeName,
+            department: data.student.department,
+            gradYear: data.student.gradYear,
+            rollNumber: data.student.rollNumber,
+            clan: data.student.clan || '',
+            activeGame: null // Enter the Hub
+          });
+          setModalActive(false);
+        } else {
+          alert(`⚠️ Google Login Failed: ${data.message}`);
+        }
+      } catch (error) {
+        alert("🚨 Google login connection failed!");
+      }
+    };
+
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    document.body.appendChild(script);
+
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+      delete window.handleGoogleCredentialResponse;
+    };
+  }, []);
+
+  // Initialize and render Google One-Tap/Login buttons
+  React.useEffect(() => {
+    if (modalActive && signupStep === 1 && !showForgotPassword && !verificationRequired && window.google) {
+      setTimeout(() => {
+        const btnDiv = document.getElementById('google-signin-button');
+        if (btnDiv) {
+          window.google.accounts.id.initialize({
+            client_id: '1081699929821-mockclientid.apps.googleusercontent.com',
+            callback: window.handleGoogleCredentialResponse
+          });
+          window.google.accounts.id.renderButton(
+            btnDiv,
+            { theme: 'outline', size: 'large', width: 280 }
+          );
+        }
+      }, 80);
+    }
+  }, [modalActive, signupStep, authMode, showForgotPassword, verificationRequired]);
 
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
@@ -285,10 +447,117 @@ export default function LandingPage() {
       {modalActive && (
         <div style={styles.modalOverlay}>
           <div className="game-card" style={styles.modalCard}>
-            <button style={styles.closeBtn} onClick={() => setModalActive(false)}>×</button>
-            
-            {/* Step 1: Normal Credentials */}
-            {signupStep === 1 && (
+            <button style={styles.closeBtn} onClick={() => {
+              setModalActive(false);
+              setVerificationRequired(false);
+              setShowForgotPassword(false);
+            }}>×</button>
+
+            {verificationRequired ? (
+              <div>
+                <h3 style={{ ...styles.modalTitle, color: 'var(--accent-color)', textShadow: 'var(--glow-accent)' }}>🔒 ID VERIFICATION GATE</h3>
+                <p style={{ ...styles.modalSub, fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', textAlign: 'left', lineHeight: '1.4' }}>
+                  A secondary verification check is active for your account. Please enter your registered Student ID / Roll Number to complete the connection sequence.
+                </p>
+                <form onSubmit={handleVerifyIdSubmit} style={styles.form}>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>STUDENT ID / ROLL NUMBER</label>
+                    <div style={styles.inputWrapper}>
+                      <FileText size={16} color="var(--text-secondary)" />
+                      <input 
+                        type="text" 
+                        placeholder="e.g. Roll Number / Student ID"
+                        value={verifyRollNumberInput}
+                        onChange={(e) => setVerifyRollNumberInput(e.target.value)}
+                        style={styles.input}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <button type="submit" className="game-btn game-btn-primary" style={{ width: '100%', marginTop: '1rem', padding: '0.75rem' }}>
+                    Verify & Enter Hub
+                  </button>
+                  <button 
+                    type="button" 
+                    className="game-btn" 
+                    style={{ width: '100%', marginTop: '0.5rem', borderColor: 'var(--danger-color)', color: 'var(--danger-color)', padding: '0.6rem' }}
+                    onClick={() => {
+                      setVerificationRequired(false);
+                      setVerifyRollNumberInput('');
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </form>
+              </div>
+            ) : showForgotPassword ? (
+              <div>
+                <h3 style={{ ...styles.modalTitle, color: 'var(--accent-secondary)' }}>🔑 RESET PASSWORD</h3>
+                <p style={{ ...styles.modalSub, fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', textAlign: 'left', lineHeight: '1.4' }}>
+                  Reset your system password by validating your registered email and Student ID / Roll Number.
+                </p>
+                <form onSubmit={handleForgotPasswordSubmit} style={styles.form}>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>REGISTERED EMAIL</label>
+                    <div style={styles.inputWrapper}>
+                      <Mail size={16} color="var(--text-secondary)" />
+                      <input 
+                        type="email" 
+                        placeholder="e.g. developer@quest.com"
+                        value={resetEmail}
+                        onChange={(e) => setResetEmail(e.target.value)}
+                        style={styles.input}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>STUDENT ID / ROLL NUMBER</label>
+                    <div style={styles.inputWrapper}>
+                      <FileText size={16} color="var(--text-secondary)" />
+                      <input 
+                        type="text" 
+                        placeholder="e.g. Roll Number"
+                        value={resetRollNumber}
+                        onChange={(e) => setResetRollNumber(e.target.value)}
+                        style={styles.input}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.label}>NEW PASSWORD</label>
+                    <div style={styles.inputWrapper}>
+                      <Lock size={16} color="var(--text-secondary)" />
+                      <input 
+                        type="password" 
+                        placeholder="Enter new secure password"
+                        value={resetNewPassword}
+                        onChange={(e) => setResetNewPassword(e.target.value)}
+                        style={styles.input}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <button type="submit" className="game-btn game-btn-primary" style={{ width: '100%', marginTop: '1rem', padding: '0.75rem' }}>
+                    Reset Password
+                  </button>
+                  <button 
+                    type="button" 
+                    className="game-btn" 
+                    style={{ width: '100%', marginTop: '0.5rem', padding: '0.6rem' }}
+                    onClick={() => {
+                      setShowForgotPassword(false);
+                      setResetEmail('');
+                      setResetRollNumber('');
+                      setResetNewPassword('');
+                    }}
+                  >
+                    Back to Sign In
+                  </button>
+                </form>
+              </div>
+            ) : (
               <div>
                 <div style={styles.tabsRow}>
                   <button 
@@ -338,9 +607,34 @@ export default function LandingPage() {
                     </div>
                   </div>
 
+                  {authMode === 'signin' && (
+                    <div style={{ textAlign: 'right', marginTop: '-0.5rem', marginBottom: '1rem' }}>
+                      <button 
+                        type="button" 
+                        style={{ background: 'none', border: 'none', color: 'var(--accent-secondary)', fontSize: '0.7rem', cursor: 'pointer', outline: 'none' }}
+                        onClick={() => {
+                          setShowForgotPassword(true);
+                          setResetEmail(emailInput);
+                        }}
+                      >
+                        Forgot Password?
+                      </button>
+                    </div>
+                  )}
+
                   <button type="submit" className="game-btn game-btn-primary" style={styles.submitBtn}>
                     {authMode === 'signup' ? 'Continue Setup' : 'Log In'}
                   </button>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '1.25rem 0' }}>
+                    <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(255,255,255,0.08)' }}></div>
+                    <span style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', letterSpacing: '1px' }}>OR CONNECT VIA</span>
+                    <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(255,255,255,0.08)' }}></div>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'center', width: '100%', marginBottom: '0.5rem' }}>
+                    <div id="google-signin-button"></div>
+                  </div>
                 </form>
               </div>
             )}

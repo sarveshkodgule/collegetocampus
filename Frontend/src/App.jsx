@@ -57,6 +57,39 @@ export default function App() {
     }
   }, [activeGame]);
 
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetch('http://localhost:5000/api/auth/me', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.student) {
+          usePlayerStore.setState({
+            name: data.student.name,
+            avatar: data.student.avatar,
+            rank: data.student.rank,
+            xp: data.student.xp,
+            coins: data.student.coins,
+            streak: data.student.streak,
+            classType: data.student.classType,
+            unlockedSkills: data.student.unlockedSkills,
+            heistLevelsCompleted: data.student.heistLevelsCompleted,
+            aptiHighScore: data.student.aptiHighScore,
+            email: data.student.email,
+            collegeName: data.student.collegeName,
+            department: data.student.department,
+            gradYear: data.student.gradYear,
+            rollNumber: data.student.rollNumber,
+            clan: data.student.clan || ''
+          });
+        }
+      })
+      .catch(() => {});
+    }
+  }, []);
+
   // Dynamic Theme Class mapping to CSS variables in index.css
   const getThemeClass = () => {
     switch (activeGame) {

@@ -128,19 +128,25 @@ export default function ProfilePage() {
   const [leaderboard, setLeaderboard] = React.useState([]);
 
   React.useEffect(() => {
-    fetch('http://localhost:5000/api/leaderboard')
-      .then(res => res.json())
-      .then(data => {
-        let dbLeaderboard = [];
-        if (data.success && data.leaderboard && data.leaderboard.length > 0) {
-          dbLeaderboard = data.leaderboard;
-        }
-        dbLeaderboard.sort((a, b) => b.xp - a.xp);
-        setLeaderboard(dbLeaderboard);
-      })
-      .catch(() => {
-        setLeaderboard([]);
-      });
+    const fetchLeaderboardData = () => {
+      fetch('http://localhost:5000/api/leaderboard')
+        .then(res => res.json())
+        .then(data => {
+          let dbLeaderboard = [];
+          if (data.success && data.leaderboard && data.leaderboard.length > 0) {
+            dbLeaderboard = data.leaderboard;
+          }
+          dbLeaderboard.sort((a, b) => b.xp - a.xp);
+          setLeaderboard(dbLeaderboard);
+        })
+        .catch(() => {
+          setLeaderboard([]);
+        });
+    };
+
+    fetchLeaderboardData();
+    const interval = setInterval(fetchLeaderboardData, 3000);
+    return () => clearInterval(interval);
   }, []);
 
   const playHoverSound = () => {

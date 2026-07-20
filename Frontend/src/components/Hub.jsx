@@ -787,7 +787,7 @@ export default function Hub() {
   const [loadingDaily, setLoadingDaily] = useState(true);
   const [leaderboardExpanded, setLeaderboardExpanded] = useState(false);
 
-  useEffect(() => {
+  const fetchLeaderboardData = () => {
     fetch('http://localhost:5000/api/leaderboard')
       .then(res => res.json())
       .then(data => {
@@ -802,6 +802,12 @@ export default function Hub() {
       .catch(() => {
         setLoadingLeaderboard(false);
       });
+  };
+
+  useEffect(() => {
+    fetchLeaderboardData();
+    const interval = setInterval(fetchLeaderboardData, 3000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {

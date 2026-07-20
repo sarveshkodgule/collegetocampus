@@ -106,7 +106,7 @@ export const usePlayerStore = create((set, get) => ({
     set({ xp: newXP, rank: currentRank });
     
     syncProgressWithBackend({
-      ...current,
+      ...get(),
       xp: newXP,
       rank: currentRank
     });
