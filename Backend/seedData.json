@@ -746,5 +746,155 @@
       "threat": "HIGH",
       "enemy": { "name": "🔒 Memory Leak", "icon": "🔒", "hp": 150 }
     }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "easy",
+    "question": "What is the time complexity of reversing an array in-place using two pointers?",
+    "options": ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+    "correctAnswer": 2,
+    "tip": "Two-pointer reversal traverses half the array, executing in linear O(n) time.",
+    "extraDetails": { "subCategory": "array" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "Which algorithm finds the maximum subarray sum in a 1D array in O(n) time?",
+    "options": ["Binary Search", "Kadane's Algorithm", "Floyd's Algorithm", "Sliding Window Maximum"],
+    "correctAnswer": 1,
+    "tip": "Kadane's algorithm maintains maximum contiguous subarray sum in a single O(n) linear pass.",
+    "extraDetails": { "subCategory": "array" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "easy",
+    "question": "What is the time complexity to check if two strings are anagrams using character frequency counting?",
+    "options": ["O(1)", "O(n)", "O(n log n)", "O(n²)"],
+    "correctAnswer": 1,
+    "tip": "Counting character frequencies takes O(n) time for strings of length n.",
+    "extraDetails": { "subCategory": "string" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "In Rabin-Karp string searching algorithm, what technique is used for pattern comparison in O(1) average time?",
+    "options": ["Prefix Table", "Rolling Hash", "Suffix Array", "Trie Traversal"],
+    "correctAnswer": 1,
+    "tip": "Rabin-Karp uses a Rolling Hash function to update substring hashes in O(1) time.",
+    "extraDetails": { "subCategory": "string" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "How can a Queue be implemented using two Stacks S1 and S2?",
+    "options": [
+      "Push to S1 for enqueue, pop from S2 for dequeue (transferring when S2 is empty)",
+      "Push to S1 and S2 simultaneously",
+      "Pop from S1 and S2 sequentially",
+      "Queue cannot be implemented using two stacks"
+    ],
+    "correctAnswer": 0,
+    "tip": "Enqueue pushes to S1. Dequeue pops from S2; if S2 is empty, it transfers all elements from S1 to S2.",
+    "extraDetails": { "subCategory": "stackqueue" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "easy",
+    "question": "What is the time complexity of evaluating a Postfix (Reverse Polish) expression using a Stack?",
+    "options": ["O(1)", "O(log n)", "O(n)", "O(n²)"],
+    "correctAnswer": 2,
+    "tip": "Evaluating a postfix string processes each character once using a Stack in O(n) time.",
+    "extraDetails": { "subCategory": "stackqueue" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "What happens in a Hash Table when the load factor exceeds its defined threshold?",
+    "options": [
+      "Table throws OutOfMemory Exception",
+      "Table resizes (rehashing) to double its capacity",
+      "Table switches to linear search",
+      "Table deletes oldest keys"
+    ],
+    "correctAnswer": 1,
+    "tip": "Exceeding the threshold triggers rehashing, expanding the array capacity to preserve O(1) operations.",
+    "extraDetails": { "subCategory": "hash" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "What data structure is optimal for autocomplete search proposals on text prefixes?",
+    "options": ["Binary Heap", "Trie (Prefix Tree)", "Red-Black Tree", "Hash Set"],
+    "correctAnswer": 1,
+    "tip": "A Trie (Prefix Tree) allows checking and retrieving strings with shared prefixes in O(L) time where L is word length.",
+    "extraDetails": { "subCategory": "hash" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "In an AVL Tree, what is the maximum allowed difference between heights of left and right subtrees (Balance Factor)?",
+    "options": ["0", "1", "2", "3"],
+    "correctAnswer": 1,
+    "tip": "AVL trees strictly maintain a balance factor of -1, 0, or +1 for every node.",
+    "extraDetails": { "subCategory": "tree" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "What is the lowest common ancestor (LCA) of two nodes p and q in a Binary Search Tree (BST)?",
+    "options": [
+      "The root of the tree",
+      "The node where p and q split into left and right subtrees (or match the node)",
+      "The leaf node lowest in the tree",
+      "The node with minimum key value"
+    ],
+    "correctAnswer": 1,
+    "tip": "In a BST, LCA is the first node whose value lies between p.val and q.val.",
+    "extraDetails": { "subCategory": "tree" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "What is the time complexity of extract-min operation in a Min-Heap of size N?",
+    "options": ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
+    "correctAnswer": 1,
+    "tip": "Extracting the minimum swaps the root with the last element and heapifies down in O(log n) time.",
+    "extraDetails": { "subCategory": "heap" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "medium",
+    "question": "Which topological sort algorithm uses in-degree counting of vertices and a Queue?",
+    "options": ["Tarjan's Algorithm", "Kahn's Algorithm", "Kosaraju's Algorithm", "Floyd-Warshall"],
+    "correctAnswer": 1,
+    "tip": "Kahn's algorithm performs topological sorting on a DAG by processing 0-in-degree nodes via a Queue.",
+    "extraDetails": { "subCategory": "graph" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "What is the time complexity of Bellman-Ford algorithm on a graph with V vertices and E edges?",
+    "options": ["O(V + E)", "O(V * E)", "O(V²)", "O(E log V)"],
+    "correctAnswer": 1,
+    "tip": "Bellman-Ford relaxes all E edges V-1 times, resulting in O(V * E) time complexity.",
+    "extraDetails": { "subCategory": "dijkstra" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "What is the time complexity of 0/1 Knapsack problem using Dynamic Programming with N items and Capacity W?",
+    "options": ["O(2^N)", "O(N * W)", "O(N + W)", "O(W log N)"],
+    "correctAnswer": 1,
+    "tip": "0/1 Knapsack DP table has dimensions (N+1) x (W+1), solving in pseudo-polynomial O(N * W) time.",
+    "extraDetails": { "subCategory": "dp" }
+  },
+  {
+    "category": "algo-arena",
+    "difficulty": "hard",
+    "question": "Which technique prunes invalid state branches in N-Queens or Sudoku Solver algorithms?",
+    "options": ["Dynamic Programming", "Backtracking", "Greedy Choice", "Divide & Conquer"],
+    "correctAnswer": 1,
+    "tip": "Backtracking abandons state paths as soon as a constraint (safety rule) is violated.",
+    "extraDetails": { "subCategory": "backtracking" }
   }
 ]
