@@ -119,6 +119,33 @@ export const usePlayerStore = create((set, get) => ({
   startupMaxRevenue: 0,
   detectiveEndingsUnlocked: [],
   notification: null,
+  isMuted: false,
+  lastDailyRewardDate: '',
+
+  // Audio Toggle
+  toggleAudio: () => set((state) => ({ isMuted: !state.isMuted })),
+
+  // Daily Reward Claim Action
+  claimDailyReward: (rewardCoins, rewardXP, newStreak) => {
+    const current = get();
+    const todayStr = new Date().toISOString().split('T')[0];
+    const newCoins = current.coins + rewardCoins;
+    const newXP = current.xp + rewardXP;
+    
+    set({
+      coins: newCoins,
+      xp: newXP,
+      streak: newStreak,
+      lastDailyRewardDate: todayStr
+    });
+
+    syncProgressWithBackend({
+      ...get(),
+      coins: newCoins,
+      xp: newXP,
+      streak: newStreak
+    });
+  },
 
   // Action methods
   setGame: (game) => set({ activeGame: game }),

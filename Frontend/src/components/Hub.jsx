@@ -12,11 +12,21 @@ import {
   Star,
   Shield,
   Laptop,
-  Database
+  Database,
+  Calendar,
+  Gift
 } from 'lucide-react';
 
 import { jsPDF } from 'jspdf';
 import { playHubBgm, stopHubBgm, playCardHover } from '../games/utils/audio';
+import DailyRewardModal from './DailyRewardModal';
+
+const HARDCODED_CLANS = [
+  { id: 'devops_vanguard', name: 'DevOps Vanguard', emoji: '🛡️', baseXP: 1450 },
+  { id: 'recursion_rangers', name: 'Recursion Rangers', emoji: '🌀', baseXP: 1200 },
+  { id: 'ai_syndicate', name: 'AI Cyber Syndicate', emoji: '🧠', baseXP: 980 },
+  { id: 'frontend_order', name: 'Frontend Order', emoji: '🔮', baseXP: 750 }
+];
 
 function renderAvatar(val) {
   if (!val || (typeof val === 'string' && (val.startsWith('http://') || val.startsWith('https://')))) {
@@ -150,9 +160,11 @@ const BUILDINGS = [
 ];
 
 export default function Hub() {
-  const { setGame, coins, streak, rank } = usePlayerStore();
+  const { setGame, triggerNotification, activeGame, xp, coins, clan, lastDailyRewardDate } = usePlayerStore();
   const [codexOpen, setCodexOpen] = useState(false);
   const [codexTab, setCodexTab] = useState('algo');
+  const [dailyRewardModalOpen, setDailyRewardModalOpen] = useState(false);
+  const [standingsTab, setStandingsTab] = useState('players'); // 'players' | 'clans'
 
   const handleDownloadPDF = (gameId) => {
     const doc = new jsPDF();
@@ -788,6 +800,8 @@ export default function Hub() {
     doc.save(filename);
   };
 
+  const [selectedSector, setSelectedSector] = useState(null);
+
   const [leaderboard, setLeaderboard] = useState([]);
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(true);
   const [dailyChallenge, setDailyChallenge] = useState(null);
@@ -889,37 +903,136 @@ export default function Hub() {
           <div style={styles.cityBadge}>SYSTEM MAIN HUB</div>
           <h2 style={styles.cityTitle}>SILICON METROPOLIS</h2>
           <p style={styles.cityDesc}>Select a sector to begin training, earn points, and level up your placement eligibility.</p>
-          <button 
-            className="game-btn game-btn-primary" 
-            style={{ 
-              marginTop: '0.5rem', 
-              display: 'inline-flex', 
-              alignItems: 'center', 
-              gap: '8px', 
-              padding: '6px 16px', 
-              fontSize: '0.75rem',
-              background: 'linear-gradient(135deg, var(--accent-secondary) 0%, #0369a1 100%)',
-              boxShadow: 'var(--glow-secondary)',
-              borderColor: 'var(--accent-secondary)'
-            }}
-            onClick={() => {
-              setCodexOpen(true);
-              localStorage.setItem('metropolis_codex_opened', 'true');
-            }}
-          >
-            <Database size={14} /> 📁 DATABANK CODEX TERMINAL
-          </button>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginTop: '0.5rem' }}>
+            <button 
+              className="game-btn game-btn-primary" 
+              style={{ 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: '8px', 
+                padding: '6px 16px', 
+                fontSize: '0.75rem',
+                background: 'linear-gradient(135deg, var(--accent-secondary) 0%, #0369a1 100%)',
+                boxShadow: 'var(--glow-secondary)',
+                borderColor: 'var(--accent-secondary)'
+              }}
+              onClick={() => {
+                setCodexOpen(true);
+                localStorage.setItem('metropolis_codex_opened', 'true');
+              }}
+            >
+              <Database size={14} /> 📁 DATABANK CODEX TERMINAL
+            </button>
+
+            <button 
+              className="game-btn" 
+              style={{ 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: '8px', 
+                padding: '6px 16px', 
+                fontSize: '0.75rem',
+                background: 'linear-gradient(135deg, #EAB308 0%, #CA8A04 100%)',
+                borderColor: '#EAB308',
+                color: '#000',
+                fontWeight: '700',
+                boxShadow: '0 0 15px rgba(234, 179, 8, 0.3)'
+              }}
+              onClick={() => setDailyRewardModalOpen(true)}
+            >
+              <Gift size={14} /> 🎁 DAILY MATRIX REWARDS
+            </button>
+          </div>
         </div>
 
         {/* Right Column: Vertical Metropolis Standings Leaderboard */}
         <div style={styles.rightLeaderboardCard} className="game-card">
           <div style={styles.rightLeaderboardHeader}>
-            <Trophy size={14} color="#EAB308" className="pulse-glow-animation" />
-            <span style={styles.rightLeaderboardMainTitle}>METROPOLIS STANDINGS</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Trophy size={14} color="#EAB308" className="pulse-glow-animation" />
+              <span style={styles.rightLeaderboardMainTitle}>STANDINGS</span>
+            </div>
+            
+            {/* Tab Switcher: Players vs Clans */}
+            <div style={{ display: 'flex', gap: '4px', backgroundColor: 'rgba(0,0,0,0.3)', padding: '2px', borderRadius: '6px' }}>
+              <button
+                type="button"
+                style={{
+                  background: standingsTab === 'players' ? 'var(--accent-color)' : 'transparent',
+                  color: standingsTab === 'players' ? '#000' : 'var(--text-secondary)',
+                  border: 'none',
+                  borderRadius: '4px',
+                  padding: '2px 8px',
+                  fontSize: '0.65rem',
+                  fontWeight: '700',
+                  cursor: 'pointer'
+                }}
+                onClick={() => setStandingsTab('players')}
+              >
+                Players
+              </button>
+              <button
+                type="button"
+                style={{
+                  background: standingsTab === 'clans' ? 'var(--accent-color)' : 'transparent',
+                  color: standingsTab === 'clans' ? '#000' : 'var(--text-secondary)',
+                  border: 'none',
+                  borderRadius: '4px',
+                  padding: '2px 8px',
+                  fontSize: '0.65rem',
+                  fontWeight: '700',
+                  cursor: 'pointer'
+                }}
+                onClick={() => setStandingsTab('clans')}
+              >
+                Clans
+              </button>
+            </div>
           </div>
           
           <div style={styles.rightLeaderboardList}>
-            {loadingLeaderboard ? (
+            {standingsTab === 'clans' ? (
+              // Clan Standings List
+              (() => {
+                const clanRankings = HARDCODED_CLANS.map((c) => {
+                  let totalClanXp = c.baseXP;
+                  if (clan === c.id) {
+                    totalClanXp += xp;
+                  }
+                  return { ...c, totalXP: totalClanXp };
+                }).sort((a, b) => b.totalXP - a.totalXP);
+
+                return clanRankings.map((c, idx) => {
+                  const isTopClan = idx === 0;
+                  return (
+                    <div 
+                      key={c.id} 
+                      style={{
+                        ...styles.rightLeaderboardRow,
+                        background: isTopClan ? 'linear-gradient(90deg, rgba(234, 179, 8, 0.18) 0%, rgba(234, 179, 8, 0.04) 100%)' : 'rgba(255, 255, 255, 0.02)',
+                        borderLeft: isTopClan ? '3px solid #EAB308' : 'none'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={styles.rightRankBadge}>
+                          {idx === 0 ? '👑 🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
+                        </span>
+                        <span style={{ fontSize: '1.2rem' }}>{c.emoji}</span>
+                        <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                          <span style={{ ...styles.rightName, color: isTopClan ? '#FDE047' : '#FFF', fontWeight: isTopClan ? 'bold' : '600' }}>
+                            {c.name} {isTopClan && <span style={{ fontSize: '0.65rem', color: '#EAB308', marginLeft: '4px' }}>(TOP GUILD)</span>}
+                          </span>
+                          <span style={styles.rightHandle}>{clan === c.id ? '⭐ Your Active Clan' : 'Developer Guild'}</span>
+                        </div>
+                      </div>
+                      <span style={{ ...styles.rightXp, color: isTopClan ? '#FDE047' : 'var(--accent-color)', fontWeight: '700' }}>
+                        {c.totalXP} XP
+                      </span>
+                    </div>
+                  );
+                });
+              })()
+            ) : loadingLeaderboard ? (
               <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Loading SDE standings...</div>
             ) : (
               (() => {
@@ -1242,6 +1355,12 @@ export default function Hub() {
           </div>
         </div>
       )}
+
+      {/* Daily Login Reward Calendar Modal */}
+      <DailyRewardModal 
+        isOpen={dailyRewardModalOpen} 
+        onClose={() => setDailyRewardModalOpen(false)} 
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { usePlayerStore, getPlayerLevelInfo } from '../store/usePlayerStore';
-import { Heart, Coins, Flame, Trophy, Award, LogOut, Home } from 'lucide-react';
+import { Heart, Coins, Flame, Trophy, Award, LogOut, Home, Volume2, VolumeX } from 'lucide-react';
 
 function renderAvatar(val) {
   if (!val || (typeof val === 'string' && (val.startsWith('http://') || val.startsWith('https://')))) {
@@ -21,7 +21,9 @@ export default function Header() {
     streak, 
     activeGame, 
     setGame,
-    resetGame 
+    resetGame,
+    isMuted,
+    toggleAudio 
   } = usePlayerStore();
 
   const { level, progressPercent } = getPlayerLevelInfo(xp);
@@ -85,6 +87,15 @@ export default function Header() {
 
         {/* Navigation Buttons */}
         <div style={styles.navButtons}>
+          <button 
+            className="game-btn" 
+            style={{ ...styles.navBtn, borderColor: isMuted ? '#EF4444' : 'var(--accent-secondary)', color: isMuted ? '#EF4444' : 'var(--accent-secondary)' }} 
+            onClick={toggleAudio}
+            title={isMuted ? "Unmute Master Synth Audio" : "Mute Master Synth Audio"}
+          >
+            {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+            <span>{isMuted ? 'Muted' : 'Audio'}</span>
+          </button>
           {activeGame && (
             <button 
               className="game-btn" 
