@@ -802,7 +802,33 @@ export default function Hub() {
         if (data.success && data.leaderboard && data.leaderboard.length > 0) {
           dbLeaderboard = data.leaderboard;
         }
-        dbLeaderboard.sort((a, b) => b.xp - a.xp);
+
+        // Live Local Hydration: Merge current logged-in player's store XP
+        const currentPlayer = usePlayerStore.getState();
+        if (currentPlayer && (currentPlayer.name || currentPlayer.email)) {
+          let found = false;
+          dbLeaderboard = dbLeaderboard.map(p => {
+            const isMatch = (currentPlayer.email && p.email && p.email.toLowerCase() === currentPlayer.email.toLowerCase()) || 
+                            (currentPlayer.name && p.name && p.name.toLowerCase() === currentPlayer.name.toLowerCase());
+            if (isMatch) {
+              found = true;
+              return { ...p, xp: Math.max(Number(p.xp || 0), Number(currentPlayer.xp || 0)), avatar: currentPlayer.avatar || p.avatar };
+            }
+            return p;
+          });
+
+          if (!found && currentPlayer.name && currentPlayer.name !== 'Player 1') {
+            dbLeaderboard.push({
+              name: currentPlayer.name,
+              email: currentPlayer.email,
+              avatar: currentPlayer.avatar,
+              rank: currentPlayer.rank,
+              xp: Number(currentPlayer.xp || 0)
+            });
+          }
+        }
+
+        dbLeaderboard.sort((a, b) => Number(b.xp || 0) - Number(a.xp || 0));
         setLeaderboard(dbLeaderboard);
         setLoadingLeaderboard(false);
       })
