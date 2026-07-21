@@ -10,6 +10,26 @@ router.get('/', async (req, res) => {
     // Purge corrupted Google URL test accounts from database
     await Student.deleteMany({ name: { $regex: '^https?://', $options: 'i' } });
 
+    // Ensure MongoDB Atlas has a vibrant competitive candidate leaderboard
+    const count = await Student.countDocuments();
+    if (count < 5) {
+      const defaultCandidates = [
+        { name: 'CodeKing', email: 'codeking@quest.com', password: 'password123', avatar: '🏢', xp: 450, rank: 'Associate', rollNumber: '2310025' },
+        { name: 'Undertaker', email: 'undertaker@quest.com', password: 'password123', avatar: '👾', xp: 320, rank: 'Associate', rollNumber: '2310041' },
+        { name: 'Bandilki', email: 'bandilki@quest.com', password: 'password123', avatar: '🛡️', xp: 210, rank: 'Intern', rollNumber: 'anish' },
+        { name: 'The Big Show', email: 'bigshow@quest.com', password: 'password123', avatar: '💪', xp: 180, rank: 'Intern', rollNumber: 'sarveshkodgule10' },
+        { name: 'AnyaAmbani', email: 'anya@quest.com', password: 'password123', avatar: '🕶️', xp: 120, rank: 'Intern', rollNumber: 'anish2005' },
+        { name: 'CodeAryan', email: 'aryan@quest.com', password: 'password123', avatar: '🛡️', xp: 90, rank: 'Fresher', rollNumber: '2303052' }
+      ];
+
+      for (const candidate of defaultCandidates) {
+        const exists = await Student.findOne({ email: candidate.email });
+        if (!exists) {
+          await Student.create(candidate);
+        }
+      }
+    }
+
     const ranks = await Student.find({})
       .select('name avatar rank xp classType email')
       .sort({ xp: -1 })

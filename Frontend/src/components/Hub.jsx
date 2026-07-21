@@ -923,7 +923,7 @@ export default function Hub() {
               <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Loading SDE standings...</div>
             ) : (
               (() => {
-                const visibleCount = leaderboardExpanded ? leaderboard.length : 3;
+                const visibleCount = leaderboardExpanded ? leaderboard.length : 7;
                 const visibleList = leaderboard.slice(0, visibleCount);
                 return (
                   <>
