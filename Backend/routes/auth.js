@@ -163,6 +163,43 @@ router.put('/progress', protect, async (req, res) => {
   }
 });
 
+// @route   POST /api/auth/claim-daily-reward
+// @desc    Claim 7-day streak daily reward
+// @access  Private
+router.post('/claim-daily-reward', protect, async (req, res) => {
+  try {
+    const student = await Student.findById(req.student.id);
+    if (!student) {
+      return res.status(404).json({ success: false, message: 'Student not found' });
+    }
+
+    const { rewardCoins, rewardXP } = req.body;
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    if (student.lastDailyCompletedDate === todayStr) {
+      return res.status(400).json({ success: false, message: "Today's daily login reward has already been claimed!" });
+    }
+
+    student.coins += (rewardCoins || 50);
+    student.xp += (rewardXP || 20);
+    student.streak += 1;
+    student.lastDailyCompletedDate = todayStr;
+
+    await student.save();
+
+    res.json({
+      success: true,
+      message: 'Daily reward claimed successfully!',
+      coins: student.coins,
+      xp: student.xp,
+      streak: student.streak,
+      lastDailyCompletedDate: student.lastDailyCompletedDate
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // @route   POST /api/auth/forgot-password
 // @desc    Reset password using Student ID / Roll Number verification
 // @access  Public
