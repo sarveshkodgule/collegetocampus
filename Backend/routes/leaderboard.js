@@ -15,11 +15,15 @@ router.get('/', async (req, res) => {
       .sort({ xp: -1 })
       .limit(100);
 
-    const cleanRanks = ranks.map(student => ({
-      ...student._doc,
-      name: (student.name && student.name.startsWith('http')) ? 'SDE Candidate' : student.name,
-      avatar: (student.avatar && student.avatar.startsWith('http')) ? '🧙' : student.avatar
-    }));
+    const cleanRanks = ranks.map(student => {
+      const doc = student.toObject ? student.toObject() : student;
+      return {
+        ...doc,
+        name: (doc.name && doc.name.startsWith('http')) ? 'SDE Candidate' : (doc.name || 'SDE Candidate'),
+        avatar: (doc.avatar && doc.avatar.startsWith('http')) ? '🧙' : (doc.avatar || '🚀'),
+        xp: typeof doc.xp === 'number' ? doc.xp : parseInt(doc.xp || 0, 10)
+      };
+    });
 
     res.json({ success: true, leaderboard: cleanRanks });
   } catch (error) {

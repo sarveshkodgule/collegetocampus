@@ -125,13 +125,13 @@ router.put('/progress', protect, async (req, res) => {
 
     if (student) {
       // Safely update parameters if sent in body
-      if (req.body.xp !== undefined) student.xp = req.body.xp;
-      if (req.body.coins !== undefined) student.coins = req.body.coins;
-      if (req.body.streak !== undefined) student.streak = req.body.streak;
+      if (req.body.xp !== undefined) student.xp = Number(req.body.xp);
+      if (req.body.coins !== undefined) student.coins = Number(req.body.coins);
+      if (req.body.streak !== undefined) student.streak = Number(req.body.streak);
       if (req.body.classType !== undefined) student.classType = req.body.classType;
       if (req.body.unlockedSkills !== undefined) student.unlockedSkills = req.body.unlockedSkills;
-      if (req.body.heistLevelsCompleted !== undefined) student.heistLevelsCompleted = req.body.heistLevelsCompleted;
-      if (req.body.aptiHighScore !== undefined) student.aptiHighScore = req.body.aptiHighScore;
+      if (req.body.heistLevelsCompleted !== undefined) student.heistLevelsCompleted = Number(req.body.heistLevelsCompleted);
+      if (req.body.aptiHighScore !== undefined) student.aptiHighScore = Number(req.body.aptiHighScore);
       if (req.body.clan !== undefined) student.clan = req.body.clan;
 
       // Dynamically rank up based on XP
