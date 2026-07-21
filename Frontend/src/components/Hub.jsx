@@ -930,19 +930,32 @@ export default function Hub() {
                     {visibleList.map((player, idx) => {
                       const displayName = (player.name && player.name.startsWith('http')) ? 'SDE Candidate' : (player.name || 'SDE Candidate');
                       const playerUsername = player.email ? player.email.split('@')[0] : displayName.toLowerCase().replace(/\s+/g, '');
+                      const isTopRank = idx === 0;
                       return (
-                        <div key={idx} style={styles.rightLeaderboardRow}>
+                        <div 
+                          key={idx} 
+                          style={{
+                            ...styles.rightLeaderboardRow,
+                            background: isTopRank ? 'linear-gradient(90deg, rgba(234, 179, 8, 0.18) 0%, rgba(234, 179, 8, 0.04) 100%)' : 'rgba(255, 255, 255, 0.02)',
+                            borderLeft: isTopRank ? '3px solid #EAB308' : 'none',
+                            boxShadow: isTopRank ? '0 0 12px rgba(234, 179, 8, 0.25)' : 'none'
+                          }}
+                        >
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={styles.rightRankBadge}>
-                              {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
+                              {idx === 0 ? '👑 🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
                             </span>
                             <span style={styles.rightAvatar}>{renderAvatar(player.avatar, '22px')}</span>
                             <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-                              <span style={styles.rightName}>{displayName}</span>
+                              <span style={{ ...styles.rightName, color: isTopRank ? '#FDE047' : '#FFF', fontWeight: isTopRank ? 'bold' : '600' }}>
+                                {displayName} {isTopRank && <span style={{ fontSize: '0.65rem', color: '#EAB308', marginLeft: '4px' }}>(TOP XP LEADER)</span>}
+                              </span>
                               <span style={styles.rightHandle}>@{playerUsername}</span>
                             </div>
                           </div>
-                          <span style={styles.rightXp}>{player.xp} XP</span>
+                          <span style={{ ...styles.rightXp, color: isTopRank ? '#FDE047' : 'var(--accent-color)', fontWeight: '700' }}>
+                            {player.xp} XP
+                          </span>
                         </div>
                       );
                     })}

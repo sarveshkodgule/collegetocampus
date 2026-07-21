@@ -401,19 +401,32 @@ export default function ProfilePage() {
           <div className="game-card" style={styles.leaderboardCard}>
             <h3 style={styles.panelTitle}>🏆 CAMPUS LEADERBOARD</h3>
             <div style={styles.leaderboardList}>
-              {leaderboard.map((player, idx) => (
-                <div key={idx} style={styles.leaderboardRow} onMouseEnter={playHoverSound}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <span style={styles.rankNum}>{idx + 1}</span>
-                    <span style={{ fontSize: '1.25rem' }}>{player.avatar || '🚀'}</span>
-                    <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-                      <span style={styles.leaderName}>{player.name}</span>
-                      <span style={styles.leaderSub}>{player.classType || 'SDE Recruit'}</span>
+              {leaderboard.map((player, idx) => {
+                const isTop = idx === 0;
+                return (
+                  <div 
+                    key={idx} 
+                    style={{
+                      ...styles.leaderboardRow,
+                      background: isTop ? 'linear-gradient(90deg, rgba(234, 179, 8, 0.18) 0%, rgba(234, 179, 8, 0.04) 100%)' : 'rgba(255, 255, 255, 0.02)',
+                      borderLeft: isTop ? '3px solid #EAB308' : 'none'
+                    }} 
+                    onMouseEnter={playHoverSound}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span style={{ ...styles.rankNum, color: isTop ? '#FDE047' : '#9CA3AF' }}>{isTop ? '👑 🥇' : idx + 1}</span>
+                      <span style={{ fontSize: '1.25rem' }}>{renderAvatar(player.avatar)}</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                        <span style={{ ...styles.leaderName, color: isTop ? '#FDE047' : '#FFF', fontWeight: isTop ? 'bold' : '600' }}>
+                          {player.name} {isTop && <span style={{ fontSize: '0.65rem', color: '#EAB308', marginLeft: '4px' }}>(TOP XP)</span>}
+                        </span>
+                        <span style={styles.leaderSub}>{player.classType || 'SDE Recruit'}</span>
+                      </div>
                     </div>
+                    <span style={{ ...styles.leaderXp, color: isTop ? '#FDE047' : 'var(--accent-color)', fontWeight: 'bold' }}>{player.xp} XP</span>
                   </div>
-                  <span style={styles.leaderXp}>{player.xp} XP</span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
