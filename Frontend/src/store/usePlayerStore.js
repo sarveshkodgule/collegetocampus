@@ -11,6 +11,57 @@ const RANKS = [
   { name: 'CTO Legend', xpNeeded: 12000 }
 ];
 
+// Moderate Level Curve: Balanced rate (neither too fast nor too slow)
+export const getPlayerLevelInfo = (xpAmount) => {
+  const xp = Math.max(0, xpAmount || 0);
+  const levels = [
+    { level: 1, minXp: 0, maxXp: 199 },
+    { level: 2, minXp: 200, maxXp: 499 },
+    { level: 3, minXp: 500, maxXp: 899 },
+    { level: 4, minXp: 900, maxXp: 1399 },
+    { level: 5, minXp: 1400, maxXp: 1999 },
+    { level: 6, minXp: 2000, maxXp: 2699 },
+    { level: 7, minXp: 2700, maxXp: 3499 },
+    { level: 8, minXp: 3500, maxXp: 4399 },
+    { level: 9, minXp: 4400, maxXp: 5399 },
+    { level: 10, minXp: 5400, maxXp: 6499 }
+  ];
+
+  let currentLevel = 1;
+  let minXp = 0;
+  let maxXp = 199;
+
+  for (const lvl of levels) {
+    if (xp >= lvl.minXp) {
+      currentLevel = lvl.level;
+      minXp = lvl.minXp;
+      maxXp = lvl.maxXp;
+    } else {
+      break;
+    }
+  }
+
+  if (xp >= 6500) {
+    const extraLevels = Math.floor((xp - 6500) / 1200);
+    currentLevel = 10 + extraLevels;
+    minXp = 6500 + extraLevels * 1200;
+    maxXp = minXp + 1199;
+  }
+
+  const range = maxXp - minXp + 1;
+  const progressInLevel = xp - minXp;
+  const progressPercent = Math.min(100, Math.max(0, Math.floor((progressInLevel / range) * 100)));
+  const xpNeededForNext = maxXp + 1 - xp;
+
+  return {
+    level: currentLevel,
+    minXp,
+    maxXp,
+    progressPercent,
+    xpNeededForNext
+  };
+};
+
 const syncProgressWithBackend = async (state) => {
   const token = localStorage.getItem('token');
   if (!token) return;

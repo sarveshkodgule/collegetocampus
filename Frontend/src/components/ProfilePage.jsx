@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePlayerStore } from '../store/usePlayerStore';
+import { usePlayerStore, getPlayerLevelInfo } from '../store/usePlayerStore';
 import { Award, Trophy, ShieldAlert, Star, Terminal, Coins, Flame, Cpu, ShieldCheck } from 'lucide-react';
 
 function renderAvatar(val) {
@@ -118,8 +118,7 @@ export default function ProfilePage() {
     collegeName, department, gradYear, rollNumber, email, clan, setClan
   } = store;
 
-  const level = Math.floor(xp / 100) + 1;
-  const xpNeededForNext = 100 - (xp % 100);
+  const { level, xpNeededForNext } = getPlayerLevelInfo(xp);
 
   const getAcademicYear = (year) => {
     if (!year) return 'N/A';

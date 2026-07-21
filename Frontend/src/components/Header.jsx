@@ -1,5 +1,5 @@
 import React from 'react';
-import { usePlayerStore } from '../store/usePlayerStore';
+import { usePlayerStore, getPlayerLevelInfo } from '../store/usePlayerStore';
 import { Heart, Coins, Flame, Trophy, Award, LogOut, Home } from 'lucide-react';
 
 function renderAvatar(val) {
@@ -24,11 +24,7 @@ export default function Header() {
     resetGame 
   } = usePlayerStore();
 
-  // Simple XP calculation for visual bar
-  // Leveling brackets: 100 XP per level approx for early game
-  const xpInCurrentLevel = xp % 100;
-  const level = Math.floor(xp / 100) + 1;
-  const progressPercent = Math.min(100, xpInCurrentLevel);
+  const { level, progressPercent } = getPlayerLevelInfo(xp);
 
   return (
     <header style={styles.header} className="game-header">
