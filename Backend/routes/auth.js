@@ -135,17 +135,22 @@ router.put('/progress', protect, async (req, res) => {
       if (req.body.clan !== undefined) student.clan = req.body.clan;
 
       // Dynamically rank up based on XP
-      const level = Math.floor(student.xp / 100) + 1;
-      if (level >= 10) {
-        student.rank = 'CTO / Architect';
-      } else if (level >= 7) {
-        student.rank = 'Lead SDE Engineer';
-      } else if (level >= 4) {
-        student.rank = 'Senior Developer';
-      } else if (level >= 2) {
-        student.rank = 'Junior SDE';
+      if (student.xp >= 12000) {
+        student.rank = 'CTO Legend';
+      } else if (student.xp >= 6000) {
+        student.rank = 'Architect';
+      } else if (student.xp >= 3000) {
+        student.rank = 'Tech Lead';
+      } else if (student.xp >= 1500) {
+        student.rank = 'Senior Engineer';
+      } else if (student.xp >= 700) {
+        student.rank = 'Engineer';
+      } else if (student.xp >= 300) {
+        student.rank = 'Associate';
+      } else if (student.xp >= 100) {
+        student.rank = 'Intern';
       } else {
-        student.rank = 'SDE Recruit';
+        student.rank = 'Fresher';
       }
 
       const updatedStudent = await student.save();
