@@ -272,7 +272,18 @@ const CASES = [
 ];
 
 export default function SqlHeist() {
-  const { addCoins, addXP, setGame, completeDailyChallenge } = usePlayerStore();
+  const { coins, addCoins, addXP, setGame, completeDailyChallenge, triggerNotification } = usePlayerStore();
+
+  const decryptSolution = () => {
+    if (coins < 50) {
+      triggerNotification('❌ Insufficient Coins', 'You need 50 SDE Coins to decrypt this solution.', '🪙');
+      return;
+    }
+    
+    addCoins(-50);
+    setQueryInput(activeCase.hint);
+    triggerNotification('🔓 Code Decrypted', 'The correct query has been filled in the editor!', '💻');
+  };
 
   const [levelIndex, setLevelIndex] = useState(0);
   const [battleState, setBattleState] = useState('lobby'); // 'lobby', 'briefing', 'hacking', 'incoming', 'complete', 'gameover'
@@ -877,9 +888,18 @@ export default function SqlHeist() {
               
               <div style={styles.editorFooter}>
                 <span style={styles.hintText}>💡 Tip: Select tables from map tab on left.</span>
-                <button className="game-btn game-btn-primary" onClick={executeQuery}>
-                  RUN DECRYPTOR
-                </button>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button 
+                    className="game-btn" 
+                    style={{ borderColor: 'var(--accent-secondary)', color: 'var(--accent-secondary)', backgroundColor: 'transparent' }}
+                    onClick={decryptSolution}
+                  >
+                    🔓 DECRYPT SOLUTION (-50 Coins)
+                  </button>
+                  <button className="game-btn game-btn-primary" onClick={executeQuery}>
+                    RUN DECRYPTOR
+                  </button>
+                </div>
               </div>
             </div>
 

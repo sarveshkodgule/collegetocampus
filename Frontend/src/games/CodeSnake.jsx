@@ -459,17 +459,39 @@ export default function CodeSnake() {
     setGameState('playing');
   };
 
+  const getUniqueRandomCoordinates = (occupied) => {
+    let attempts = 0;
+    while (attempts < 1000) {
+      const x = Math.floor(Math.random() * (gridWidth - 2)) + 1;
+      const y = Math.floor(Math.random() * (gridHeight - 2)) + 1;
+      const isOccupied = occupied.some(pos => pos.x === x && pos.y === y);
+      if (!isOccupied) {
+        return { x, y };
+      }
+      attempts++;
+    }
+    return {
+      x: Math.floor(Math.random() * (gridWidth - 2)) + 1,
+      y: Math.floor(Math.random() * (gridHeight - 2)) + 1
+    };
+  };
+
   const spawnInitialElements = (lvl) => {
     // Clear lists
     tokensRef.current = [];
     enemiesRef.current = [];
     powerUpsRef.current = [];
 
+    // Track occupied positions starting with the snake body
+    const occupied = [...snakeRef.current];
+
     // Spawn correct tokens
     lvl.required.forEach((tokenVal) => {
+      const coord = getUniqueRandomCoordinates(occupied);
+      occupied.push(coord);
       tokensRef.current.push({
-        x: Math.floor(Math.random() * (gridWidth - 2)) + 1,
-        y: Math.floor(Math.random() * (gridHeight - 2)) + 1,
+        x: coord.x,
+        y: coord.y,
         value: tokenVal,
         isCorrect: true
       });
@@ -477,9 +499,11 @@ export default function CodeSnake() {
 
     // Spawn wrong syntax tokens
     lvl.wrongs.forEach((wrongVal) => {
+      const coord = getUniqueRandomCoordinates(occupied);
+      occupied.push(coord);
       tokensRef.current.push({
-        x: Math.floor(Math.random() * (gridWidth - 2)) + 1,
-        y: Math.floor(Math.random() * (gridHeight - 2)) + 1,
+        x: coord.x,
+        y: coord.y,
         value: wrongVal,
         isCorrect: false
       });
@@ -488,9 +512,11 @@ export default function CodeSnake() {
     // Spawn Enemies (Bugs, Viruses) based on level index
     const bugCount = lvl.isBoss ? 4 : Math.min(5, Math.floor(lvl.level / 2) + 1);
     for (let i = 0; i < bugCount; i++) {
+      const coord = getUniqueRandomCoordinates(occupied);
+      occupied.push(coord);
       enemiesRef.current.push({
-        x: Math.floor(Math.random() * (gridWidth - 2)) + 1,
-        y: Math.floor(Math.random() * (gridHeight - 2)) + 1,
+        x: coord.x,
+        y: coord.y,
         type: lvl.isBoss ? 'virus' : (Math.random() > 0.5 ? 'bug' : 'virus'),
         dx: Math.random() > 0.5 ? 1 : -1,
         dy: Math.random() > 0.5 ? 1 : -1
@@ -499,9 +525,10 @@ export default function CodeSnake() {
 
     // Spawn random power-up on grid
     const powerTypes = ['shield', 'speed', 'magnet', 'freeze', 'scan'];
+    const coord = getUniqueRandomCoordinates(occupied);
     powerUpsRef.current.push({
-      x: Math.floor(Math.random() * (gridWidth - 2)) + 1,
-      y: Math.floor(Math.random() * (gridHeight - 2)) + 1,
+      x: coord.x,
+      y: coord.y,
       type: powerTypes[Math.floor(Math.random() * powerTypes.length)]
     });
   };
@@ -809,7 +836,12 @@ export default function CodeSnake() {
     tokensRef.current.forEach((token) => {
       const expectedToken = activeLevel.required[collectedTokens.length];
       const isCurrentTarget = token.value === expectedToken;
-      const isFutureTarget = activeLevel.required.includes(token.value) && !isCurrentTarget && !collectedTokens.includes(token.value);
+      
+      // Correctly handle duplicates by counting total required vs collected occurrences
+      const requiredOccurrences = activeLevel.required.filter(val => val === token.value).length;
+      const collectedOccurrences = collectedTokens.filter(val => val === token.value).length;
+      const isFutureTarget = requiredOccurrences > collectedOccurrences && !isCurrentTarget;
+      
       const isNextTarget = scannerActive && isCurrentTarget;
       
       let tokenColor = '#EF4444'; // Red for wrong syntax / error

@@ -328,7 +328,7 @@ const SKINS = [
 ];
 
 export default function CodeInspector() {
-  const { addCoins, addXP, setGame, rank, completeDailyChallenge, triggerNotification } = usePlayerStore();
+  const { coins, addCoins, addXP, setGame, rank, completeDailyChallenge, triggerNotification } = usePlayerStore();
 
   // Screen State
   const [activeScreen, setActiveScreen] = useState('briefing'); // 'briefing', 'ide', 'victory', 'failed'
@@ -499,6 +499,20 @@ export default function CodeInspector() {
     setFrozenUsed(true);
     if (soundEnabled) inspectorAudio.playUpgrade();
     setTimeout(() => setIsTimeFrozen(false), 8000); // Freeze clock for 8 seconds
+  };
+
+  const decryptSolution = () => {
+    if (coins < 50) {
+      triggerNotification('❌ Insufficient Coins', 'You need 50 SDE Coins to decrypt this solution.', '🪙');
+      return;
+    }
+    
+    addCoins(-50);
+    triggerNotification('🔓 Code Decrypted', `The bug is located on line ${selectedMission.bugLine + 1}!`, '💻');
+    
+    // Highlight the bug line automatically
+    setScannerActive(true);
+    setTimeout(() => setScannerActive(false), 5000);
   };
 
   // Code inspection selection clicks
@@ -824,6 +838,14 @@ export default function CodeInspector() {
                   onClick={triggerTimeFreeze}
                 >
                   <Clock size={14} /> Freeze Time
+                </button>
+                <button 
+                  className="game-btn" 
+                  disabled={bugEliminated}
+                  style={{ ...styles.powerBtn, color: '#A855F7', borderColor: '#A855F7' }}
+                  onClick={decryptSolution}
+                >
+                  🔓 Decrypt (-50 Coins)
                 </button>
               </div>
 

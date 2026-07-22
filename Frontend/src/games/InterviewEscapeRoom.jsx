@@ -326,7 +326,7 @@ const ESCAPE_LEVELS = [
 ];
 
 export default function InterviewEscapeRoom() {
-  const { addCoins, addXP, setGame, completeDailyChallenge, triggerNotification } = usePlayerStore();
+  const { coins, addCoins, addXP, setGame, completeDailyChallenge, triggerNotification } = usePlayerStore();
 
   // Campaign level selector states
   const [currentLevelIdx, setCurrentLevelIdx] = useState(0);
@@ -338,6 +338,33 @@ export default function InterviewEscapeRoom() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [shakeActive, setShakeActive] = useState(false);
   const [confettiActive, setConfettiActive] = useState(false);
+
+  const decryptEscapeSolution = () => {
+    if (coins < 50) {
+      triggerNotification('❌ Insufficient Coins', 'You need 50 SDE Coins to decrypt this solution.', '🪙');
+      return;
+    }
+
+    if (activeScreen === 'sql') {
+      addCoins(-50);
+      setSqlQuery(activeLevel.sqlChallenge.expectedQuery);
+      triggerNotification('🔓 Vault Decrypted', 'The correct query has been injected!', '💻');
+    } else if (activeScreen === 'dsa') {
+      addCoins(-50);
+      handleSelectDsa(activeLevel.dsaChallenge.correctIndex);
+      triggerNotification('🔓 Bridge Assembled', 'Correct traversal identified! Bridge assembled!', '🌉');
+    } else if (activeScreen === 'coding') {
+      addCoins(-50);
+      setEditingLine(activeLevel.codingChallenge.bugLine);
+      setLineEditText(activeLevel.codingChallenge.expectedFix);
+      triggerNotification('🔓 Robot Decrypted', 'Correct logic fix prefilled in the editor!', '🤖');
+    } else if (activeScreen === 'hr') {
+      addCoins(-50);
+      const bestOption = activeLevel.hrChallenge.options.reduce((max, opt) => opt.value > max.value ? opt : max, activeLevel.hrChallenge.options[0]);
+      handleSelectHr(bestOption);
+      triggerNotification('🔓 Advisor Advice', 'Selected the most professional communication response!', '👩‍💼');
+    }
+  };
 
   // Handle background music loop
   useEffect(() => {
@@ -722,9 +749,18 @@ export default function InterviewEscapeRoom() {
               ✓ VAULT UNLOCKED! Particle coins added to payout logs.
             </div>
           ) : (
-            <button className="game-btn game-btn-primary" style={styles.actionBtn} onClick={handleVerifySql}>
-              COMPILE & RUN
-            </button>
+            <div style={{ display: 'flex', gap: '8px', width: '100%', marginBottom: '8px' }}>
+              <button 
+                className="game-btn" 
+                style={{ ...styles.actionBtn, borderColor: 'var(--accent-secondary)', color: 'var(--accent-secondary)', backgroundColor: 'transparent' }}
+                onClick={decryptEscapeSolution}
+              >
+                🔓 Decrypt (-50 Coins)
+              </button>
+              <button className="game-btn game-btn-primary" style={styles.actionBtn} onClick={handleVerifySql}>
+                COMPILE & RUN
+              </button>
+            </div>
           )}
 
           <button className="game-btn" onClick={() => setActiveScreen('lobby')}>
@@ -757,6 +793,16 @@ export default function InterviewEscapeRoom() {
               </button>
             ))}
           </div>
+
+          {dsaChoice === null && (
+            <button 
+              className="game-btn" 
+              style={{ ...styles.optBtn, borderColor: '#A855F7', color: '#A855F7', backgroundColor: 'transparent', width: '100%', marginTop: '8px' }}
+              onClick={decryptEscapeSolution}
+            >
+              🔓 Decrypt Solution (-50 Coins)
+            </button>
+          )}
 
           <button className="game-btn" style={{ marginTop: '1rem' }} onClick={() => setActiveScreen('lobby')}>
             Return to Lobby
@@ -810,6 +856,16 @@ export default function InterviewEscapeRoom() {
             </div>
           )}
 
+          {!robotBooted && (
+            <button 
+              className="game-btn" 
+              style={{ borderColor: '#A855F7', color: '#A855F7', backgroundColor: 'transparent', width: '100%', marginBottom: '8px', marginTop: '8px' }}
+              onClick={decryptEscapeSolution}
+            >
+              🔓 Decrypt Solution (-50 Coins)
+            </button>
+          )}
+
           <button className="game-btn" onClick={() => setActiveScreen('lobby')}>
             Return to Lobby
           </button>
@@ -851,6 +907,16 @@ export default function InterviewEscapeRoom() {
               </button>
             ))}
           </div>
+
+          {hrChoice === null && (
+            <button 
+              className="game-btn" 
+              style={{ ...styles.hrOptBtn, borderColor: '#A855F7', color: '#A855F7', backgroundColor: 'transparent', width: '100%', marginTop: '8px' }}
+              onClick={decryptEscapeSolution}
+            >
+              🔓 Decrypt Solution (-50 Coins)
+            </button>
+          )}
 
           <button className="game-btn" style={{ marginTop: '1rem' }} onClick={() => setActiveScreen('lobby')}>
             Return to Lobby
