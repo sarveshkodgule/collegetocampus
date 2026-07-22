@@ -596,7 +596,8 @@ export default function AptitudeDistrict() {
   const [usedDbIds, setUsedDbIds] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/questions?category=apti-rush&limit=100')
+    const solvedIds = localStorage.getItem('solved_question_ids_apti-rush') || '';
+    fetch(`http://localhost:5000/api/questions?category=apti-rush&limit=100&excludeIds=${solvedIds}`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.questions && data.questions.length > 0) {
@@ -604,7 +605,7 @@ export default function AptitudeDistrict() {
         }
       })
       .catch(() => {});
-  }, []);
+  }, [gameState === 'lobby']);
 
   const fetchNextAptiQuestion = (currentUsedIds = usedDbIds) => {
     const available = dbQuestions.filter(q => !currentUsedIds.includes(q._id));
@@ -616,7 +617,8 @@ export default function AptitudeDistrict() {
         text: selected.question,
         options: selected.options,
         correct: selected.correctAnswer,
-        tip: selected.tip
+        tip: selected.tip,
+        _id: selected._id
       };
     } else if (dbQuestions.length > 0) {
       const selected = dbQuestions[Math.floor(Math.random() * dbQuestions.length)];
@@ -626,7 +628,8 @@ export default function AptitudeDistrict() {
         text: selected.question,
         options: selected.options,
         correct: selected.correctAnswer,
-        tip: selected.tip
+        tip: selected.tip,
+        _id: selected._id
       };
     }
     return generateProceduralQuestion();
@@ -682,6 +685,15 @@ export default function AptitudeDistrict() {
       
       // Award flat +5 XP directly to global store profile on correct answers!
       addXP(5);
+
+      if (currentQuestion._id) {
+        const solved = localStorage.getItem('solved_question_ids_apti-rush') || '';
+        const newSolved = solved ? solved.split(',') : [];
+        if (!newSolved.includes(currentQuestion._id)) {
+          newSolved.push(currentQuestion._id);
+          localStorage.setItem('solved_question_ids_apti-rush', newSolved.join(','));
+        }
+      }
       
       if (soundEnabled) arcadeAudio.playCorrectBoost();
 

@@ -342,12 +342,14 @@ export default function CodeInspector() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/questions?category=code-inspector')
+    const solvedIds = localStorage.getItem('solved_question_ids_code-inspector') || '';
+    fetch(`http://localhost:5000/api/questions?category=code-inspector&excludeIds=${solvedIds}`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.questions && data.questions.length > 0) {
           const mapped = data.questions.map((q, idx) => ({
             id: q._id || idx,
+            _id: q._id,
             title: q.question,
             dept: q.extraDetails?.dept || '🏢 Software Division',
             threat: q.extraDetails?.threat || 'MEDIUM',
@@ -367,7 +369,7 @@ export default function CodeInspector() {
       .catch(() => {
         setLoading(false);
       });
-  }, []);
+  }, [activeScreen === 'briefing']);
 
   // IDE customization skin
   const [currentSkin, setCurrentSkin] = useState(SKINS[0]);
@@ -571,6 +573,16 @@ export default function CodeInspector() {
         completeDailyChallenge();
       }
       if (soundEnabled) inspectorAudio.playLaser();
+
+      if (selectedMission._id) {
+        const solved = localStorage.getItem('solved_question_ids_code-inspector') || '';
+        const newSolved = solved ? solved.split(',') : [];
+        if (!newSolved.includes(selectedMission._id)) {
+          newSolved.push(selectedMission._id);
+          localStorage.setItem('solved_question_ids_code-inspector', newSolved.join(','));
+        }
+      }
+
       setBugEliminated(true);
       setEnemyHp(0);
       setScore(prev => prev + 100 * combo);

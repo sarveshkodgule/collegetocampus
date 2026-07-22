@@ -121,6 +121,10 @@ export const usePlayerStore = create((set, get) => ({
   notification: null,
   isMuted: false,
   lastDailyRewardDate: '',
+  dailyRewardModalOpen: false,
+
+  // Set Daily Reward Modal Visibility
+  setDailyRewardModalOpen: (isOpen) => set({ dailyRewardModalOpen: isOpen }),
 
   // Audio Toggle
   toggleAudio: () => set((state) => ({ isMuted: !state.isMuted })),

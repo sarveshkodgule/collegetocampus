@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { usePlayerStore } from '../store/usePlayerStore';
-import { Terminal, Cpu, ShieldAlert, Sparkles, LogIn, Lock, Mail, User, ShieldCheck, Info, BookOpen, Compass, GraduationCap, Building2, FileText } from 'lucide-react';
+import { Terminal, Cpu, ShieldAlert, Sparkles, LogIn, Lock, Mail, User, ShieldCheck, Info, BookOpen, Compass, GraduationCap, Building2, FileText, Eye, EyeOff } from 'lucide-react';
 
 const AVATAR_GROUPS = [
   { category: '🤖 AI & Tech', list: ['🤖', '🦾', '🧠', '👾', '📡'] },
@@ -37,6 +37,10 @@ export default function LandingPage() {
   const [resetEmail, setResetEmail] = useState('');
   const [resetRollNumber, setResetRollNumber] = useState('');
   const [resetNewPassword, setResetNewPassword] = useState('');
+  const [showPass, setShowPass] = useState(false);
+  const [showResetPass, setShowResetPass] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [resetCodeInput, setResetCodeInput] = useState('');
 
   const handleCredentialsSubmit = async (e) => {
     e.preventDefault();
@@ -205,25 +209,47 @@ export default function LandingPage() {
   // Handle password reset request
   const handleForgotPasswordSubmit = async (e) => {
     e.preventDefault();
-    if (!resetEmail.trim() || !resetRollNumber.trim() || !resetNewPassword.trim()) {
-      alert("⚠️ All fields are required!");
+    if (!resetEmail.trim() || !resetRollNumber.trim()) {
+      alert("⚠️ Email and Student ID / Roll Number are required!");
+      return;
+    }
+
+    if (otpSent && (!resetCodeInput.trim() || !resetNewPassword.trim())) {
+      alert("⚠️ Verification Code and New Password are required!");
       return;
     }
 
     try {
+      const payload = {
+        email: resetEmail,
+        rollNumber: resetRollNumber
+      };
+
+      if (otpSent) {
+        payload.code = resetCodeInput;
+        payload.newPassword = resetNewPassword;
+      }
+
       const response = await fetch('http://localhost:5000/api/auth/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: resetEmail, rollNumber: resetRollNumber, newPassword: resetNewPassword })
+        body: JSON.stringify(payload)
       });
       const data = await response.json();
       
       if (data.success) {
-        alert("✅ Credentials reset successful! You can now log in with your new password.");
-        setShowForgotPassword(false);
-        setResetEmail('');
-        setResetRollNumber('');
-        setResetNewPassword('');
+        if (data.otpSent) {
+          setOtpSent(true);
+          alert(data.message || "✅ Verification code sent to your email!");
+        } else {
+          alert("✅ Credentials reset successful! You can now log in with your new password.");
+          setShowForgotPassword(false);
+          setOtpSent(false);
+          setResetEmail('');
+          setResetRollNumber('');
+          setResetCodeInput('');
+          setResetNewPassword('');
+        }
       } else {
         alert(`⚠️ Reset Failed: ${data.message}`);
       }
@@ -425,7 +451,7 @@ export default function LandingPage() {
                 <form onSubmit={handleForgotPasswordSubmit} style={styles.form}>
                   <div style={styles.inputGroup}>
                     <label style={styles.label}>REGISTERED EMAIL</label>
-                    <div style={styles.inputWrapper}>
+                    <div style={{ ...styles.inputWrapper, opacity: otpSent ? 0.6 : 1 }}>
                       <Mail size={16} color="var(--text-secondary)" />
                       <input 
                         type="email" 
@@ -434,12 +460,13 @@ export default function LandingPage() {
                         onChange={(e) => setResetEmail(e.target.value)}
                         style={styles.input}
                         required
+                        disabled={otpSent}
                       />
                     </div>
                   </div>
                   <div style={styles.inputGroup}>
                     <label style={styles.label}>STUDENT ID / ROLL NUMBER</label>
-                    <div style={styles.inputWrapper}>
+                    <div style={{ ...styles.inputWrapper, opacity: otpSent ? 0.6 : 1 }}>
                       <FileText size={16} color="var(--text-secondary)" />
                       <input 
                         type="text" 
@@ -448,25 +475,63 @@ export default function LandingPage() {
                         onChange={(e) => setResetRollNumber(e.target.value)}
                         style={styles.input}
                         required
+                        disabled={otpSent}
                       />
                     </div>
                   </div>
-                  <div style={styles.inputGroup}>
-                    <label style={styles.label}>NEW PASSWORD</label>
-                    <div style={styles.inputWrapper}>
-                      <Lock size={16} color="var(--text-secondary)" />
-                      <input 
-                        type="password" 
-                        placeholder="Enter new secure password"
-                        value={resetNewPassword}
-                        onChange={(e) => setResetNewPassword(e.target.value)}
-                        style={styles.input}
-                        required
-                      />
-                    </div>
-                  </div>
+
+                  {otpSent && (
+                    <>
+                      <div style={styles.inputGroup}>
+                        <label style={styles.label}>VERIFICATION CODE (OTP)</label>
+                        <div style={styles.inputWrapper}>
+                          <Lock size={16} color="var(--text-secondary)" />
+                          <input 
+                            type="text" 
+                            placeholder="Enter 6-digit verification code"
+                            value={resetCodeInput}
+                            onChange={(e) => setResetCodeInput(e.target.value)}
+                            style={styles.input}
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div style={styles.inputGroup}>
+                        <label style={styles.label}>NEW PASSWORD</label>
+                        <div style={styles.inputWrapper}>
+                          <Lock size={16} color="var(--text-secondary)" />
+                          <input 
+                            type={showResetPass ? "text" : "password"} 
+                            placeholder="Enter new secure password"
+                            value={resetNewPassword}
+                            onChange={(e) => setResetNewPassword(e.target.value)}
+                            style={styles.input}
+                            required
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowResetPass(!showResetPass)}
+                            style={{
+                              background: 'none',
+                              border: 'none',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              padding: '4px',
+                              color: 'var(--text-secondary)',
+                              outline: 'none',
+                            }}
+                          >
+                            {showResetPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+
                   <button type="submit" className="game-btn game-btn-primary" style={{ width: '100%', marginTop: '1rem', padding: '0.75rem' }}>
-                    Reset Password
+                    {otpSent ? '🔑 Reset Password' : '⚡ Send Verification Code'}
                   </button>
                   <button 
                     type="button" 
@@ -474,8 +539,10 @@ export default function LandingPage() {
                     style={{ width: '100%', marginTop: '0.5rem', padding: '0.6rem' }}
                     onClick={() => {
                       setShowForgotPassword(false);
+                      setOtpSent(false);
                       setResetEmail('');
                       setResetRollNumber('');
+                      setResetCodeInput('');
                       setResetNewPassword('');
                     }}
                   >
@@ -525,13 +592,30 @@ export default function LandingPage() {
                       <div style={styles.inputWrapper}>
                         <Lock size={16} color="var(--text-secondary)" />
                         <input 
-                          type="password" 
+                          type={showPass ? "text" : "password"} 
                           placeholder="••••••••"
                           value={passInput}
                           onChange={(e) => setPassInput(e.target.value)}
                           style={styles.input}
                           required
                         />
+                        <button
+                          type="button"
+                          onClick={() => setShowPass(!showPass)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '4px',
+                            color: 'var(--text-secondary)',
+                            outline: 'none',
+                          }}
+                        >
+                          {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
                       </div>
                     </div>
 

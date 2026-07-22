@@ -1,6 +1,6 @@
 import React from 'react';
 import { usePlayerStore, getPlayerLevelInfo } from '../store/usePlayerStore';
-import { Heart, Coins, Flame, Trophy, Award, LogOut, Home, Volume2, VolumeX } from 'lucide-react';
+import { Heart, Coins, Flame, Trophy, Award, LogOut, Home, Volume2, VolumeX, Gift } from 'lucide-react';
 
 function renderAvatar(val) {
   if (!val || (typeof val === 'string' && (val.startsWith('http://') || val.startsWith('https://')))) {
@@ -23,7 +23,9 @@ export default function Header() {
     setGame,
     resetGame,
     isMuted,
-    toggleAudio 
+    toggleAudio,
+    lastDailyRewardDate,
+    setDailyRewardModalOpen
   } = usePlayerStore();
 
   const { level, progressPercent } = getPlayerLevelInfo(xp);
@@ -64,6 +66,42 @@ export default function Header() {
           <Coins size={18} color="#F59E0B" />
           <span style={{ ...styles.statVal, color: '#F59E0B' }}>{coins}</span>
         </div>
+
+        {/* Daily Reward Notification Gift Indicator */}
+        {activeGame !== 'landing' && (
+          <button
+            style={{
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '6px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+              borderRadius: '12px',
+              backgroundColor: 'rgba(0, 0, 0, 0.2)',
+              border: '1px solid rgba(255, 255, 255, 0.03)',
+              marginLeft: '-4px'
+            }}
+            onClick={() => setDailyRewardModalOpen(true)}
+            title="Daily Matrix Rewards Calendar"
+          >
+            <Gift size={18} color={lastDailyRewardDate === new Date().toISOString().split('T')[0] ? '#9CA3AF' : '#EAB308'} className={lastDailyRewardDate !== new Date().toISOString().split('T')[0] ? "pulse-glow-animation" : ""} />
+            {lastDailyRewardDate !== new Date().toISOString().split('T')[0] && (
+              <span style={{
+                position: 'absolute',
+                top: '2px',
+                right: '2px',
+                width: '6px',
+                height: '6px',
+                backgroundColor: '#EF4444',
+                borderRadius: '50%',
+                boxShadow: '0 0 6px #EF4444'
+              }}></span>
+            )}
+          </button>
+        )}
 
         {/* Divider */}
         <div style={styles.divider}></div>

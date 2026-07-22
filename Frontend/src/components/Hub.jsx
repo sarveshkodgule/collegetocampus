@@ -160,10 +160,9 @@ const BUILDINGS = [
 ];
 
 export default function Hub() {
-  const { setGame, triggerNotification, activeGame, xp, coins, clan, lastDailyRewardDate } = usePlayerStore();
+  const { setGame, triggerNotification, activeGame, xp, coins, clan, lastDailyRewardDate, dailyRewardModalOpen, setDailyRewardModalOpen } = usePlayerStore();
   const [codexOpen, setCodexOpen] = useState(false);
   const [codexTab, setCodexTab] = useState('algo');
-  const [dailyRewardModalOpen, setDailyRewardModalOpen] = useState(false);
   const [standingsTab, setStandingsTab] = useState('players'); // 'players' | 'clans'
 
   const handleDownloadPDF = (gameId) => {
@@ -858,6 +857,13 @@ export default function Hub() {
   }, []);
 
   useEffect(() => {
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (lastDailyRewardDate !== todayStr) {
+      setDailyRewardModalOpen(true);
+    }
+  }, [lastDailyRewardDate]);
+
+  useEffect(() => {
     const token = localStorage.getItem('token');
     const headers = {};
     if (token) {
@@ -924,24 +930,26 @@ export default function Hub() {
               <Database size={14} /> 📁 DATABANK CODEX TERMINAL
             </button>
 
-            <button 
-              className="game-btn" 
-              style={{ 
-                display: 'inline-flex', 
-                alignItems: 'center', 
-                gap: '8px', 
-                padding: '6px 16px', 
-                fontSize: '0.75rem',
-                background: 'linear-gradient(135deg, #EAB308 0%, #CA8A04 100%)',
-                borderColor: '#EAB308',
-                color: '#000',
-                fontWeight: '700',
-                boxShadow: '0 0 15px rgba(234, 179, 8, 0.3)'
-              }}
-              onClick={() => setDailyRewardModalOpen(true)}
-            >
-              <Gift size={14} /> 🎁 DAILY MATRIX REWARDS
-            </button>
+            {lastDailyRewardDate !== new Date().toISOString().split('T')[0] && (
+              <button 
+                className="game-btn" 
+                style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '8px', 
+                  padding: '6px 16px', 
+                  fontSize: '0.75rem',
+                  background: 'linear-gradient(135deg, #EAB308 0%, #CA8A04 100%)',
+                  borderColor: '#EAB308',
+                  color: '#000',
+                  fontWeight: '700',
+                  boxShadow: '0 0 15px rgba(234, 179, 8, 0.3)'
+                }}
+                onClick={() => setDailyRewardModalOpen(true)}
+              >
+                <Gift size={14} /> 🎁 DAILY MATRIX REWARDS
+              </button>
+            )}
           </div>
         </div>
 

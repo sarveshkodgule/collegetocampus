@@ -510,7 +510,8 @@ function shuffleQuestionObj(qObj) {
   const [dbQuestions, setDbQuestions] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/questions?category=ai-master&limit=100')
+    const solvedIds = localStorage.getItem('solved_question_ids_ai-master') || '';
+    fetch(`http://localhost:5000/api/questions?category=ai-master&limit=100&excludeIds=${solvedIds}`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.questions && data.questions.length > 0) {
@@ -518,7 +519,7 @@ function shuffleQuestionObj(qObj) {
         }
       })
       .catch(() => {});
-  }, []);
+  }, [gameState === 'menu']);
 
   useEffect(() => {
     // Generate a fresh randomized deck for all 10 stages
@@ -535,7 +536,8 @@ function shuffleQuestionObj(qObj) {
           opts: randomQ.options,
           correct: randomQ.correctAnswer,
           tip: randomQ.tip,
-          clue: randomQ.extraDetails.clue || ''
+          clue: randomQ.extraDetails.clue || '',
+          _id: randomQ._id
         });
       } else {
         const stagePool = QUESTIONS_POOL[i] || QUESTIONS_POOL[0];
@@ -692,6 +694,15 @@ function shuffleQuestionObj(qObj) {
       if (isCorrect) {
         if (!isMuted) challengeAudio.playCorrect();
         speakHostDialogue("Incredible! That is the optimal solution!");
+
+        if (activeQuestion._id) {
+          const solved = localStorage.getItem('solved_question_ids_ai-master') || '';
+          const newSolved = solved ? solved.split(',') : [];
+          if (!newSolved.includes(activeQuestion._id)) {
+            newSolved.push(activeQuestion._id);
+            localStorage.setItem('solved_question_ids_ai-master', newSolved.join(','));
+          }
+        }
 
         // If level 10 cleared: complete victory
         if (currentIdx === 9) {

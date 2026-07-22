@@ -292,7 +292,8 @@ export default function SqlHeist() {
   const [casesList, setCasesList] = useState(CASES);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/questions?category=sql-heist')
+    const solvedIds = localStorage.getItem('solved_question_ids_sql-heist') || '';
+    fetch(`http://localhost:5000/api/questions?category=sql-heist&excludeIds=${solvedIds}`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.questions && data.questions.length > 0) {
@@ -303,13 +304,14 @@ export default function SqlHeist() {
             desc: q.extraDetails?.desc || q.question,
             instructions: q.extraDetails?.instructions || q.question,
             hint: q.tip,
-            clue: q.extraDetails?.clue || 'Evidence scrubbed.'
+            clue: q.extraDetails?.clue || 'Evidence scrubbed.',
+            _id: q._id
           })).sort(() => Math.random() - 0.5);
           setCasesList(mappedCases);
         }
       })
       .catch(() => {});
-  }, []);
+  }, [battleState === 'lobby']);
   
   // Dynamic virtual DB state mimicking database changes
   const [virtualDb, setVirtualDb] = useState(JSON.parse(JSON.stringify(DB_SCHEMAS)));
@@ -519,66 +521,101 @@ export default function SqlHeist() {
       let displayData = [];
       let nextDb = JSON.parse(JSON.stringify(virtualDb));
 
-      switch (levelIndex) {
-        case 0: // Level 1: SELECT cameras WHERE status = OFFLINE
-          if (query.includes('FROM SECURITY_CAMERAS') && query.includes("STATUS = 'OFFLINE'") || query.includes('STATUS="OFFLINE"')) {
+      // Add generic query match (for Decrypt button exact fills)
+      const cleanUser = queryInput.trim().toLowerCase().replace(/\s+/g, ' ').replace(/;$/, '');
+      const cleanCorrect = activeCase.hint.trim().toLowerCase().replace(/\s+/g, ' ').replace(/;$/, '');
+      if (cleanUser === cleanCorrect) {
+        isCorrect = true;
+      }
+
+      switch (activeCase.title) {
+        case 'Offline Security Loops':
+          if (query.includes('FROM SECURITY_CAMERAS') && (query.includes("STATUS = 'OFFLINE'") || query.includes('STATUS="OFFLINE"'))) {
             isCorrect = true;
-            displayData = virtualDb.security_cameras.data.filter(c => c.status === 'OFFLINE');
           }
+          if (isCorrect) displayData = virtualDb.security_cameras.data.filter(c => c.status === 'OFFLINE');
           break;
 
-        case 1: // Level 2: SELECT network WHERE ip_address LIKE '192.168.4.%' AND action = 'DENIED'
+        case 'Tracing the Intruder':
           if (query.includes('FROM NETWORK_LOGS') && query.includes('IP_ADDRESS LIKE') && query.includes('192.168.4.%') && query.includes("ACTION = 'DENIED'")) {
             isCorrect = true;
-            displayData = virtualDb.network_logs.data.filter(l => l.ip_address.startsWith('192.168.4.') && l.action === 'DENIED');
           }
+          if (isCorrect) displayData = virtualDb.network_logs.data.filter(l => l.ip_address.startsWith('192.168.4.') && l.action === 'DENIED');
           break;
 
-        case 2: // Level 3: JOIN employees and badge_registry
+        case 'Sarah’s Passcode Access':
           if (query.includes('JOIN BADGE_REGISTRY') && query.includes('ON') && query.includes("NAME = 'SARAH CONNOR'")) {
             isCorrect = true;
-            displayData = [{ access_code: 'ORION_7792' }];
           }
+          if (isCorrect) displayData = [{ access_code: 'ORION_7792' }];
           break;
 
-        case 3: // Level 4: UPDATE guard_patrols SET zone = 'ZONE_C' WHERE zone = 'ZONE_A'
+        case 'Disabling Patrol Shifts':
           if (query.includes('UPDATE GUARD_PATROLS') && query.includes("SET ZONE = 'ZONE_C'") && query.includes("WHERE ZONE = 'ZONE_A'")) {
             isCorrect = true;
+          }
+          if (isCorrect) {
             nextDb.guard_patrols.data = virtualDb.guard_patrols.data.map(g => g.zone === 'ZONE_A' ? { ...g, zone: 'ZONE_C' } : g);
             displayData = nextDb.guard_patrols.data;
           }
           break;
 
-        case 4: // Level 5: JOIN access_logs and backups WHERE backup_size_mb > 500
+        case 'The Database Leak':
           if (query.includes('JOIN DATABASE_BACKUPS') && query.includes('ON') && query.includes('BACKUP_SIZE_MB > 500')) {
             isCorrect = true;
-            displayData = [{ username: 'smith_admin' }];
           }
+          if (isCorrect) displayData = [{ username: 'smith_admin' }];
           break;
 
-        case 5: // Level 6: DELETE FROM system_audit
+        case 'Wiping Audit Evidence':
           if (query.includes('DELETE FROM SYSTEM_AUDIT') && query.includes("EVENT_TYPE = 'LOGIN_FAIL'") && query.includes("EVENT_TIME < '2026-06-05'")) {
             isCorrect = true;
+          }
+          if (isCorrect) {
             nextDb.system_audit.data = virtualDb.system_audit.data.filter(a => !(a.event_type === 'LOGIN_FAIL' && a.event_time < '2026-06-05'));
             displayData = nextDb.system_audit.data;
           }
           break;
 
-        case 6: // Level 7: SUM financial ledger account AC_9981
+        case 'Ledger Theft Audit':
           if (query.includes('SUM(AMOUNT)') && query.includes('FROM FINANCIAL_LEDGER') && query.includes("ACCOUNT_ID = 'AC_9981'") && query.includes("TYPE = 'UNAUTHORIZED'")) {
             isCorrect = true;
-            displayData = [{ 'SUM(amount)': 50000 }];
           }
+          if (isCorrect) displayData = [{ 'SUM(amount)': 50000 }];
           break;
 
-        case 7: // Level 8: GROUP BY username HAVING count(*) > 5
+        case 'Brute-Force Detection':
           if (query.includes('GROUP BY USERNAME') && (query.includes('HAVING COUNT(*) > 5') || query.includes('HAVING COUNT(ATTEMPT_ID) > 5'))) {
             isCorrect = true;
-            displayData = [{ username: 'agent_smith', 'COUNT(*)': 6 }];
+          }
+          if (isCorrect) displayData = [{ username: 'agent_smith', 'COUNT(*)': 6 }];
+          break;
+
+        case 'Laser Overrides':
+          if (query.includes('UPDATE LASER_GRID') && query.includes('SET VOLTAGE = 0') && query.includes("WHERE SECTOR = 'SECTOR_9'")) {
+            isCorrect = true;
+          }
+          if (isCorrect) {
+            nextDb.laser_grid.data = virtualDb.laser_grid.data.map(l => l.sector === 'SECTOR_9' ? { ...l, voltage: 0 } : l);
+            displayData = nextDb.laser_grid.data;
           }
           break;
 
-        case 9: // Level 10: TRANSACTION vault lockout SET lockout = 0 & transfer money
+        case 'High Density Departments':
+          if (query.includes('GROUP BY DEPARTMENT') && query.includes('HAVING COUNT(*) > 5')) {
+            isCorrect = true;
+          }
+          if (isCorrect) displayData = [{ department: 'IT', 'COUNT(*)': 2 }];
+          break;
+
+        case 'Unassigned Rogue Agents':
+          if (query.includes('LEFT JOIN DEPARTMENTS') && query.includes('D.ID IS NULL')) {
+            isCorrect = true;
+          }
+          if (isCorrect) displayData = [{ name: 'Thomas Anderson', dept_name: 'None' }];
+          break;
+
+        case 'The Vault Cashout (Transaction)':
           if (query.startsWith('BEGIN')) {
             setInTransaction(true);
             transactionState.current = JSON.parse(JSON.stringify(virtualDb));
@@ -618,15 +655,10 @@ export default function SqlHeist() {
           }
           break;
 
-        case 8: // Level 9: UPDATE laser_grid SET voltage = 0 WHERE sector = 'SECTOR_9'
-          if (query.includes('UPDATE LASER_GRID') && query.includes('SET VOLTAGE = 0') && query.includes("WHERE SECTOR = 'SECTOR_9'")) {
-            isCorrect = true;
-            nextDb.laser_grid.data = virtualDb.laser_grid.data.map(l => l.sector === 'SECTOR_9' ? { ...l, voltage: 0 } : l);
-            displayData = nextDb.laser_grid.data;
-          }
-          break;
-
         default:
+          if (isCorrect) {
+            displayData = [{ status: 'QUERY SUCCESSFUL', rows: 1 }];
+          }
           break;
       }
 
@@ -634,6 +666,16 @@ export default function SqlHeist() {
         setVirtualDb(nextDb);
         setTerminalOutput(displayData);
         if (!isMuted) playExplosionSound();
+
+        // Mark as solved!
+        if (activeCase._id) {
+          const solved = localStorage.getItem('solved_question_ids_sql-heist') || '';
+          const newSolved = solved ? solved.split(',') : [];
+          if (!newSolved.includes(activeCase._id)) {
+            newSolved.push(activeCase._id);
+            localStorage.setItem('solved_question_ids_sql-heist', newSolved.join(','));
+          }
+        }
 
         // Unlock Evidence
         if (!unlockedClues.includes(activeCase.level)) {

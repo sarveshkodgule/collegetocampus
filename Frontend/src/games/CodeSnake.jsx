@@ -686,6 +686,14 @@ export default function CodeSnake() {
             if (snake.length > 2) snake.pop();
             setCombo(1);
           }
+          
+          if (token.isCorrect) {
+            // Relocate correct token to prevent soft-locking the level
+            const coord = getUniqueRandomCoordinates([...snake, ...tokensRef.current]);
+            token.x = coord.x;
+            token.y = coord.y;
+            return true; // Keep in array
+          }
         }
         return false; // Remove token
       }
