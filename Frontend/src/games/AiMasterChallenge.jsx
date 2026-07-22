@@ -507,15 +507,44 @@ function shuffleQuestionObj(qObj) {
 }
 
   const [shuffledDeck, setShuffledDeck] = useState([]);
+  const [dbQuestions, setDbQuestions] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/questions?category=ai-master&limit=100')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.questions && data.questions.length > 0) {
+          setDbQuestions(data.questions);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     // Generate a fresh randomized deck for all 10 stages
-    const newDeck = QUESTIONS_POOL.map(stagePool => {
-      const randomQ = stagePool[Math.floor(Math.random() * stagePool.length)];
-      return shuffleQuestionObj(randomQ);
+    const newDeck = Array.from({ length: 10 }, (_, i) => {
+      const stepNum = i + 1;
+      const stepDbQuestions = dbQuestions.filter(q => q.extraDetails && q.extraDetails.step === stepNum);
+      
+      if (stepDbQuestions.length > 0) {
+        const randomQ = stepDbQuestions[Math.floor(Math.random() * stepDbQuestions.length)];
+        return shuffleQuestionObj({
+          step: stepNum,
+          category: randomQ.extraDetails.topic || 'Machine Learning',
+          q: randomQ.question,
+          opts: randomQ.options,
+          correct: randomQ.correctAnswer,
+          tip: randomQ.tip,
+          clue: randomQ.extraDetails.clue || ''
+        });
+      } else {
+        const stagePool = QUESTIONS_POOL[i] || QUESTIONS_POOL[0];
+        const randomQ = stagePool[Math.floor(Math.random() * stagePool.length)];
+        return shuffleQuestionObj(randomQ);
+      }
     });
     setShuffledDeck(newDeck);
-  }, [gameState === 'menu']);
+  }, [gameState === 'menu', dbQuestions]);
 
   const activeQuestion = shuffledDeck[currentIdx] || shuffleQuestionObj((QUESTIONS_POOL[currentIdx] || QUESTIONS_POOL[0])[0]);
   const timerIntervalRef = useRef(null);
