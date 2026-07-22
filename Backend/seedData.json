@@ -2162,5 +2162,485 @@
       "topic": "Q-Learning",
       "clue": "Without this, training on sequential correlated experiences can destabilize the neural network."
     }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "easy",
+    "question": "If a train travels 240 km in 4 hours, what is its average speed?",
+    "options": [
+      "50 km/h",
+      "60 km/h",
+      "70 km/h",
+      "80 km/h"
+    ],
+    "correctAnswer": 1,
+    "tip": "Average Speed = Distance ÷ Time = 240 ÷ 4.",
+    "extraDetails": {
+      "topic": "QUANTITATIVE",
+      "subTopic": "Speed"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "medium",
+    "question": "A can complete a work in 15 days and B in 10 days. How many days will they take together?",
+    "options": [
+      "5",
+      "6",
+      "7",
+      "8"
+    ],
+    "correctAnswer": 1,
+    "tip": "Combined time = (15 × 10) ÷ (15 + 10).",
+    "extraDetails": {
+      "topic": "LOGICAL",
+      "subTopic": "Work"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "easy",
+    "question": "Find the next number: 3, 6, 12, 24, ?",
+    "options": [
+      "36",
+      "40",
+      "48",
+      "50"
+    ],
+    "correctAnswer": 2,
+    "tip": "Each term is multiplied by 2.",
+    "extraDetails": {
+      "topic": "SERIES",
+      "subTopic": "Number Series"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "medium",
+    "question": "If the ratio of boys to girls is 5:3 and there are 40 boys, how many girls are there?",
+    "options": [
+      "20",
+      "22",
+      "24",
+      "26"
+    ],
+    "correctAnswer": 2,
+    "tip": "One ratio unit = 40 ÷ 5 = 8.",
+    "extraDetails": {
+      "topic": "RATIO & PROPORTION",
+      "subTopic": "Ratio"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "medium",
+    "question": "An item is bought for ₹500 and sold for ₹600. What is the profit percentage?",
+    "options": [
+      "15%",
+      "20%",
+      "25%",
+      "30%"
+    ],
+    "correctAnswer": 1,
+    "tip": "Profit % = (Profit ÷ Cost Price) × 100.",
+    "extraDetails": {
+      "topic": "PROFIT & LOSS",
+      "subTopic": "Profit"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "easy",
+    "question": "Solve: 4x + 8 = 24",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "5"
+    ],
+    "correctAnswer": 2,
+    "tip": "Subtract 8 first, then divide by 4.",
+    "extraDetails": {
+      "topic": "ALGEBRA",
+      "subTopic": "Linear Equation"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "medium",
+    "question": "What is the probability of getting an even number when rolling a fair die?",
+    "options": [
+      "1/6",
+      "1/3",
+      "1/2",
+      "2/3"
+    ],
+    "correctAnswer": 2,
+    "tip": "Even outcomes are 2, 4, and 6.",
+    "extraDetails": {
+      "topic": "PERMUTATION & PROBABILITY",
+      "subTopic": "Probability"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "easy",
+    "question": "Find the next number: 2, 5, 8, 11, ?",
+    "options": [
+      "13",
+      "14",
+      "15",
+      "16"
+    ],
+    "correctAnswer": 1,
+    "tip": "The pattern increases by 3 each time.",
+    "extraDetails": {
+      "topic": "SERIES",
+      "subTopic": "Arithmetic Series"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "hard",
+    "question": "If x : y = 4 : 7 and y : z = 14 : 15, then x : z = ?",
+    "options": [
+      "8:15",
+      "4:15",
+      "15:8",
+      "7:15"
+    ],
+    "correctAnswer": 0,
+    "tip": "Make the common term (y) equal before comparing.",
+    "extraDetails": {
+      "topic": "RATIO & PROPORTION",
+      "subTopic": "Compound Ratio"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "medium",
+    "question": "A shopkeeper gives a 20% discount on an item marked ₹1000. What is the selling price?",
+    "options": [
+      "₹700",
+      "₹750",
+      "₹800",
+      "₹850"
+    ],
+    "correctAnswer": 2,
+    "tip": "Subtract 20% of ₹1000 from the marked price.",
+    "extraDetails": {
+      "topic": "PROFIT & LOSS",
+      "subTopic": "Discount"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "hard",
+    "question": "How many different arrangements can be made using the letters of the word 'MATH'?",
+    "options": [
+      "12",
+      "16",
+      "24",
+      "48"
+    ],
+    "correctAnswer": 2,
+    "tip": "All letters are distinct. Use n!.",
+    "extraDetails": {
+      "topic": "PERMUTATION & PROBABILITY",
+      "subTopic": "Permutation"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "medium",
+    "question": "If 8 workers finish a job in 15 days, how many days will 12 workers take?",
+    "options": [
+      "8",
+      "10",
+      "12",
+      "15"
+    ],
+    "correctAnswer": 1,
+    "tip": "Workers × Days = Constant.",
+    "extraDetails": {
+      "topic": "LOGICAL",
+      "subTopic": "Work"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "easy",
+    "question": "Solve: 9² - 5² = ?",
+    "options": [
+      "46",
+      "52",
+      "56",
+      "60"
+    ],
+    "correctAnswer": 2,
+    "tip": "Calculate each square separately.",
+    "extraDetails": {
+      "topic": "QUANTITATIVE",
+      "subTopic": "Squares"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "hard",
+    "question": "Find the next number: 1, 4, 9, 16, 25, ?",
+    "options": [
+      "30",
+      "35",
+      "36",
+      "49"
+    ],
+    "correctAnswer": 2,
+    "tip": "These are perfect squares.",
+    "extraDetails": {
+      "topic": "SERIES",
+      "subTopic": "Square Series"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "medium",
+    "question": "If 5 pens cost ₹125, what is the cost of 8 pens?",
+    "options": [
+      "₹180",
+      "₹190",
+      "₹200",
+      "₹210"
+    ],
+    "correctAnswer": 2,
+    "tip": "First find the cost of one pen.",
+    "extraDetails": {
+      "topic": "RATIO & PROPORTION",
+      "subTopic": "Unitary Method"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "hard",
+    "question": "A bag contains 5 red, 3 blue, and 2 green balls. What is the probability of drawing a blue ball?",
+    "options": [
+      "3/10",
+      "1/5",
+      "2/5",
+      "1/2"
+    ],
+    "correctAnswer": 0,
+    "tip": "Probability = Favorable outcomes ÷ Total outcomes.",
+    "extraDetails": {
+      "topic": "PERMUTATION & PROBABILITY",
+      "subTopic": "Probability"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "easy",
+    "question": "Solve: 3x = 27",
+    "options": [
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "correctAnswer": 3,
+    "tip": "Divide both sides by 3.",
+    "extraDetails": {
+      "topic": "ALGEBRA",
+      "subTopic": "Linear Equation"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "medium",
+    "question": "An article is sold at a loss of 10% for ₹450. What was its cost price?",
+    "options": [
+      "₹480",
+      "₹490",
+      "₹500",
+      "₹520"
+    ],
+    "correctAnswer": 2,
+    "tip": "Selling Price = 90% of Cost Price.",
+    "extraDetails": {
+      "topic": "PROFIT & LOSS",
+      "subTopic": "Loss"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "hard",
+    "question": "Find the value of x if 2x + 5 = 3x - 7.",
+    "options": [
+      "10",
+      "11",
+      "12",
+      "13"
+    ],
+    "correctAnswer": 2,
+    "tip": "Move variables to one side and constants to the other.",
+    "extraDetails": {
+      "topic": "ALGEBRA",
+      "subTopic": "Linear Equation"
+    }
+  },
+  {
+    "category": "apti-rush",
+    "difficulty": "medium",
+    "question": "A sum doubles itself in 8 years at simple interest. In how many years will it become three times?",
+    "options": [
+      "12",
+      "16",
+      "20",
+      "24"
+    ],
+    "correctAnswer": 1,
+    "tip": "Doubling means interest equals principal in 8 years. Triple means interest equals twice the principal.",
+    "extraDetails": {
+      "topic": "QUANTITATIVE",
+      "subTopic": "Simple Interest"
+    }
+  },
+  {
+    "category": "sql-heist",
+    "difficulty": "medium",
+    "question": "UPDATE guard_patrols SET zone = 'ZONE_C' WHERE zone = 'ZONE_A';",
+    "options": [
+      "SELECT * FROM guard_patrols",
+      "UPDATE guard_patrols SET zone = 'ZONE_C' WHERE zone = 'ZONE_A';",
+      "DELETE FROM guard_patrols WHERE zone = 'ZONE_A'",
+      "UPDATE guard_patrols SET zone = 'ZONE_A' WHERE zone = 'ZONE_C'"
+    ],
+    "correctAnswer": 1,
+    "tip": "UPDATE guard_patrols SET zone = 'ZONE_C' WHERE zone = 'ZONE_A';",
+    "extraDetails": {
+      "title": "Disabling Patrol Shifts",
+      "targetTable": "guard_patrols",
+      "desc": "Guard patrols are blocking the elevator shaft. Rewrite guard routing schedules to move all midnight patrols out of ZONE_A into ZONE_C.",
+      "instructions": "Write an UPDATE query setting the `zone` to ZONE_C for guards currently assigned to ZONE_A.",
+      "clue": "Elevator guard schedule manipulated. Relocated Agent Brown away from the vault access shaft."
+    }
+  },
+  {
+    "category": "sql-heist",
+    "difficulty": "medium",
+    "question": "SELECT username FROM access_logs JOIN database_backups ON access_logs.session_id = database_backups.session_id WHERE backup_size_mb > 500;",
+    "options": [
+      "SELECT username FROM access_logs WHERE backup_size_mb > 500",
+      "SELECT username FROM access_logs JOIN database_backups ON access_logs.session_id = database_backups.session_id WHERE backup_size_mb > 500;",
+      "SELECT * FROM database_backups WHERE size > 500",
+      "SELECT username FROM access_logs WHERE session_id = 'SESS_991'"
+    ],
+    "correctAnswer": 1,
+    "tip": "SELECT username FROM access_logs JOIN database_backups ON access_logs.session_id = database_backups.session_id WHERE backup_size_mb > 500;",
+    "extraDetails": {
+      "title": "The Database Leak",
+      "targetTable": "access_logs",
+      "desc": "An administrator leaked core database backups. Find the administrator username who downloaded a backup larger than 500MB.",
+      "instructions": "Join `access_logs` and `database_backups` on `session_id` to SELECT the `username` where the backup size is greater than 500MB.",
+      "clue": "Identified corrupted admin username: smith_admin."
+    }
+  },
+  {
+    "category": "sql-heist",
+    "difficulty": "medium",
+    "question": "DELETE FROM system_audit WHERE event_type = 'LOGIN_FAIL' AND event_time < '2026-06-05';",
+    "options": [
+      "SELECT * FROM system_audit",
+      "DELETE FROM system_audit WHERE event_type = 'LOGIN_FAIL' AND event_time < '2026-06-05';",
+      "DROP TABLE system_audit",
+      "DELETE FROM system_audit WHERE event_time = '2026-06-05'"
+    ],
+    "correctAnswer": 1,
+    "tip": "DELETE FROM system_audit WHERE event_type = 'LOGIN_FAIL' AND event_time < '2026-06-05';",
+    "extraDetails": {
+      "title": "Wiping Audit Evidence",
+      "targetTable": "system_audit",
+      "desc": "Delete previous failed login attempts logged before 2026-06-05 to clear the access traces.",
+      "instructions": "Delete rows from `system_audit` where `event_type` is LOGIN_FAIL and `event_time` is before 2026-06-05.",
+      "clue": "Security audit scrubbed clean. 2 breach logs eradicated."
+    }
+  },
+  {
+    "category": "sql-heist",
+    "difficulty": "hard",
+    "question": "SELECT SUM(amount) FROM financial_ledger WHERE account_id = 'AC_9981' AND type = 'UNAUTHORIZED';",
+    "options": [
+      "SELECT amount FROM financial_ledger",
+      "SELECT SUM(amount) FROM financial_ledger WHERE account_id = 'AC_9981' AND type = 'UNAUTHORIZED';",
+      "SELECT COUNT(amount) FROM financial_ledger",
+      "SELECT MAX(amount) FROM financial_ledger"
+    ],
+    "correctAnswer": 1,
+    "tip": "SELECT SUM(amount) FROM financial_ledger WHERE account_id = 'AC_9981' AND type = 'UNAUTHORIZED';",
+    "extraDetails": {
+      "title": "Ledger Theft Audit",
+      "targetTable": "financial_ledger",
+      "desc": "Calculate the total volume of stolen cash transferred during the breach from ledger account AC_9981.",
+      "instructions": "Write a query to calculate the SUM of the `amount` values from `financial_ledger` where account ID is AC_9981 and transaction type is UNAUTHORIZED.",
+      "clue": "Total ledger theft verified: 50,000 credits."
+    }
+  },
+  {
+    "category": "sql-heist",
+    "difficulty": "hard",
+    "question": "SELECT username, COUNT(*) FROM login_attempts GROUP BY username HAVING COUNT(*) > 5;",
+    "options": [
+      "SELECT username FROM login_attempts WHERE count > 5",
+      "SELECT username, COUNT(*) FROM login_attempts GROUP BY username HAVING COUNT(*) > 5;",
+      "SELECT COUNT(*) FROM login_attempts",
+      "SELECT username FROM login_attempts GROUP BY username"
+    ],
+    "correctAnswer": 1,
+    "tip": "SELECT username, COUNT(*) FROM login_attempts GROUP BY username HAVING COUNT(*) > 5;",
+    "extraDetails": {
+      "title": "Brute-Force Detection",
+      "targetTable": "login_attempts",
+      "desc": "A terminal is executing a dictionary brute-force. Group login attempts by username to expose nodes with more than 5 failed attempts.",
+      "instructions": "SELECT the `username` and COUNT(*) of attempts from `login_attempts`, grouping by `username` and filtering where count is greater than 5.",
+      "clue": "Exposed attacker node: agent_smith (6 attempts)."
+    }
+  },
+  {
+    "category": "sql-heist",
+    "difficulty": "hard",
+    "question": "UPDATE laser_grid SET voltage = 0 WHERE sector = 'SECTOR_9';",
+    "options": [
+      "SELECT * FROM laser_grid",
+      "UPDATE laser_grid SET voltage = 0 WHERE sector = 'SECTOR_9';",
+      "DELETE FROM laser_grid WHERE sector = 'SECTOR_9'",
+      "UPDATE laser_grid SET voltage = 220"
+    ],
+    "correctAnswer": 1,
+    "tip": "UPDATE laser_grid SET voltage = 0 WHERE sector = 'SECTOR_9';",
+    "extraDetails": {
+      "title": "Laser Overrides",
+      "targetTable": "laser_grid",
+      "desc": "Deactivate the security laser grid blocking the mainframe room. Disable grid nodes inside SECTOR_9 by resetting their voltage to 0.",
+      "instructions": "UPDATE the `laser_grid` table setting `voltage` to 0 where the grid `sector` is SECTOR_9.",
+      "clue": "Vault security grid bypassed. mainframe lasers powered down."
+    }
+  },
+  {
+    "category": "sql-heist",
+    "difficulty": "hard",
+    "question": "BEGIN TRANSACTION; UPDATE vault_status SET lockout = 0; UPDATE money_ledgers SET balance = balance + 500000 WHERE wallet = 'ESCROW_WALLET'; COMMIT;",
+    "options": [
+      "UPDATE vault_status SET lockout = 0",
+      "BEGIN TRANSACTION; UPDATE vault_status SET lockout = 0; UPDATE money_ledgers SET balance = balance + 500000 WHERE wallet = 'ESCROW_WALLET'; COMMIT;",
+      "COMMIT;",
+      "ROLLBACK;"
+    ],
+    "correctAnswer": 1,
+    "tip": "BEGIN TRANSACTION; UPDATE vault_status SET lockout = 0; UPDATE money_ledgers SET balance = balance + 500000 WHERE wallet = 'ESCROW_WALLET'; COMMIT;",
+    "extraDetails": {
+      "title": "The Vault Cashout (Transaction)",
+      "targetTable": "vault_status",
+      "desc": "Breach the vault database lock and finalize the funds wire transfer in a single transaction block. If your query fails, you must execute a ROLLBACK immediately to avoid locking the terminal.",
+      "instructions": "Type BEGIN TRANSACTION; followed by updating `vault_status` setting `lockout` to 0, updating `money_ledgers` adding 500000 to balance of ESCROW_WALLET, and then COMMIT;.",
+      "clue": "Main vault fully decrypted! 500,000 credits routed to ESCROW_WALLET."
+    }
   }
 ]
