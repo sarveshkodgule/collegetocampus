@@ -82,6 +82,14 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  resetPasswordOTP: {
+    type: String,
+    default: null
+  },
+  resetPasswordOTPExpires: {
+    type: Date,
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now

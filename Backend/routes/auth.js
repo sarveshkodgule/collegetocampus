@@ -201,11 +201,11 @@ router.post('/claim-daily-reward', protect, async (req, res) => {
 });
 
 // @route   POST /api/auth/forgot-password
-// @desc    Reset password using Student ID / Roll Number verification
+// @desc    Reset password using Student ID / Roll Number & Email OTP Verification
 // @access  Public
 router.post('/forgot-password', async (req, res) => {
   try {
-    const { email, rollNumber, newPassword } = req.body;
+    const { email, rollNumber, code, newPassword } = req.body;
 
     const student = await Student.findOne({ email }).select('+password');
     if (!student) {
@@ -216,7 +216,40 @@ router.post('/forgot-password', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid Roll Number / Student ID verification' });
     }
 
+    // Step 1: Request Code (if no code parameter is provided)
+    if (!code) {
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      student.resetPasswordOTP = otp;
+      student.resetPasswordOTPExpires = Date.now() + 10 * 60 * 1000; // 10 minutes expiry
+      await student.save();
+
+      console.log('\n=========================================');
+      console.log(`🔑 [RESET PASSWORD OTP FOR ${email.toUpperCase()}]: ${otp}`);
+      console.log('=========================================\n');
+
+      return res.json({ 
+        success: true, 
+        otpSent: true, 
+        message: `Verification code sent to your email! (Local Sim Code: ${otp})` 
+      });
+    }
+
+    // Step 2: Validate OTP Code and Reset Password
+    if (!student.resetPasswordOTP || student.resetPasswordOTP !== code) {
+      return res.status(400).json({ success: false, message: 'Invalid or incorrect verification OTP code' });
+    }
+
+    if (student.resetPasswordOTPExpires < Date.now()) {
+      return res.status(400).json({ success: false, message: 'Verification OTP code has expired' });
+    }
+
+    if (!newPassword) {
+      return res.status(400).json({ success: false, message: 'New password is required to complete reset' });
+    }
+
     student.password = newPassword;
+    student.resetPasswordOTP = null;
+    student.resetPasswordOTPExpires = null;
     await student.save();
 
     res.json({ success: true, message: 'Password reset successful!' });
