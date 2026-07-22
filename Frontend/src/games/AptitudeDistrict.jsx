@@ -592,6 +592,46 @@ export default function AptitudeDistrict() {
     }
   };
 
+  const [dbQuestions, setDbQuestions] = useState([]);
+  const [usedDbIds, setUsedDbIds] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/questions?category=apti-rush&limit=100')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.questions && data.questions.length > 0) {
+          setDbQuestions(data.questions);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const fetchNextAptiQuestion = (currentUsedIds = usedDbIds) => {
+    const available = dbQuestions.filter(q => !currentUsedIds.includes(q._id));
+    if (available.length > 0) {
+      const selected = available[Math.floor(Math.random() * available.length)];
+      setUsedDbIds(prev => [...prev, selected._id]);
+      return {
+        category: selected.extraDetails?.topic || 'QUANTITATIVE',
+        text: selected.question,
+        options: selected.options,
+        correct: selected.correctAnswer,
+        tip: selected.tip
+      };
+    } else if (dbQuestions.length > 0) {
+      const selected = dbQuestions[Math.floor(Math.random() * dbQuestions.length)];
+      setUsedDbIds([selected._id]);
+      return {
+        category: selected.extraDetails?.topic || 'QUANTITATIVE',
+        text: selected.question,
+        options: selected.options,
+        correct: selected.correctAnswer,
+        tip: selected.tip
+      };
+    }
+    return generateProceduralQuestion();
+  };
+
   // Start the Game
   const startGame = () => {
     setQIndex(0);
@@ -604,7 +644,10 @@ export default function AptitudeDistrict() {
     setIsCorrect(null);
     setConfettiActive(false);
     setGameState('playing');
-    setCurrentQuestion(generateProceduralQuestion());
+    
+    // Initialize seen pool for this run
+    setUsedDbIds([]);
+    setCurrentQuestion(fetchNextAptiQuestion([]));
     setTimeLeft(12);
 
     // Reset daily challenge tracking in state for this run
@@ -707,7 +750,7 @@ export default function AptitudeDistrict() {
     setSelectedOpt(null);
     setIsCorrect(null);
     setQIndex(prev => prev + 1);
-    setCurrentQuestion(generateProceduralQuestion());
+    setCurrentQuestion(fetchNextAptiQuestion());
     setTimeLeft(finalTime);
     setGameState('playing');
   };
