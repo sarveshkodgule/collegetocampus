@@ -342,12 +342,27 @@ export default function CodeInspector() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const DIFFICULTY_ORDER = {
+      easy: 1,
+      low: 1,
+      medium: 2,
+      hard: 3,
+      high: 3,
+      critical: 4
+    };
+
     const solvedIds = localStorage.getItem('solved_question_ids_code-inspector') || '';
     fetch(`http://localhost:5000/api/questions?category=code-inspector&excludeIds=${solvedIds}`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.questions && data.questions.length > 0) {
-          const mapped = data.questions.map((q, idx) => ({
+          const sortedQuestions = [...data.questions].sort((a, b) => {
+            const diffA = DIFFICULTY_ORDER[a.difficulty?.toLowerCase()] || 2;
+            const diffB = DIFFICULTY_ORDER[b.difficulty?.toLowerCase()] || 2;
+            return diffA - diffB;
+          });
+
+          const mapped = sortedQuestions.map((q, idx) => ({
             id: q._id || idx,
             _id: q._id,
             title: q.question,
@@ -360,7 +375,7 @@ export default function CodeInspector() {
             code: q.options,
             bugLine: q.correctAnswer,
             reward: q.difficulty === 'critical' ? { coins: 200, xp: 90 } : q.difficulty === 'medium' ? { coins: 150, xp: 60 } : { coins: 80, xp: 40 }
-          })).sort(() => Math.random() - 0.5);
+          }));
           setMissions(mapped);
           setSelectedMission(mapped[0]);
         }

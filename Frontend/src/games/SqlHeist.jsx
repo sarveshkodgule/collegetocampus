@@ -292,12 +292,38 @@ export default function SqlHeist() {
   const [casesList, setCasesList] = useState(CASES);
 
   useEffect(() => {
+    const SQL_CASE_ORDER = [
+      'Offline Security Loops',
+      'Tracing the Intruder',
+      'Sarah’s Passcode Access',
+      'High Density Departments',
+      'Unassigned Rogue Agents',
+      'Disabling Patrol Shifts',
+      'The Database Leak',
+      'Wiping Audit Evidence',
+      'Ledger Theft Audit',
+      'Brute-Force Detection',
+      'Laser Overrides',
+      'The Vault Cashout (Transaction)'
+    ];
+
     const solvedIds = localStorage.getItem('solved_question_ids_sql-heist') || '';
     fetch(`http://localhost:5000/api/questions?category=sql-heist&excludeIds=${solvedIds}`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.questions && data.questions.length > 0) {
-          const mappedCases = data.questions.map((q, idx) => ({
+          // Sort questions according to standard level progression order
+          const sortedQuestions = [...data.questions].sort((a, b) => {
+            const titleA = a.extraDetails?.title || '';
+            const titleB = b.extraDetails?.title || '';
+            const idxA = SQL_CASE_ORDER.indexOf(titleA);
+            const idxB = SQL_CASE_ORDER.indexOf(titleB);
+            const orderA = idxA === -1 ? 999 : idxA;
+            const orderB = idxB === -1 ? 999 : idxB;
+            return orderA - orderB;
+          });
+
+          const mappedCases = sortedQuestions.map((q, idx) => ({
             level: idx + 1,
             title: q.extraDetails?.title || `Case #${idx + 1}`,
             targetTable: q.extraDetails?.targetTable || 'security_cameras',
@@ -306,7 +332,7 @@ export default function SqlHeist() {
             hint: q.tip,
             clue: q.extraDetails?.clue || 'Evidence scrubbed.',
             _id: q._id
-          })).sort(() => Math.random() - 0.5);
+          }));
           setCasesList(mappedCases);
         }
       })

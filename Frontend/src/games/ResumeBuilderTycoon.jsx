@@ -134,14 +134,16 @@ export default function ResumeBuilderTycoon() {
   const [dbQuestions, setDbQuestions] = useState(COMPLEXITY_QUESTIONS);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/questions?category=resume-tycoon')
+    const solvedIds = localStorage.getItem('solved_question_ids_resume-tycoon') || '';
+    fetch(`http://localhost:5000/api/questions?category=resume-tycoon&excludeIds=${solvedIds}`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.questions && data.questions.length > 0) {
           const mapped = data.questions.map(q => ({
             text: q.question,
             opt: q.options,
-            correct: q.correctAnswer
+            correct: q.correctAnswer,
+            _id: q._id
           }));
           setDbQuestions(mapped);
         }
@@ -248,6 +250,17 @@ export default function ResumeBuilderTycoon() {
       setLibraryFeedback('✅ CORRECT! DSA points compiled.');
       setDsaScore(prev => Math.min(100, prev + 8));
       if (soundEnabled) tycoonAudio.playBeep(659.25, 0.1, 'sine');
+
+      // Prevent repeated questions by logging correct answer IDs to localStorage
+      if (libraryQuestion._id) {
+        const solved = localStorage.getItem('solved_question_ids_resume-tycoon') || '';
+        const solvedArr = solved.split(',').filter(Boolean);
+        if (!solvedArr.includes(libraryQuestion._id)) {
+          solvedArr.push(libraryQuestion._id);
+          localStorage.setItem('solved_question_ids_resume-tycoon', solvedArr.join(','));
+        }
+      }
+      
       setTimeout(() => {
         loadNextLibraryQuestion();
       }, 1200);

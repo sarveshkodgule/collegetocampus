@@ -596,12 +596,24 @@ export default function AptitudeDistrict() {
   const [usedDbIds, setUsedDbIds] = useState([]);
 
   useEffect(() => {
+    const DIFFICULTY_ORDER = {
+      easy: 1,
+      medium: 2,
+      hard: 3,
+      critical: 4
+    };
+
     const solvedIds = localStorage.getItem('solved_question_ids_apti-rush') || '';
     fetch(`http://localhost:5000/api/questions?category=apti-rush&limit=100&excludeIds=${solvedIds}`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.questions && data.questions.length > 0) {
-          setDbQuestions(data.questions);
+          const sorted = [...data.questions].sort((a, b) => {
+            const diffA = DIFFICULTY_ORDER[a.difficulty] || 1;
+            const diffB = DIFFICULTY_ORDER[b.difficulty] || 1;
+            return diffA - diffB;
+          });
+          setDbQuestions(sorted);
         }
       })
       .catch(() => {});
@@ -610,7 +622,7 @@ export default function AptitudeDistrict() {
   const fetchNextAptiQuestion = (currentUsedIds = usedDbIds) => {
     const available = dbQuestions.filter(q => !currentUsedIds.includes(q._id));
     if (available.length > 0) {
-      const selected = available[Math.floor(Math.random() * available.length)];
+      const selected = available[0];
       setUsedDbIds(prev => [...prev, selected._id]);
       return {
         category: selected.extraDetails?.topic || 'QUANTITATIVE',
@@ -621,7 +633,7 @@ export default function AptitudeDistrict() {
         _id: selected._id
       };
     } else if (dbQuestions.length > 0) {
-      const selected = dbQuestions[Math.floor(Math.random() * dbQuestions.length)];
+      const selected = dbQuestions[0];
       setUsedDbIds([selected._id]);
       return {
         category: selected.extraDetails?.topic || 'QUANTITATIVE',

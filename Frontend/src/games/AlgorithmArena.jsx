@@ -360,24 +360,48 @@ function shuffleQuestionObj(qObj) {
   const [monsters, setMonsters] = useState(MONSTERS);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/questions?category=algo-arena&limit=100')
+    const DIFFICULTY_ORDER = {
+      easy: 1,
+      medium: 2,
+      hard: 3,
+      critical: 4
+    };
+
+    const solvedIds = localStorage.getItem('solved_question_ids_algo-arena') || '';
+    fetch(`http://localhost:5000/api/questions?category=algo-arena&limit=100&excludeIds=${solvedIds}`)
       .then(res => res.json())
       .then(data => {
         if (data.success && data.questions && data.questions.length > 0) {
           const mappedMonsters = MONSTERS.map(monster => {
             let dbQuestions = data.questions
-              .filter(q => q.extraDetails && q.extraDetails.subCategory === monster.type)
+              .filter(q => {
+                if (!q.extraDetails || !q.extraDetails.subCategory) return false;
+                const subCat = q.extraDetails.subCategory.toLowerCase();
+                if (monster.type === 'stackqueue') {
+                  return subCat === 'stack' || subCat === 'stackqueue';
+                }
+                if (monster.type === 'backtrack') {
+                  return subCat === 'backtrack' || subCat === 'backtracking';
+                }
+                return subCat === monster.type;
+              })
               .map(q => shuffleQuestionObj({
                 q: q.question,
                 opts: q.options,
                 correct: q.correctAnswer,
-                tip: q.tip
+                tip: q.tip,
+                difficulty: q.difficulty || 'easy',
+                _id: q._id
               }))
-              .sort(() => Math.random() - 0.5);
+              .sort((a, b) => {
+                const diffA = DIFFICULTY_ORDER[a.difficulty] || 1;
+                const diffB = DIFFICULTY_ORDER[b.difficulty] || 1;
+                return diffA - diffB;
+              });
 
             return {
               ...monster,
-              questions: dbQuestions.length > 0 ? dbQuestions : monster.questions.map(shuffleQuestionObj).sort(() => Math.random() - 0.5)
+              questions: dbQuestions.length > 0 ? dbQuestions : monster.questions.map(shuffleQuestionObj)
             };
           });
           setMonsters(mappedMonsters);
@@ -1018,6 +1042,16 @@ function shuffleQuestionObj(qObj) {
       laserAnim.current = { active: true, x: 95, y: 110, speed: 12 };
       if (!isMuted) playSpellSound();
       setCombatText(`✨ OPTIMAL COMPILE! Spaceship fires lasers dealing critical compilation damage!`);
+
+      // Prevent repeated questions by logging correct answer IDs to localStorage
+      if (activeQuestion._id) {
+        const solved = localStorage.getItem('solved_question_ids_algo-arena') || '';
+        const solvedArr = solved.split(',').filter(Boolean);
+        if (!solvedArr.includes(activeQuestion._id)) {
+          solvedArr.push(activeQuestion._id);
+          localStorage.setItem('solved_question_ids_algo-arena', solvedArr.join(','));
+        }
+      }
     } else {
       // Monster throws stone
       stoneAnim.current = { active: true, x: 520, y: 110, speed: -10, angle: 0 };
